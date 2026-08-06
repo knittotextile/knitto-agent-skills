@@ -1,0 +1,13 @@
+---
+description: Sama dengan description di SKILL.md, disesuaikan ke gaya imperatif.
+globs:
+alwaysApply: false
+---
+
+# Nama Skill Contoh (Cursor)
+
+Isi ulang dari SKILL.md, ditulis dalam kalimat imperatif. Contoh: "Selalu
+lakukan X sebelum Y" — bukan "X sebaiknya dilakukan sebelum Y".
+
+- Aturan 1
+- Aturan 2
