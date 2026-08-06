@@ -173,7 +173,8 @@ completed plan files in place — write the next version per that convention
 ## What this skill is not
 
 - Not a substitute for actually tracking progress as work happens — this
-  skill only produces the plan.
+  skill only produces the plan. See [`exec-todo`](../exec-todo/SKILL.md) to
+  execute the checklist this skill writes.
 - Not a way to skip whatever review/verification steps this repo requires —
   those belong in the generated checklist (Step 5), not negotiated away.
 - Not for editing code — this skill only writes planning documents.

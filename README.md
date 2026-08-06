@@ -47,6 +47,7 @@ agents/
 
 CATALOG.md               # index semua skill & agent: nama, deskripsi singkat, tag, kompatibilitas
 CONTRIBUTING.md          # cara menambah/mengubah skill + aturan frontmatter
+SOURCES.md                # atribusi skill yang diadopsi dari repo open-source (MIT), bukan tulisan asli repo ini
 ```
 
 Agent (subagent) tidak punya format lintas-platform tunggal seperti skill —
