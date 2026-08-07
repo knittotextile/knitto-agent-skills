@@ -78,9 +78,22 @@ Lihat [`CONTRIBUTING.md`](CONTRIBUTING.md).
 ## 🤖 Untuk AI agent yang membaca repo ini
 
 Kamu (AI agent) sedang diarahkan ke repo ini — lewat link GitHub yang
-di-paste user, atau lewat clone lokal. Jangan langsung menyalin semua skill
-dan agent secara diam-diam. **Ikuti alur tanya-jawab di bawah ini** sebelum
-melakukan instalasi apa pun.
+di-paste user, atau lewat clone lokal. **WAJIB** ikuti Langkah 1–5 di bawah
+ini secara berurutan sebelum menyalin file apa pun. Ini bukan saran, ini
+aturan mengikat:
+
+- **DILARANG** menyalin skill/agent apa pun tanpa lebih dulu menyelesaikan
+  Langkah 2 dan Langkah 3 (checklist eksplisit dari user).
+- **DILARANG** menebak platform atau menebak skill yang "kelihatannya
+  relevan" lalu langsung memasangnya diam-diam.
+- **DILARANG** melompati/menggabung langkah di luar cara yang sudah
+  ditentukan di masing-masing langkah (mis. Langkah 2 dan 3 memang
+  dirancang menyatu dalam satu alur — lihat instruksinya — tapi Langkah 4
+  dan 5 tetap terpisah, jangan digabung sendiri).
+
+Tujuannya: siapa pun yang "caplok" skill dari repo ini lewat AI agent
+harus dapat pengalaman yang sama — cepat, jelas, dan tidak salah pasang
+(salah folder platform, salah skill, atau ke lokasi yang tidak dia mau).
 
 ### Langkah 1 — Baca katalog
 
@@ -88,7 +101,7 @@ Baca [`CATALOG.md`](CATALOG.md) untuk daftar skill dan agent yang tersedia
 saat ini beserta deskripsi singkatnya. Jangan andalkan daftar hardcoded di
 README ini — `CATALOG.md` adalah sumber kebenaran yang paling update.
 
-### Langkah 2 — Tanyakan platform user
+### Langkah 2 — Tanyakan platform user (WAJIB, jangan ditebak)
 
 Tanyakan platform AI coding agent mana yang dipakai user saat ini (lihat
 tabel di atas untuk daftar lengkap): Claude Code, OpenCode, Antigravity,
@@ -97,16 +110,25 @@ Command Code, atau Cursor. Ini menentukan file mana yang perlu disalin
 di `agents/<nama-agent>/` untuk agent) dan ke lokasi mana (lihat tabel
 lokasi di atas dan di `agents/README.md`).
 
-### Langkah 3 — Tanyakan skill/agent mana yang mau dipasang
+Tanyakan ini sebagai pertanyaan **tersendiri dan pertama**, sebelum apa pun
+di bawah — begitu platform terjawab, langsung lanjut ke Langkah 3 dalam
+respons yang sama tanpa jeda tambahan.
 
-Tawarkan pilihan berdasarkan isi `CATALOG.md` — jangan pasang semuanya
-sekaligus tanpa ditanya. Contoh pertanyaan yang baik:
-- "Mau pasang skill yang mana? (bisa pilih lebih dari satu)" — list nama +
-  deskripsi singkat dari `CATALOG.md`.
-- "Mau pasang agent `reviewer` juga?" kalau relevan dengan skill yang
-  dipilih (mis. `code-review-and-quality` erat kaitannya dengan agent
-  `reviewer`, `prd-grill`/`brd-grill` saling terhubung — sebutkan
-  keterkaitan ini saat menawarkan, jangan cuma daftar datar).
+### Langkah 3 — Tampilkan checklist skill + agent sekaligus (WAJIB, satu checklist eksplisit)
+
+Begitu platform diketahui, langsung tampilkan **satu checklist gabungan**
+(multi-select) berisi skill *dan* agent dari `CATALOG.md` — jangan tanya
+skill dulu lalu agent belakangan sebagai pertanyaan terpisah. Contoh
+pertanyaan yang baik:
+- "Mau pasang yang mana? (bisa pilih lebih dari satu, skill maupun agent)"
+  — list nama + deskripsi singkat dari `CATALOG.md`, skill dan agent
+  digabung dalam satu daftar checklist.
+
+Tetap sebutkan keterkaitan antar item saat menawarkan (mis.
+`code-review-and-quality` erat kaitannya dengan agent `reviewer`,
+`prd-grill`/`brd-grill` saling terhubung), supaya user tahu opsi yang
+saling melengkapi tanpa perlu ditanya dua kali. Jangan pasang semuanya
+sekaligus tanpa dikonfirmasi via checklist ini.
 
 ### Langkah 4 — Tanyakan lokasi instalasi
 

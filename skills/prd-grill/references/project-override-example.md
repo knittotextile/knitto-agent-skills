@@ -26,9 +26,10 @@ precedence over the generic skill within that repo) that:
   surface vs. UI refine vs. new backend+frontend feature), instead of
   inventing a template from scratch each time.
 - Explicitly says completed phase files are never edited in place — a
-  later change is always the next `.M` file — because the base skill's
-  more permissive "update in place" language for Convention A doesn't apply
-  once a repo has committed to append-only phase history.
+  later change is always the next `.M` file — because Convention A's
+  "move back to `todo/` and edit" behavior doesn't apply once a repo has
+  committed to append-only phase history; Convention B never reopens a
+  `done/` file at all.
 
 ## Takeaway for writing your own override
 

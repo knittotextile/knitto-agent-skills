@@ -1,18 +1,46 @@
 # Output conventions
 
-Two common shapes for what `prd-grill` writes. Pick based on what the repo
-already has evidence of (SKILL.md Step 0); default to the PRD+ISSUES pair
-when there's no prior convention.
+The generic `prd-grill` skill always writes **Convention A** — it does not
+scan a repo and switch shape based on what it finds. Convention B is
+documented here only as a reference for writing a **project-scoped
+override** (SKILL.md Step 6) for a repo that deliberately wants a different
+fixed shape; the generic skill never picks it on its own.
 
-## Convention A — PRD + ISSUES pair (default)
+Both conventions use the same **`todo/` → `done/` flow** so a repo's plan
+docs always show at a glance what's still open vs. finished — never mix a
+convention that has this split with a flat, unsplit folder.
+
+## Convention A — PRD + ISSUES pair (always used by the generic skill)
 
 ```
-docs/prd/<slug>/PRD.md
-docs/prd/<slug>/ISSUES.md
+docs/prd/
+  todo/                    # unfinished plans — always flat
+    <slug>/
+      PRD.md
+      ISSUES.md
+  done/                     # finished plans
+    <slug>/
+      PRD.md
+      ISSUES.md
 ```
 
 Use for repos with no existing planning folder, or for one-off features in
 a codebase that doesn't track work as versioned "phases."
+
+Rules:
+- A brand-new plan always starts in `todo/<slug>/` — it hasn't been
+  implemented yet.
+- A plan moves `todo/<slug>/` → `done/<slug>/` only once `ISSUES.md` is
+  fully checked (or every remaining item is explicitly annotated N/A / out
+  of scope) — as part of implementation close-out (`exec-todo`'s job), not
+  something `prd-grill` does itself.
+- Refining a plan still in `todo/`: edit `PRD.md`/`ISSUES.md` in place,
+  noting what changed and why in a short changelog note at the top of
+  `PRD.md`.
+- Refining a plan already in `done/`: move it back to `todo/<slug>/` first
+  (new work reopens it — its checklist is no longer fully representative of
+  "done"), then edit in place with the same changelog note. Never edit a
+  `done/` file in place and leave it there.
 
 **`PRD.md` sections:**
 
@@ -44,9 +72,11 @@ component, one endpoint, one test file — not one giant "implement the
 feature" item), plus this repo's fixed definition-of-done items appended
 verbatim if any exist (tests pass, review step, E2E/manual verification).
 
-## Convention B — Single versioned phase-plan file
+## Convention B — Single versioned phase-plan file (override-only)
 
-Some repos track work as numbered "phases," each phase a single
+Not used by the generic skill by default — only relevant if a repo has
+written a project-scoped override that adopts it. Some repos track work as
+numbered "phases," each phase a single
 self-contained plan file, with corrections handled by **chaining a decimal
 version** rather than editing the file or minting a new phase number. This
 scales well for long-lived features that get revisited many times (a real
@@ -111,8 +141,11 @@ Always present.
   decimal-suffixed filenames → Convention B. Read 2-3 existing files to
   learn the repo's exact section names and fixed checklist items before
   writing a new one — don't assume they match this reference exactly.
-- A `docs/prd/` folder with `<slug>/PRD.md` pairs, or no planning folder at
-  all → Convention A.
+- A `docs/prd/` folder (with or without an existing `todo/`/`done/` split —
+  treat a flat `docs/prd/<slug>/PRD.md` from before this convention existed
+  as Convention A too, and migrate it into `todo/` or `done/` based on
+  whether its `ISSUES.md` is fully checked), or no planning folder at all →
+  Convention A.
 - Neither, but the repo has a `CLAUDE.md` / `CONTRIBUTING.md` describing a
   different planning shape entirely → follow that instead of either
   convention here, and flag to the user that a project-scoped override

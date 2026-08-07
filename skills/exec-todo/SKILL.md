@@ -39,12 +39,13 @@ existed, which is exactly the failure mode Step 3 below exists to prevent.
 - If given a path, use it directly — still verify it exists, don't assume.
 - If given a slug/number/fuzzy name, search this repo's plan-doc location
   (see [`prd-grill`'s output conventions](../prd-grill/references/output-conventions.md)
-  for the two common shapes — a `docs/prd/<slug>/ISSUES.md`, or a
-  `doc/phases/todo|done/...` phase file — match whichever this repo
-  actually uses). Prefer a match in the "still open" location; if the only
-  match is already in a "done/closed" location, tell the user its checklist
-  is already fully checked and ask whether they meant a different, still-open
-  file — don't silently re-execute a closed plan.
+  for the two common shapes — both use a `todo/`→`done/` split: either
+  `docs/prd/todo|done/<slug>/ISSUES.md`, or a `doc/phases/todo|done/...`
+  phase file — match whichever this repo actually uses). Prefer a match in
+  the `todo/` (still open) location; if the only match is already in
+  `done/` (closed), tell the user its checklist is already fully checked and
+  ask whether they meant a different, still-open file — don't silently
+  re-execute a closed plan.
 - If nothing matches, or the match is ambiguous, list the candidates and ask
   which one — don't guess at scope.
 - If no argument was given at all, ask which file rather than defaulting to
@@ -62,11 +63,11 @@ convention requires (test commands, review-dispatch steps, verification
 steps) — those are real work, not decoration, and belong in the tracked
 list too. Skip lines already `- [x]`.
 
-If every item is already `- [x]`: don't fabricate work. Check whether this
-repo's convention expects the file to be moved to a "done" location once
-fully checked (Convention B in `prd-grill`'s output-conventions reference)
-— if so and it hasn't moved yet, that move is itself the actionable item;
-do it and stop. Otherwise tell the user there's nothing to execute.
+If every item is already `- [x]`: don't fabricate work. Check whether the
+file still sits in a `todo/` location (both conventions in `prd-grill`'s
+output-conventions reference use a `todo/`→`done/` split) — if so and it
+hasn't moved yet, that move is itself the actionable item; do it and stop.
+Otherwise tell the user there's nothing to execute.
 
 Create the session's tracked task list from the extracted items — one task
 per checklist line, same order as the document (order matters: later items,
@@ -134,12 +135,12 @@ documented sequence, use this default, in order:
 4. Clean up test data and any dev processes started for verification.
 5. Check off the closing checklist items in the file (only after 1-4 pass or
    their findings are addressed/accepted).
-6. If this repo uses a versioned/phase-plan convention with a "done"
-   location (Convention B in `prd-grill`'s reference), move the file there
-   now and fix any relative links in it or pointing to it. This step is
-   exactly as mandatory as the other five — a file that's fully checked but
-   still sitting in the "open" location is an incomplete close-out, not a
-   cosmetic detail.
+6. Move the plan doc(s) from `todo/` to `done/` now (both conventions in
+   `prd-grill`'s reference use this split — a `docs/prd/todo/<slug>/` pair
+   or a `doc/phases/todo/...` file) and fix any relative links in it or
+   pointing to it. This step is exactly as mandatory as the other five — a
+   plan that's fully checked but still sitting in `todo/` is an incomplete
+   close-out, not a cosmetic detail.
 
 ## Step 4 — Final report
 

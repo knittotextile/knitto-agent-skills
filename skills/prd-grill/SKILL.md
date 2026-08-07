@@ -1,6 +1,6 @@
 ---
 name: prd-grill
-description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then writes a plan doc (PRD + issues, or a phase-plan file — see references/output-conventions.md) to disk. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
+description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then always writes a PRD + ISSUES pair under `docs/prd/todo|done/` (see references/output-conventions.md) — a fixed format, not inferred from whatever the repo already happens to have lying around. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
 license: MIT
 compatibility: "Requires a way to write files and, ideally, an AskUserQuestion-style tool for choice questions (falls back to plain text Q&A otherwise)."
 metadata:
@@ -23,14 +23,15 @@ Turn a rough idea into a written plan by grilling the user with one adaptive
 question at a time — never a wall of questions upfront — then writing a plan
 document to disk once scope is confirmed.
 
-This is the **generic, project-agnostic** version. Many repos benefit from a
-project-scoped override that matches their existing planning convention
-instead of this skill's default output shape (see
-`references/project-override-example.md` for a real one). If this repo
-already has an established plan-doc convention (check for `docs/prd/`,
-`doc/phases/`, `PLANNING.md`, or similar before starting), follow *that*
-convention's shape even under this generic skill, and prefer writing a
-project-scoped override once the convention is clear (see step 6).
+This skill always writes the **same fixed format**: a PRD + ISSUES pair
+under `docs/prd/todo|done/<slug>/` (Step 5). It does **not** scan the repo
+for some other planning convention and defer to it — a skill that adapts
+its output shape to whatever it finds produces a different structure in
+every repo, which defeats the point of having a standard shape at all. If a
+repo genuinely wants a different fixed shape (e.g. versioned phase-plan
+files), that's a deliberate **project-scoped override** the repo's owner
+writes once — see `references/project-override-example.md` — not something
+this generic skill infers on the fly.
 
 ## Usage
 
@@ -50,16 +51,6 @@ the BRD in full, then jump straight to Step 3 asking only genuinely new,
 implementation-level questions (which files, which endpoints, which
 components) that the BRD wouldn't have covered.
 
-## Step 0 — Detect the repo's planning convention
-
-Before asking anything, check quickly (Glob, don't guess):
-- Does `docs/prd/`, `doc/phases/`, or an equivalent planning folder already
-  exist with prior docs in it? If so, its structure is the convention to
-  follow, not this skill's default (see `references/output-conventions.md`
-  for the two common shapes and how to recognize which one a repo uses).
-- Is this a brand-new repo with no planning docs yet? Default to the
-  **PRD + ISSUES pair** convention (Step 4 below).
-
 ## Step 1 — Scope: new plan vs. correction to an existing one
 
 Ask (or infer from the invocation) whether this grill is:
@@ -68,12 +59,12 @@ Ask (or infer from the invocation) whether this grill is:
   intent even if the user didn't type `refine` literally (e.g. "the inbox
   layout from last time needs a redo" is a refine, not a new plan).
 
-Default to extending/versioning an existing doc rather than minting a new
-one whenever a plausible existing doc covers the same topic/surface, even if
-the concrete change also touches a different area than the original did.
-Reserve a brand-new doc for work that opens a genuinely new surface with no
-natural parent to attach to. If ambiguous, ask — but the default lean is to
-extend, not to mint new.
+Default to extending an existing doc rather than minting a new one whenever
+a plausible existing doc covers the same topic/surface, even if the concrete
+change also touches a different area than the original did. Reserve a
+brand-new doc for work that opens a genuinely new surface with no natural
+parent to attach to. If ambiguous, ask — but the default lean is to extend,
+not to mint new.
 
 ## Step 2 — Initialize session
 
@@ -118,19 +109,24 @@ before this confirmation.
 
 ## Step 5 — Generate output
 
-Default shape (no existing convention detected in Step 0): a **PRD + ISSUES
-pair**:
+Always the same shape: a **PRD + ISSUES pair**, always written under
+`todo/` first — never directly under `done/`:
 
 ```
-docs/prd/<slug>/PRD.md       # problem, scope, design decisions, out-of-scope
-docs/prd/<slug>/ISSUES.md    # actionable checklist broken into implementable items
+docs/prd/todo/<slug>/PRD.md       # problem, scope, design decisions, out-of-scope
+docs/prd/todo/<slug>/ISSUES.md    # actionable checklist broken into implementable items
 ```
+
+It moves to `docs/prd/done/<slug>/` only once `exec-todo` (or equivalent)
+fully checks off `ISSUES.md` — that's a close-out step, not something this
+skill does at write time.
 
 See `references/output-conventions.md` for the full PRD.md/ISSUES.md
-section-by-section shape, and for the alternative **single phase-plan file**
-convention (`doc/phases/todo|done/...`) some repos use instead — pick
-whichever this repo already has evidence of (Step 0), defaulting to
-PRD+ISSUES for a repo with no prior convention.
+section-by-section shape and the todo/done move rules. That file also
+documents an alternative single phase-plan-file convention for reference —
+that shape only applies if this repo has a project-scoped override (Step 6)
+that explicitly says to use it; this generic skill never switches to it on
+its own.
 
 Whichever shape applies, always include:
 - Context: what this is, why, and links to anything it depends on
@@ -146,29 +142,28 @@ Whichever shape applies, always include:
 Write the file(s) directly — don't ask permission to write, that's the
 point of the skill — but tell the user the exact path(s) afterward.
 
-## Step 6 — Consider a project-scoped override
+## Step 6 — Offer a project-scoped override, if asked for one
 
-If Step 0 found this repo has its own established convention that differs
-meaningfully from the two shapes in `references/output-conventions.md`
-(different folder layout, different section names, different fixed
-checklist items, a versioning scheme like `.M` chaining), that's a signal
-this repo would benefit from a **project-scoped override** of this skill —
-a copy placed at the project's own skill location with `name: prd-grill`
-that fully describes the repo's real convention, so future invocations don't
-need to re-derive it from scratch each time. Mention this to the user; offer
-to write the override if they want one. See
-`references/project-override-example.md` for a worked example of what a
-good override looks like.
+Only if the user explicitly says this repo needs a different fixed shape
+than PRD+ISSUES (different folder layout, different section names, a
+versioning scheme like `.M` chaining) — never infer this from scanning the
+repo — write a **project-scoped override**: a copy placed at the project's
+own skill location with `name: prd-grill` that fully describes the repo's
+real convention, so future invocations use it directly instead of this
+generic default. See `references/project-override-example.md` for a worked
+example of what a good override looks like.
 
 ## Step 7 — Refinement loop (if the user comes back later)
 
-For the PRD+ISSUES convention: update `PRD.md`/`ISSUES.md` in place, noting
-what changed and why in a short changelog note at the top.
+If the plan is still in `todo/<slug>/`, update `PRD.md`/`ISSUES.md` in
+place, noting what changed and why in a short changelog note at the top. If
+it already moved to `done/<slug>/`, move it back to `todo/<slug>/` first
+(new work reopens it), then edit in place with the same changelog note —
+never edit a `done/` file in place and leave it there.
 
-For repos using a versioned/phase-plan convention instead: do **not** edit
-completed plan files in place — write the next version per that convention
-(repeat Step 2's "refining" branch). Check this repo's own convention
-(Step 0) before assuming either behavior.
+(A project-scoped override with a versioned/phase-plan convention instead
+follows its own refinement rule — see that override's own instructions, not
+this generic skill's.)
 
 ## What this skill is not
 
