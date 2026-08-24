@@ -44,6 +44,18 @@ Langkah 3 dalam respons yang sama tanpa jeda tambahan.
 
 ### Langkah 3 — Tampilkan checklist skill + agent, dikelompokkan per kategori (WAJIB)
 
+**Cara menampilkan (WAJIB):** checklist ini **selalu ditulis sebagai
+teks/markdown biasa di respons** (format contoh di bawah) — **JANGAN** pakai
+tool tanya-jawab interaktif berbasis pilihan (mis. `AskUserQuestion` di
+Claude Code), karena jumlah skill+agent di `CATALOG.md` sudah pasti lebih
+dari batas opsi tool semacam itu (umumnya maksimal 4 opsi/pertanyaan) dan
+akan error. User membalas checklist ini dengan teks bebas (sebut nama
+skill yang mau dipasang, atau "semua di kategori X").
+
+Ini beda dengan Langkah 2 (tanya platform): kalau daftar platform yang
+ditawarkan masih di bawah batas opsi tool pilihan yang tersedia, boleh
+pakai tool itu; kalau melebihi batas, turun ke teks biasa juga.
+
 Begitu platform diketahui, langsung tampilkan **satu checklist gabungan**
 (multi-select), tapi **dikelompokkan per kategori**, bukan satu daftar rata
 tanpa struktur. Sumber kategori dan urutannya adalah heading-heading `##`/`###`
