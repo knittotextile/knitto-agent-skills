@@ -1,5 +1,8 @@
 # Agent Skills — Master Data
 
+> Cari skill yang tersedia? Lihat [`CATALOG.md`](CATALOG.md) duluan — daftar
+> lengkap skill & agent beserta deskripsi singkatnya ada di sana.
+
 Kumpulan **skill lintas-platform** untuk AI coding agent: Claude Code, OpenCode,
 Antigravity (Google), Command Code, dan Cursor. Satu skill = satu folder =
 satu file `SKILL.md` yang bisa langsung dipakai di semua platform tersebut

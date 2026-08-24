@@ -50,6 +50,7 @@ sendiri juga, tapi dirancang saling menyambung).
 | [`react-patterns`](skills/react-patterns/SKILL.md) 🔷 | Pola React 18/19: hooks, server/client boundary, Suspense, form actions, state management, aksesibilitas | frontend, react | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`react-testing`](skills/react-testing/SKILL.md) 🔷 | Testing komponen React (RTL, Vitest/Jest, MSW, axe) + batas component test vs E2E | testing, react | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`e2e-testing`](skills/e2e-testing/SKILL.md) 🔷 | Pola Playwright E2E: Page Object Model, config, integrasi CI/CD, artifact, strategi flaky test | testing, e2e | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`webapp-testing`](skills/webapp-testing/SKILL.md) | Workflow E2E+TDD siap-eksekusi: script Python (`run_e2e.py`) + config Playwright + CI yaml nyata, bukan cuma pola kode | testing, e2e, tdd, playwright | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ## Legenda kompatibilitas
 
