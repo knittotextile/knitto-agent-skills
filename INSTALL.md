@@ -44,34 +44,70 @@ Langkah 3 dalam respons yang sama tanpa jeda tambahan.
 
 ### Langkah 3 — Tampilkan checklist skill + agent, dikelompokkan per kategori (WAJIB)
 
-**Cara menampilkan (WAJIB):** checklist ini **selalu ditulis sebagai
-teks/markdown biasa di respons** (format contoh di bawah) — **JANGAN** pakai
-tool tanya-jawab interaktif berbasis pilihan (mis. `AskUserQuestion` di
-Claude Code), karena jumlah skill+agent di `CATALOG.md` sudah pasti lebih
-dari batas opsi tool semacam itu (umumnya maksimal 4 opsi/pertanyaan) dan
-akan error. User membalas checklist ini dengan teks bebas (sebut nama
-skill yang mau dipasang, atau "semua di kategori X").
+**Cara menampilkan (WAJIB):** checklist ini tetap **checklist interaktif
+sungguhan** (mis. `AskUserQuestion` di Claude Code, multi-select), **bukan**
+teks markdown yang dibalas manual — tapi tool semacam itu biasanya punya
+batas jumlah opsi per pertanyaan (umumnya maksimal 4) dan/atau jumlah
+pertanyaan per pemanggilan (umumnya maksimal 4), sementara skill+agent di
+`CATALOG.md` pasti lebih banyak dari itu dan terus bertambah. Supaya tidak
+error karena melebihi batas:
 
-Ini beda dengan Langkah 2 (tanya platform): kalau daftar platform yang
-ditawarkan masih di bawah batas opsi tool pilihan yang tersedia, boleh
-pakai tool itu; kalau melebihi batas, turun ke teks biasa juga.
+- **Pecah per kategori jadi beberapa pertanyaan multi-select**, satu
+  pertanyaan per kategori (header = nama kategori), opsi = skill/agent di
+  kategori itu. Kalau satu kategori sendiri sudah melebihi batas opsi,
+  pecah kategori itu jadi beberapa pertanyaan lanjutan (mis. "Frontend &
+  testing (1/2)", "(2/2)").
+- **Ajukan sebanyak mungkin pertanyaan dalam satu kali panggilan tool**
+  (sampai batas jumlah pertanyaan per panggilan), lalu kalau kategori masih
+  tersisa, lakukan panggilan tool berikutnya dalam giliran/respons yang
+  sama sampai semua kategori tertanya — jangan berhenti di tengah dan
+  menunggu user membalas dulu sebelum kategori lain ditanyakan, kecuali
+  tool memang tidak bisa dipanggil berkali-kali dalam satu giliran (baru
+  lanjutkan di giliran berikutnya).
+- Kalau platform yang dipakai memang tidak punya tool checklist interaktif
+  sama sekali, baru turun ke teks/markdown biasa (format contoh di bawah)
+  sebagai fallback terakhir.
 
-Begitu platform diketahui, langsung tampilkan **satu checklist gabungan**
-(multi-select), tapi **dikelompokkan per kategori**, bukan satu daftar rata
-tanpa struktur. Sumber kategori dan urutannya adalah heading-heading `##`/`###`
-yang sudah ada di `CATALOG.md` (mis. "Alur perencanaan → eksekusi", "Review &
-kualitas", "Git & deploy", "Backend & database", "Frontend & testing", lalu
-"Agents" sebagai kategori sendiri di akhir) — jangan bikin kategori baru versi
+**Contoh mekanik "4×4" (angka batas tergantung tool, ganti sesuai batas
+tool yang kamu pakai):** kalau tool mengizinkan maksimal 4 pertanyaan per
+panggilan dan maksimal 4 opsi per pertanyaan, satu panggilan bisa menanyakan
+sampai 4 kategori sekaligus (masing-masing jadi 1 pertanyaan multi-select,
+maks 4 skill/agent per pertanyaan). Misal `CATALOG.md` saat ini punya 6
+kategori dan salah satunya ("Alur perencanaan → eksekusi") isinya 6 item:
+
+1. Panggilan tool #1 — 4 pertanyaan: "Alur perencanaan → eksekusi (1/2)"
+   (4 item pertama), "Alur perencanaan → eksekusi (2/2)" (2 item sisa),
+   "Review & kualitas" (3 item), "Git & deploy" (2 item).
+2. Panggilan tool #2 (masih di respons yang sama, tanpa nunggu user
+   membalas dulu) — pertanyaan sisa: "Backend & database" (4 item),
+   "Frontend & testing" (4 item), "Agents" (1 item).
+3. User menjawab semua pertanyaan dari kedua panggilan sekaligus (tool
+   biasanya menampung banyak pertanyaan dalam satu batch jawaban), baru
+   lanjut Langkah 4.
+
+Intinya: hitung dulu berapa kategori dan berapa item per kategori dari
+`CATALOG.md` yang sedang dibaca, lalu bagi jadi kelompok pertanyaan
+sebanyak yang muat sesuai batas tool — bukan dipaksakan satu pertanyaan
+raksasa yang pasti error.
+
+Begitu platform diketahui, langsung tampilkan checklist ini (via tool
+interaktif, dipecah sesuai mekanik di atas), **dikelompokkan per
+kategori**, bukan satu daftar rata tanpa struktur. Sumber kategori dan
+urutannya adalah heading-heading `##`/`###` yang sudah ada di
+`CATALOG.md` (mis. "Alur perencanaan → eksekusi", "Review & kualitas",
+"Git & deploy", "Backend & database", "Frontend & testing", lalu "Agents"
+sebagai kategori sendiri di akhir) — jangan bikin kategori baru versi
 sendiri, ikuti persis pembagian yang sudah ada di `CATALOG.md` saat itu
 dibaca, karena daftar skill akan terus bertambah dan berubah.
 
-Format checklist per kategori: tampilkan nama kategori sebagai header
-kelompok, lalu di bawahnya list tiap skill/agent dalam kategori itu sebagai
-satu baris checkbox `nama` + deskripsi-singkat (ambil dari kolom "Deskripsi
-Singkat" di `CATALOG.md`, jangan diringkas ulang atau ditulis versimu
-sendiri). Semua kategori tampil sekaligus dalam satu pesan/checklist, bukan
-ditanya satu kategori per giliran. Contoh kerangka (isi nama & deskripsi
-sesuai `CATALOG.md` versi terbaru):
+Isi tiap opsi/baris checklist: nama skill/agent + deskripsi-singkat
+(ambil dari kolom "Deskripsi Singkat" di `CATALOG.md`, jangan diringkas
+ulang atau ditulis versimu sendiri). Semua kategori tetap harus tertanya
+dalam giliran yang sama (lewat beberapa panggilan tool kalau perlu),
+bukan ditanya satu kategori per giliran terpisah yang nunggu balasan user
+di antaranya. Kalau harus fallback ke teks biasa (tool tidak tersedia),
+pakai kerangka contoh berikut, isi nama & deskripsi sesuai `CATALOG.md`
+versi terbaru:
 
 ```
 ## Alur perencanaan → eksekusi
