@@ -1,6 +1,6 @@
 ---
 name: webapp-testing
-description: Executable, local-only E2E + TDD workflow for web apps — real Playwright config, a Python test runner, and a custom self-contained html report (grouped by test-case-matrix category, click a test to expand its steps and every screenshot, click a screenshot for a full-size lightbox) — not just markdown code snippets or Playwright's bare default report. No CI provider or GitHub Actions wiring — everything here runs on your own machine, on demand or via an optional local git pre-push hook. Use when setting up or running E2E tests for a webapp end-to-end, not just reading patterns about it.
+description: Executable, local-only E2E + TDD workflow for web apps — real Playwright config, a Python test runner, and a custom self-contained html report (grouped by test-case-matrix category, click a test to expand its steps, every screenshot, and a slowed-down video with adjustable playback speed) — not just markdown code snippets or Playwright's bare default report. Runs up to 3 browser windows in parallel when headed, not an uncapped wall of Chrome windows. No CI provider or GitHub Actions wiring — everything here runs on your own machine, on demand or via an optional local git pre-push hook. Use when setting up or running E2E tests for a webapp end-to-end, not just reading patterns about it.
 license: MIT
 metadata:
   category: testing
@@ -112,9 +112,11 @@ you actually run.
    some sandboxes have no display to open one on at all); the pre-push hook
    also runs headless for the same reason.
 
-   Runs at Playwright's default parallel worker count even when headed —
-   several Chrome windows opening at once is expected, that's what keeps a
-   headed run fast instead of one test at a time.
+   Runs up to 3 workers in parallel even when headed (`workers: 3` in
+   config, capped below Playwright's uncapped default of roughly half the
+   CPU cores) — enough Chrome windows at once to keep a headed run fast
+   without it being an unwatchable wall of browser windows. CI stays
+   pinned to 1 worker regardless.
 
 4. **Implement until green.** Re-run `run_e2e.py` after each change until
    the new spec passes, then refactor with tests still green.
@@ -145,11 +147,15 @@ Every run produces **both**, don't treat one as replacing the other:
 - **`docs/qa/report.html`** (built by `build_report.py`, step 3) — the one
   to actually look at day to day. Grouped by describe-block to match
   `test-case-matrix`'s categories, one row per test case. Click a row to
-  expand its step list and every screenshot recorded via `stepShot` (not
-  just the final one); click a screenshot to open it full-size in an
-  in-page lightbox with prev/next between that test's photos. A single
-  self-contained file (screenshots embedded as base64) — safe to send
-  around without also sending `docs/qa/test-results/`.
+  expand its step list, every screenshot recorded via `stepShot` (not just
+  the final one), and that test's video — click a screenshot to open it
+  full-size in an in-page lightbox with prev/next between that test's
+  photos; the video plays at 0.5× by default (a real run is fast enough to
+  be hard to follow at 1×) with speed buttons (0.25×/0.5×/1×/1.5×) to
+  change it — a client-side playback rate, not a re-encoded file, so
+  switching speed is instant. A single self-contained file (screenshots
+  and video both embedded as base64) — safe to send around without also
+  sending `docs/qa/test-results/`.
 - **`docs/qa/playwright-report/`** (Playwright's own html reporter) — for
   deep debugging a failure: full trace viewer, network log, DOM snapshots
   at each action. `report.html` doesn't replace this — reach for this one
@@ -157,12 +163,11 @@ Every run produces **both**, don't treat one as replacing the other:
   the framework level. Open it with
   `npx playwright show-report docs/qa/playwright-report`.
 
-`playwright.config.ts` sets `screenshot: 'on'` (not `'only-on-failure'`) so
-every test, pass or fail, leaves at least a final-state screenshot in both
-reports — that's what makes `report.html` skimmable at a glance instead of
-a bare pass/fail list. `video` stays `'retain-on-failure'` — videos are
-heavy, keep those to failures only, and `report.html` doesn't embed video
-at all (screenshots only).
+`playwright.config.ts` sets `screenshot: 'on'` and `video: 'on'` (not
+`'only-on-failure'`/`'retain-on-failure'`) so every test, pass or fail,
+leaves a screenshot and a video in both reports — that's what makes
+`report.html` skimmable and watchable at a glance instead of a bare
+pass/fail list with evidence only on failure.
 
 ## All output lives under `docs/qa/`
 

@@ -19,10 +19,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  // Full parallelism (Playwright's default worker count) even when headed
-  // — several Chrome windows opening at once is expected/fine, it's what
-  // makes a headed run finish quickly instead of one test at a time.
-  workers: process.env.CI ? 1 : undefined,
+  // Capped at 3 locally — some parallelism keeps a headed run fast, but
+  // Playwright's uncapped default (roughly half the CPU cores) can open
+  // far more Chrome windows at once than is useful to watch.
+  workers: process.env.CI ? 1 : 3,
   reporter: [
     // 'list' gives live pass/fail progress in the terminal while the suite
     // runs — without it, specifying html/json here replaces Playwright's
@@ -42,10 +42,13 @@ export default defineConfig({
     headless: isHeadless,
     trace: 'on-first-retry',
     // 'on' (not 'only-on-failure') so every test — pass or fail — leaves a
-    // final screenshot attached in the html report; that's what makes the
-    // report visually useful to skim instead of just a pass/fail list.
+    // final screenshot attached in the report; that's what makes it
+    // visually useful to skim instead of just a pass/fail list. Same for
+    // video: every test gets one, embedded in report.html at a slowed-down
+    // playback rate (see build_report.py) since a real run is too fast to
+    // follow otherwise.
     screenshot: 'on',
-    video: 'retain-on-failure',
+    video: 'on',
     actionTimeout: 10000,
     navigationTimeout: 30000,
   },

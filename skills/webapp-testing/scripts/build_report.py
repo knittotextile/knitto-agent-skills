@@ -8,12 +8,6 @@ categories). Click a test case row to expand its steps + every screenshot
 recorded during it (not just the final one); click any screenshot to open
 it full-size in a lightbox with prev/next between that test's media.
 
-Steps and multiple screenshots per test only show up here if the spec
-actually records them — wrap actions in the `stepShot` helper from
-assets/step-shot-helper.ts (or your own `test.step()` + `testInfo.attach()`
-calls) instead of writing a flat test body. A test with no steps/attachments
-still renders fine, just with an empty steps list and zero photos.
-
 Usage:
     python scripts/build_report.py
 """
@@ -38,6 +32,9 @@ STATUS_META = {
 }
 
 
+DEFAULT_VIDEO_PLAYBACK_RATE = 0.5  # slower than real time — worker runs are fast enough to be hard to follow otherwise
+
+
 def embed_image(path_str: str | None) -> str | None:
     if not path_str:
         return None
@@ -47,6 +44,20 @@ def embed_image(path_str: str | None) -> str | None:
     try:
         data = base64.b64encode(path.read_bytes()).decode("ascii")
         return f"data:image/png;base64,{data}"
+    except OSError:
+        return None
+
+
+def embed_video(path_str: str | None) -> str | None:
+    if not path_str:
+        return None
+    path = Path(path_str)
+    if not path.is_file():
+        return None
+    try:
+        data = base64.b64encode(path.read_bytes()).decode("ascii")
+        mime = "video/webm" if path.suffix == ".webm" else "video/mp4"
+        return f"data:{mime};base64,{data}"
     except OSError:
         return None
 
@@ -67,12 +78,15 @@ def collect_groups(suites, groups):
                     result = results[-1]  # final result after any retries
 
                     media = []
+                    video_src = None
                     for att in result.get("attachments", []):
-                        if not att.get("contentType", "").startswith("image/"):
-                            continue
-                        data_uri = embed_image(att.get("path"))
-                        if data_uri:
-                            media.append({"name": att.get("name", "screenshot"), "src": data_uri})
+                        content_type = att.get("contentType", "")
+                        if content_type.startswith("image/"):
+                            data_uri = embed_image(att.get("path"))
+                            if data_uri:
+                                media.append({"name": att.get("name", "screenshot"), "src": data_uri})
+                        elif content_type.startswith("video/") and video_src is None:
+                            video_src = embed_video(att.get("path"))
 
                     steps = [
                         {"title": s.get("title", ""), "duration": s.get("duration", 0)}
@@ -88,6 +102,7 @@ def collect_groups(suites, groups):
                             "retries": len(results) - 1,
                             "steps": steps,
                             "media": media,
+                            "video": video_src,
                         }
                     )
         if nested:
@@ -130,6 +145,11 @@ def render(groups: dict, meta: dict) -> str:
             )
             if not media:
                 media_count_badge = '<span class="media-count muted">no photo</span>'
+            video_badge = (
+                '<span class="media-count">video</span>'
+                if case["video"]
+                else '<span class="media-count muted">no video</span>'
+            )
 
             # Main row — click to expand the detail row below it.
             rows.append(
@@ -137,7 +157,7 @@ def render(groups: dict, meta: dict) -> str:
                 f'<td><span class="status-pill" style="color:{color};background:{bg}">{label}</span></td>'
                 f'<td class="title-cell">{html.escape(case["title"])}{retry_note}</td>'
                 f'<td class="dur-cell">{case["duration"] / 1000:.1f}s</td>'
-                f'<td class="meta-cell">{media_count_badge} <span class="chevron">▾</span></td>'
+                f'<td class="meta-cell">{media_count_badge} {video_badge} <span class="chevron">▾</span></td>'
                 f"</tr>"
             )
 
@@ -156,12 +176,34 @@ def render(groups: dict, meta: dict) -> str:
                 for i, m in enumerate(media)
             ) or '<p class="no-shot">No screenshots captured.</p>'
 
+            if case["video"]:
+                video_html = (
+                    f'<div class="video-wrap">'
+                    f'<video class="e2e-video" data-case="{case_id}" controls preload="metadata">'
+                    f'<source src="{case["video"]}" type="video/webm">'
+                    f"</video>"
+                    f'<div class="speed-controls">'
+                    f'<span class="speed-label">Speed:</span>'
+                    + "".join(
+                        f'<button class="speed-btn{" active" if rate == DEFAULT_VIDEO_PLAYBACK_RATE else ""}" '
+                        f'data-case="{case_id}" data-rate="{rate}">{rate}×</button>'
+                        for rate in (0.25, 0.5, 1, 1.5)
+                    )
+                    + "</div></div>"
+                )
+            else:
+                video_html = '<p class="no-shot">No video recorded.</p>'
+
             rows.append(
                 f'<tr class="detail-row" id="detail-{case_id}" hidden>'
                 f'<td colspan="4">'
                 f'<div class="detail-grid">'
                 f'<div class="steps-col"><h4>Steps</h4><ol class="steps-list">{steps_html}</ol></div>'
-                f'<div class="media-col"><h4>Screenshots</h4><div class="thumb-grid">{media_html}</div></div>'
+                f'<div class="media-col">'
+                f'<h4>Screenshots</h4><div class="thumb-grid">{media_html}</div>'
+                f'<h4 class="video-heading">Video <span class="hint">(slowed down by default — real run is faster)</span></h4>'
+                f"{video_html}"
+                f"</div>"
                 f"</div>"
                 f"</td></tr>"
             )
@@ -255,6 +297,18 @@ tr.case-row.open .chevron {{ transform: rotate(180deg); }}
 .thumb {{ width: 100%; height: 76px; object-fit: cover; border-radius: 5px; display: block; }}
 .thumb-label {{ display: block; font-size: .68rem; color: var(--text-muted); margin-top: .3rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 .no-shot {{ color: var(--text-muted); font-size: .85rem; margin: 0; }}
+.video-heading {{ margin-top: 1rem !important; display: flex; align-items: baseline; gap: .4rem; }}
+.video-heading .hint {{ text-transform: none; letter-spacing: normal; font-weight: 400; font-size: .7rem; color: var(--text-muted); }}
+.video-wrap {{ max-width: 420px; }}
+.e2e-video {{ width: 100%; border-radius: 8px; border: 1px solid var(--border); display: block; background: #000; }}
+.speed-controls {{ display: flex; align-items: center; gap: .35rem; margin-top: .5rem; }}
+.speed-label {{ font-size: .72rem; color: var(--text-muted); margin-right: .15rem; }}
+.speed-btn {{
+  border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+  border-radius: 6px; padding: .2rem .5rem; font-size: .72rem; cursor: pointer; font-variant-numeric: tabular-nums;
+}}
+.speed-btn:hover {{ border-color: var(--accent); }}
+.speed-btn.active {{ background: var(--accent); border-color: var(--accent); color: #fff; }}
 footer {{ text-align: center; color: var(--text-muted); font-size: .75rem; margin-top: 2rem; }}
 
 #lightbox {{
@@ -289,7 +343,7 @@ footer {{ text-align: center; color: var(--text-muted); font-size: .75rem; margi
     <div class="stat"><div class="n">{total_duration / 1000:.1f}s</div><div class="l">Duration</div></div>
   </div>
   {"".join(sections_html)}
-  <footer>Generated by webapp-testing's build_report.py — click a test case to see its steps and screenshots, click a screenshot to view it full size.</footer>
+  <footer>Generated by webapp-testing's build_report.py — click a test case to see its steps, screenshots, and video. Click a screenshot to view it full size; video plays at {DEFAULT_VIDEO_PLAYBACK_RATE}× by default, use the speed buttons to change it.</footer>
 </div>
 
 <div id="lightbox">
@@ -338,6 +392,27 @@ document.querySelectorAll('.thumb-btn').forEach(btn => {{
   btn.addEventListener('click', (e) => {{
     e.stopPropagation();
     openLightbox(btn.dataset.case, parseInt(btn.dataset.index, 10));
+  }});
+}});
+
+// Videos default to a slower-than-real-time playback rate — worker runs
+// are fast enough that 1x is hard to follow. Speed buttons let you change it.
+const DEFAULT_RATE = {DEFAULT_VIDEO_PLAYBACK_RATE};
+document.querySelectorAll('.e2e-video').forEach(v => {{
+  v.defaultPlaybackRate = DEFAULT_RATE;
+  v.playbackRate = DEFAULT_RATE;
+  v.addEventListener('click', (e) => e.stopPropagation());
+}});
+document.querySelectorAll('.speed-btn').forEach(btn => {{
+  btn.addEventListener('click', (e) => {{
+    e.stopPropagation();
+    const caseId = btn.dataset.case;
+    const rate = parseFloat(btn.dataset.rate);
+    const video = document.querySelector('.e2e-video[data-case="' + caseId + '"]');
+    if (video) video.playbackRate = rate;
+    document.querySelectorAll('.speed-btn[data-case="' + caseId + '"]').forEach(b => {{
+      b.classList.toggle('active', b === btn);
+    }});
   }});
 }});
 document.getElementById('lbClose').addEventListener('click', closeLightbox);
