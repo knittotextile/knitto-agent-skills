@@ -56,11 +56,14 @@ you actually run.
    python skills/webapp-testing/scripts/run_e2e.py
    ```
 
-   This wraps Playwright, installs browsers if missing, runs the JSON
-   reporter, and prints a pass/fail/flaky summary with a non-zero exit
-   code on failure — so both you and CI can call one command instead of
-   re-deriving Playwright flags each time. Pass through Playwright options
-   as needed: `--grep <pattern>`, `--project chromium`, `--headed`.
+   This wraps Playwright using the reporters set in `playwright.config.ts`
+   (`list` for live terminal progress, `html`/`json` for the report and
+   machine-readable results — see that file, don't pass `--reporter` on the
+   CLI, it replaces the config's reporters instead of adding to them) and
+   prints a pass/fail/flaky summary at the end with a non-zero exit code on
+   failure — so both you and CI can call one command instead of re-deriving
+   Playwright flags each time. Pass through Playwright options as needed:
+   `--grep <pattern>`, `--project chromium`, `--headed`.
 
 4. **Implement until green.** Re-run `run_e2e.py` after each change until
    the new spec passes, then refactor with tests still green.

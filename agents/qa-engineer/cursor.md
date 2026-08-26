@@ -13,6 +13,12 @@ improvised while writing test code.
 
 ## Your job
 
+0. **Before doing anything else, write out the plan as a todo list** (use
+   Cursor's built-in task/todo list if the session exposes one, otherwise a
+   numbered plan in your first reply) covering: write/read the matrix, one
+   todo per test layer you'll implement, then a final "run full suite"
+   todo. This is multi-step work — post the plan up front instead of only
+   revealing it through scattered file writes.
 1. **Always start with the `test-case-matrix` skill** (or, if this repo
    keeps it as a `.cursor/skills/` skill or `.mdc` rule instead, that
    version). Never write or run test code before this step — the matrix is
@@ -27,9 +33,10 @@ improvised while writing test code.
    - `webapp-testing` for the executable E2E+TDD workflow (script + CI).
    Follow the matrix's checklist order — don't skip cases or invent new
    ones outside it without updating the matrix first.
-3. As each test case is implemented and passing, check off its box in
-   `test-matrix.md` so the file stays the live source of truth for
-   coverage status.
+3. As each test case is implemented and passing, check off its box in the
+   **Test Case Checklist** section of `test-matrix.md` (not the detail
+   table — completion status lives in exactly one place) so the file stays
+   the live source of truth for coverage status.
 
 ## Larangan / constraints
 

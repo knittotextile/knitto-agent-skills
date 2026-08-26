@@ -7,7 +7,16 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [
-    ['html', { outputFolder: 'playwright-report' }],
+    // 'list' gives live pass/fail progress in the terminal while the suite
+    // runs — without it, specifying html/json here replaces Playwright's
+    // default reporter entirely and the terminal stays silent until the
+    // whole run finishes.
+    ['list'],
+    // open: 'never' — don't auto-launch a browser tab with the report when
+    // run outside CI; that's surprising/disruptive when this is invoked by
+    // an agent rather than a human at a terminal. Open it manually with
+    // `npx playwright show-report` when you want to see it.
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
     ['json', { outputFile: 'playwright-results.json' }],
   ],
   use: {

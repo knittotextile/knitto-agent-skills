@@ -1,6 +1,6 @@
 ---
 name: test-case-matrix
-description: Use when a feature/spec needs test scenarios written down BEFORE implementation or before automating tests — triggers on "/test-case-matrix", "buatkan test matrix", "buatkan test case", "test scenario apa aja", or as the mandatory first step when a qa-engineer-style agent is invoked. Reads the PRD/issue/spec for a feature (or asks for a quick feature description if none exists) and writes a single markdown file listing every test scenario — functional, edge case, error handling, state transition — as numbered, checkable steps with per-step expected results, priority, and a requirement-traceability matrix. Does not write or run any test code — that's `react-testing`/`e2e-testing`/`webapp-testing`'s job, this skill only produces the scenario list those skills implement against.
+description: Use when a feature/spec needs test scenarios written down BEFORE implementation or before automating tests — triggers on "/test-case-matrix", "buatkan test matrix", "buatkan test case", "test scenario apa aja", or as the mandatory first step when a qa-engineer-style agent is invoked. Reads the PRD/issue/spec for a feature (or asks for a quick feature description if none exists) and writes a single markdown file listing every test scenario — functional, edge case, error handling, state transition — as a checkbox checklist (single source of completion status) plus a detail table per category (precondition, test data, numbered steps with expected results, requirement), and a requirement-traceability matrix. Table-first by design so a matrix with dozens of cases stays scannable instead of ballooning into repeated bullet blocks. Does not write or run any test code — that's `react-testing`/`e2e-testing`/`webapp-testing`'s job, this skill only produces the scenario list those skills implement against.
 license: MIT
 metadata:
   category: testing
@@ -60,16 +60,25 @@ read-only endpoint has no `TC-ST`) — don't skip because it's more work.
 
 Write one file: `docs/qa/<slug>/test-matrix.md` (create the folder if
 missing). Use this exact structure — see `assets/test-matrix-template.md`
-for the literal template to copy and fill in:
+for the literal template to copy and fill in. Prefer tables over bullet
+blocks throughout: this file gets long (dozens of cases is normal for a
+real feature) and a table scans far faster than a repeated block of
+labeled bullets per case.
 
 - Header: feature name, requirement source (link), date, scope / out-of-
   scope.
-- **Test Case Checklist** — one checkbox line per test case (id + short
-  title), for a fast overview of what's covered and what's still open.
-- **Test Cases** — one subsection per case: id + title, priority (`P0`–
-  `P3`), precondition, test data, steps as checkboxes with an **Expected**
-  result on each step, post-condition, and a link back to the requirement
-  it covers.
+- **Test Case Checklist** — grouped by category+priority (matching the
+  detail tables below), one checkbox line per test case (id + short
+  title). This is the **only** place completion status is tracked — check
+  a box here as its case is implemented and passing. Don't also add
+  checkboxes inside the detail tables; that duplicates state in two places
+  and is how these files balloon in size.
+- **Test Case Detail** — one table per category+priority group (same
+  grouping as the checklist), columns: `ID`, `Title`, `Precondition`,
+  `Test data`, `Steps → Expected` (numbered steps joined with `<br>` inside
+  the cell, each ending in `→ **Expected:** <result>`), `Post-condition`,
+  `Requirement`. One test case = one row — don't split a case across
+  multiple rows or expand it back into a bullet block.
 - **Traceability Matrix** — table mapping each requirement/acceptance
   criterion to the test case id(s) covering it, with a covered/gap marker.
   Always include this section: if there's no structured requirement doc,
