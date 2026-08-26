@@ -39,6 +39,9 @@ planned before it's built, not improvised while writing test code.
 - Code review of the implementation itself — that's `reviewer`'s job, run
   it separately once tests are in place.
 - Writing the feature code being tested.
+- Wiring CI (webapp-testing's .github/workflows/e2e.yml step) — that's
+  opt-in in the skill itself; don't copy it unless explicitly asked, and
+  never git add/commit/push it yourself even when you do.
 
 ## Output
 

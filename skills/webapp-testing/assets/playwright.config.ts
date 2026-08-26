@@ -5,6 +5,11 @@ import { defineConfig, devices } from '@playwright/test'
 // one place instead of scattered loose folders at the project root.
 const QA_DIR = 'docs/qa'
 
+// Headless in CI, or when HEADLESS=true is set explicitly for an
+// unattended/agent-driven local run. Headed otherwise (a human at a
+// terminal, watching).
+const isHeadless = !!process.env.CI || process.env.HEADLESS === 'true'
+
 export default defineConfig({
   testDir: './tests/e2e',
   // Raw per-test artifacts (failure screenshots/videos/traces before the
@@ -14,7 +19,12 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // 1 worker when headed — parallel workers each open their own browser
+  // window, so a headed run with the default parallel worker count pops
+  // open several Chrome windows at once instead of one test at a time.
+  // Headless runs (CI, or an agent with --headless) keep full parallelism
+  // since there's no window to be confusing about.
+  workers: process.env.CI ? 1 : isHeadless ? undefined : 1,
   reporter: [
     // 'list' gives live pass/fail progress in the terminal while the suite
     // runs — without it, specifying html/json here replaces Playwright's
@@ -31,13 +41,7 @@ export default defineConfig({
   ],
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
-    // Headed locally by default (a visible browser window while tests run)
-    // so you can watch it work without remembering `--headed` every time.
-    // Headless in CI (no display there) or when HEADLESS=true is set
-    // explicitly — e.g. an agent running this unattended via run_e2e.py
-    // --headless, where there's no one watching the window and some
-    // sandboxes have no display server to open one on at all.
-    headless: !!process.env.CI || process.env.HEADLESS === 'true',
+    headless: isHeadless,
     trace: 'on-first-retry',
     // 'on' (not 'only-on-failure') so every test — pass or fail — leaves a
     // final screenshot attached in the html report; that's what makes the

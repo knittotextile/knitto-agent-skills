@@ -45,6 +45,15 @@ you actually run.
    project root (merge manually if a config already exists). Ensure
    `@playwright/test` is a dev dependency (`npm i -D @playwright/test`).
 
+   **Always do this in the same pass, don't skip it:** check the project's
+   `.gitignore` for `docs/qa/playwright-report/`, `docs/qa/test-results/`,
+   and `docs/qa/playwright-results.json` (see "All output lives under
+   `docs/qa/`" below) — append whatever's missing. This is mandatory setup,
+   not optional cleanup: without it, the very first run stages screenshots,
+   videos, and a 500KB+ report file into git. `docs/qa/<slug>/test-matrix.md`
+   (from `test-case-matrix`) is the only thing under `docs/qa/` that should
+   stay trackable — everything else there is regenerated output.
+
 2. **Write the test first (RED).** Before implementing a new flow, write
    an E2E spec under `tests/e2e/` that describes the desired behavior. It
    should fail — see `references/tdd-e2e-workflow.md` for the full
@@ -70,12 +79,29 @@ you actually run.
    at all). CI always runs headless regardless of the flag, since
    `playwright.config.ts` keys off `process.env.CI`.
 
+   Headed runs also force `workers: 1` in the config — parallel workers
+   each open their own browser, so without this a headed run with the
+   default worker count pops open several Chrome windows at once instead
+   of one test at a time. Headless runs (CI, or `--headless`) keep full
+   parallelism since there's no window to be confusing about.
+
 4. **Implement until green.** Re-run `run_e2e.py` after each change until
    the new spec passes, then refactor with tests still green.
 
-5. **Wire into CI.** Copy `assets/e2e-workflow.yml` to
-   `.github/workflows/e2e.yml`. It calls the same `run_e2e.py` entrypoint
-   used locally, so local and CI runs stay identical.
+5. **Wire into CI — only if explicitly asked, never by default.** This
+   step is opt-in: don't copy `assets/e2e-workflow.yml` to
+   `.github/workflows/e2e.yml` unless the user asked for CI, asked for this
+   specific file, or an agent invoking this skill was explicitly told to
+   wire CI. Setting up local E2E tests (steps 1–4) does not imply the user
+   wants a GitHub Actions workflow too.
+
+   And even when this step does run: copying the file to disk is as far as
+   this skill goes. **Never `git add`/`commit`/`push` it, and never open a
+   PR** — that's a repo-visible change the user/agent decides on
+   separately, per this session's normal git-safety rules (see the
+   `CLAUDE.md`/`AGENTS.md` this skill is running under). Leave the new file
+   unstaged and say so, so the user can review the diff before it goes
+   anywhere near GitHub.
 
 ## Screenshots in the report
 

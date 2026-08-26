@@ -46,6 +46,9 @@ improvised while writing test code.
 - Don't decide priority tradeoffs (what actually blocks release) — the
   matrix records a starting priority; shipping decisions are a product/eng
   call.
+- Don't wire CI (`webapp-testing`'s `.github/workflows/e2e.yml` step) —
+  that's opt-in in the skill itself; don't copy it unless explicitly
+  asked, and never `git add`/`commit`/`push` it yourself even when you do.
 
 ## Output
 
