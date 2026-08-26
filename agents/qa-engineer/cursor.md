@@ -32,7 +32,11 @@ improvised while writing test code.
    - `e2e-testing` for Playwright patterns/Page Object Model.
    - `webapp-testing` for the executable, local-only E2E+TDD workflow — run
      its `run_e2e.py` with `--headless`; it defaults to a visible browser
-     window for a human watching, which doesn't apply here.
+     window for a human watching, which doesn't apply here. Write specs
+     using its `stepShot` pattern (`assets/step-shot-helper.ts`), one call
+     per "Steps → Expected" row in the matrix, so the resulting
+     `docs/qa/report.html` shows real per-step screenshots instead of one
+     flat final-state shot.
    Follow the matrix's checklist order — don't skip cases or invent new
    ones outside it without updating the matrix first.
 3. As each test case is implemented and passing, flip its `Status` cell

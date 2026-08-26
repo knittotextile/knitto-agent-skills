@@ -78,6 +78,11 @@ def main() -> int:
 
     returncode = run(cmd, env)
     print(_summarize(RESULTS_PATH))
+
+    if RESULTS_PATH.is_file():
+        build_report = Path(__file__).resolve().parent / "build_report.py"
+        run([sys.executable, str(build_report)])
+
     return returncode
 
 
