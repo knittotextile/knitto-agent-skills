@@ -72,6 +72,15 @@ you actually run.
    `.github/workflows/e2e.yml`. It calls the same `run_e2e.py` entrypoint
    used locally, so local and CI runs stay identical.
 
+## Screenshots in the report
+
+`playwright.config.ts` sets `screenshot: 'on'` (not `'only-on-failure'`) —
+every test, pass or fail, leaves a final-state screenshot attached in
+`playwright-report/index.html`, not just failures. That's what makes the
+html report skimmable at a glance instead of a bare pass/fail list. `video`
+stays `'retain-on-failure'` — videos are heavy, keep those to failures only.
+Open the report locally with `npx playwright show-report`.
+
 ## Files in this skill
 
 - `scripts/run_e2e.py` — the test runner/orchestrator (stdlib-only Python)

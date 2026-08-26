@@ -22,7 +22,10 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
+    // 'on' (not 'only-on-failure') so every test — pass or fail — leaves a
+    // final screenshot attached in the html report; that's what makes the
+    // report visually useful to skim instead of just a pass/fail list.
+    screenshot: 'on',
     video: 'retain-on-failure',
     actionTimeout: 10000,
     navigationTimeout: 30000,

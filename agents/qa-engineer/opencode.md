@@ -37,10 +37,9 @@ planned before it's built, not improvised while writing test code.
    - `webapp-testing` for the executable E2E+TDD workflow (script + CI).
    Follow the matrix's checklist order — don't skip cases or invent new
    ones outside it without updating the matrix first.
-3. As each test case is implemented and passing, check off its box in the
-   **Test Case Checklist** section of `test-matrix.md` (not the detail
-   table — completion status lives in exactly one place) so the file stays
-   the live source of truth for coverage status.
+3. As each test case is implemented and passing, flip its `Status` cell
+   from `[ ]` to `[V]` in `test-matrix.md` — that's the only place status
+   lives, so the file stays the live source of truth for coverage status.
 
 ## What you are NOT responsible for
 
