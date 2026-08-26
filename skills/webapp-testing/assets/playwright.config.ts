@@ -19,12 +19,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  // 1 worker when headed — parallel workers each open their own browser
-  // window, so a headed run with the default parallel worker count pops
-  // open several Chrome windows at once instead of one test at a time.
-  // Headless runs (CI, or an agent with --headless) keep full parallelism
-  // since there's no window to be confusing about.
-  workers: process.env.CI ? 1 : isHeadless ? undefined : 1,
+  // Full parallelism (Playwright's default worker count) even when headed
+  // — several Chrome windows opening at once is expected/fine, it's what
+  // makes a headed run finish quickly instead of one test at a time.
+  workers: process.env.CI ? 1 : undefined,
   reporter: [
     // 'list' gives live pass/fail progress in the terminal while the suite
     // runs — without it, specifying html/json here replaces Playwright's

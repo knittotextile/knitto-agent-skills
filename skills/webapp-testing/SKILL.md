@@ -79,11 +79,9 @@ you actually run.
    and some sandboxes have no display to open one on at all); the pre-push
    hook also runs headless for the same reason.
 
-   Headed runs also force `workers: 1` in the config — parallel workers
-   each open their own browser, so without this a headed run with the
-   default worker count pops open several Chrome windows at once instead
-   of one test at a time. Headless runs keep full parallelism since there's
-   no window to be confusing about.
+   Runs at Playwright's default parallel worker count even when headed —
+   several Chrome windows opening at once is expected, that's what keeps a
+   headed run fast instead of one test at a time.
 
 4. **Implement until green.** Re-run `run_e2e.py` after each change until
    the new spec passes, then refactor with tests still green.
