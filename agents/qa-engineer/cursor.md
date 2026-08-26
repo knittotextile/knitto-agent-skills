@@ -30,9 +30,9 @@ improvised while writing test code.
    testing skill fits the layer being tested:
    - `react-testing` for component-level tests (RTL/Vitest/Jest).
    - `e2e-testing` for Playwright patterns/Page Object Model.
-   - `webapp-testing` for the executable E2E+TDD workflow (script + CI) —
-     run its `run_e2e.py` with `--headless`; it defaults to a visible
-     browser window for a human watching, which doesn't apply here.
+   - `webapp-testing` for the executable, local-only E2E+TDD workflow — run
+     its `run_e2e.py` with `--headless`; it defaults to a visible browser
+     window for a human watching, which doesn't apply here.
    Follow the matrix's checklist order — don't skip cases or invent new
    ones outside it without updating the matrix first.
 3. As each test case is implemented and passing, flip its `Status` cell
@@ -46,9 +46,9 @@ improvised while writing test code.
 - Don't decide priority tradeoffs (what actually blocks release) — the
   matrix records a starting priority; shipping decisions are a product/eng
   call.
-- Don't wire CI (`webapp-testing`'s `.github/workflows/e2e.yml` step) —
-  that's opt-in in the skill itself; don't copy it unless explicitly
-  asked, and never `git add`/`commit`/`push` it yourself even when you do.
+- Don't install `webapp-testing`'s local pre-push git hook — that's
+  opt-in; don't install it unless explicitly asked, since it changes the
+  behavior of every future `git push` on the machine.
 
 ## Output
 

@@ -1,6 +1,6 @@
 ---
 name: webapp-testing
-description: Executable E2E + TDD workflow for web apps — real Playwright config, a Python test runner, and a CI pipeline file, not just markdown code snippets. Use when setting up or running E2E tests for a webapp end-to-end, not just reading patterns about it.
+description: Executable, local-only E2E + TDD workflow for web apps — real Playwright config and a Python test runner, not just markdown code snippets. No CI provider or GitHub Actions wiring — everything here runs on your own machine, on demand or via an optional local git pre-push hook. Use when setting up or running E2E tests for a webapp end-to-end, not just reading patterns about it.
 license: MIT
 metadata:
   category: testing
@@ -30,7 +30,7 @@ you actually run.
 - Setting up E2E testing for a webapp project from scratch
 - Adding a new user-facing flow and want a failing E2E test before
   implementing it (TDD applied to E2E)
-- Wiring E2E tests into CI
+- Gating a local `git push` on the suite passing, without any CI provider
 
 ## When NOT to use
 
@@ -70,38 +70,42 @@ you actually run.
    machine-readable results — see that file, don't pass `--reporter` on the
    CLI, it replaces the config's reporters instead of adding to them) and
    prints a pass/fail/flaky summary at the end with a non-zero exit code on
-   failure — so both you and CI can call one command instead of re-deriving
-   Playwright flags each time. Pass through Playwright options as needed:
+   failure — one command instead of re-deriving Playwright flags each time,
+   usable the same way whether you type it yourself or the pre-push hook
+   (step 5) calls it for you. Pass through Playwright options as needed:
    `--grep <pattern>`, `--project chromium`. Runs **headed** (a visible
-   browser window) by default when run locally, so you can watch it work —
-   pass `--headless` for unattended/agent-driven runs (an agent isn't
-   watching the window, and some sandboxes have no display to open one on
-   at all). CI always runs headless regardless of the flag, since
-   `playwright.config.ts` keys off `process.env.CI`.
+   browser window) by default, so you can watch it work — pass `--headless`
+   for unattended/agent-driven runs (an agent isn't watching the window,
+   and some sandboxes have no display to open one on at all); the pre-push
+   hook also runs headless for the same reason.
 
    Headed runs also force `workers: 1` in the config — parallel workers
    each open their own browser, so without this a headed run with the
    default worker count pops open several Chrome windows at once instead
-   of one test at a time. Headless runs (CI, or `--headless`) keep full
-   parallelism since there's no window to be confusing about.
+   of one test at a time. Headless runs keep full parallelism since there's
+   no window to be confusing about.
 
 4. **Implement until green.** Re-run `run_e2e.py` after each change until
    the new spec passes, then refactor with tests still green.
 
-5. **Wire into CI — only if explicitly asked, never by default.** This
-   step is opt-in: don't copy `assets/e2e-workflow.yml` to
-   `.github/workflows/e2e.yml` unless the user asked for CI, asked for this
-   specific file, or an agent invoking this skill was explicitly told to
-   wire CI. Setting up local E2E tests (steps 1–4) does not imply the user
-   wants a GitHub Actions workflow too.
+5. **Optional: gate `git push` on the suite locally — no CI provider, no
+   `.github/workflows/`, nothing that goes near GitHub.** This skill
+   deliberately does not ship a GitHub Actions (or any other hosted CI)
+   pipeline file — running E2E is meant to stay entirely on the developer's
+   own machine. If the user wants pushes gated on tests passing, install
+   `assets/pre-push-hook.sh` as a local git hook:
 
-   And even when this step does run: copying the file to disk is as far as
-   this skill goes. **Never `git add`/`commit`/`push` it, and never open a
-   PR** — that's a repo-visible change the user/agent decides on
-   separately, per this session's normal git-safety rules (see the
-   `CLAUDE.md`/`AGENTS.md` this skill is running under). Leave the new file
-   unstaged and say so, so the user can review the diff before it goes
-   anywhere near GitHub.
+   ```bash
+   cp skills/webapp-testing/assets/pre-push-hook.sh .git/hooks/pre-push
+   chmod +x .git/hooks/pre-push
+   ```
+
+   This only ever runs locally, as part of the developer's own `git push`
+   — no workflow file gets created, nothing is staged, nothing is
+   committed. This step is opt-in like the rest of the automation here:
+   don't install the hook unless asked, since it changes the behavior of
+   every future `git push` on this machine. `rm .git/hooks/pre-push` to
+   remove it.
 
 ## Screenshots in the report
 
@@ -137,7 +141,6 @@ committed — it's a planning artifact, not a build output.
 
 - `scripts/run_e2e.py` — the test runner/orchestrator (stdlib-only Python)
 - `assets/playwright.config.ts` — ready-to-use Playwright config
-- `assets/e2e-workflow.yml` — GitHub Actions pipeline, copy to
-  `.github/workflows/e2e.yml`
+- `assets/pre-push-hook.sh` — optional local git pre-push hook, see step 5
 - `references/tdd-e2e-workflow.md` — red-green-refactor cycle applied to
   E2E tests specifically, and how it relates to `test-driven-development`
