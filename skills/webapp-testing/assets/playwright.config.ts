@@ -1,7 +1,16 @@
 import { defineConfig, devices } from '@playwright/test'
 
+// All Playwright output lives under docs/qa/ — next to test-matrix.md from
+// the test-case-matrix skill — so everything QA-related for this app is in
+// one place instead of scattered loose folders at the project root.
+const QA_DIR = 'docs/qa'
+
 export default defineConfig({
   testDir: './tests/e2e',
+  // Raw per-test artifacts (failure screenshots/videos/traces before the
+  // html report bundles them) — also under docs/qa/, not the default
+  // root-level test-results/.
+  outputDir: `${QA_DIR}/test-results`,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -15,9 +24,10 @@ export default defineConfig({
     // open: 'never' — don't auto-launch a browser tab with the report when
     // run outside CI; that's surprising/disruptive when this is invoked by
     // an agent rather than a human at a terminal. Open it manually with
-    // `npx playwright show-report` when you want to see it.
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
-    ['json', { outputFile: 'playwright-results.json' }],
+    // `npx playwright show-report docs/qa/playwright-report` when you want
+    // to see it.
+    ['html', { outputFolder: `${QA_DIR}/playwright-report`, open: 'never' }],
+    ['json', { outputFile: `${QA_DIR}/playwright-results.json` }],
   ],
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',

@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 # Must match the json reporter's outputFile in assets/playwright.config.ts.
-RESULTS_PATH = Path("playwright-results.json")
+RESULTS_PATH = Path("docs/qa/playwright-results.json")
 
 
 def run(cmd: list[str], env: dict[str, str] | None = None) -> int:

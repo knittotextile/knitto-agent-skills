@@ -80,11 +80,32 @@ you actually run.
 ## Screenshots in the report
 
 `playwright.config.ts` sets `screenshot: 'on'` (not `'only-on-failure'`) —
-every test, pass or fail, leaves a final-state screenshot attached in
-`playwright-report/index.html`, not just failures. That's what makes the
-html report skimmable at a glance instead of a bare pass/fail list. `video`
-stays `'retain-on-failure'` — videos are heavy, keep those to failures only.
-Open the report locally with `npx playwright show-report`.
+every test, pass or fail, leaves a final-state screenshot attached in the
+html report, not just failures. That's what makes the report skimmable at
+a glance instead of a bare pass/fail list. `video` stays
+`'retain-on-failure'` — videos are heavy, keep those to failures only.
+Open the report locally with `npx playwright show-report docs/qa/playwright-report`.
+
+## All output lives under `docs/qa/`
+
+`playwright.config.ts` routes every generated artifact into `docs/qa/`,
+next to the matrix file `test-case-matrix` writes
+(`docs/qa/<slug>/test-matrix.md`) — one place for everything QA-related
+instead of loose folders scattered at the project root:
+
+- `docs/qa/playwright-report/` — the html report (`open: 'never'`, see
+  above).
+- `docs/qa/playwright-results.json` — machine-readable results;
+  `run_e2e.py`'s `RESULTS_PATH` reads this exact path for its summary, so
+  if you change the `outputFile` in config, update the script too.
+- `docs/qa/test-results/` — raw per-test artifacts (failure
+  screenshots/videos/traces) via `outputDir`.
+
+Add `docs/qa/playwright-report/`, `docs/qa/playwright-results.json`, and
+`docs/qa/test-results/` to `.gitignore` — these are regenerated on every
+run, don't commit them. `docs/qa/<slug>/test-matrix.md` (from
+`test-case-matrix`) is the one thing under `docs/qa/` that **should** be
+committed — it's a planning artifact, not a build output.
 
 ## Files in this skill
 
