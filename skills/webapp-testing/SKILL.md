@@ -63,7 +63,12 @@ you actually run.
    prints a pass/fail/flaky summary at the end with a non-zero exit code on
    failure — so both you and CI can call one command instead of re-deriving
    Playwright flags each time. Pass through Playwright options as needed:
-   `--grep <pattern>`, `--project chromium`, `--headed`.
+   `--grep <pattern>`, `--project chromium`. Runs **headed** (a visible
+   browser window) by default when run locally, so you can watch it work —
+   pass `--headless` for unattended/agent-driven runs (an agent isn't
+   watching the window, and some sandboxes have no display to open one on
+   at all). CI always runs headless regardless of the flag, since
+   `playwright.config.ts` keys off `process.env.CI`.
 
 4. **Implement until green.** Re-run `run_e2e.py` after each change until
    the new spec passes, then refactor with tests still green.

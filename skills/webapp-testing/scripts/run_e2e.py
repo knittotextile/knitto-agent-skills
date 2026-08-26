@@ -6,10 +6,14 @@ JSON reporter, and prints a pass/fail/flaky summary. Exits non-zero on
 any failure so it can be used both locally and in CI.
 
 Usage:
-    python run_e2e.py [--grep PATTERN] [--project NAME] [--headed] [--install]
+    python run_e2e.py [--grep PATTERN] [--project NAME] [--headless] [--install]
+
+Runs headed (visible browser) by default per playwright.config.ts — pass
+--headless for unattended/agent-driven runs.
 """
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -19,16 +23,29 @@ from pathlib import Path
 RESULTS_PATH = Path("playwright-results.json")
 
 
-def run(cmd: list[str]) -> int:
+def run(cmd: list[str], env: dict[str, str] | None = None) -> int:
     print(f"$ {' '.join(cmd)}")
-    return subprocess.run(cmd, check=False).returncode
+    return subprocess.run(cmd, env=env, check=False).returncode
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run Playwright E2E tests with a summary report.")
     parser.add_argument("--grep", help="Only run tests matching this pattern")
     parser.add_argument("--project", help="Only run this Playwright project (e.g. chromium)")
-    parser.add_argument("--headed", action="store_true", help="Run in headed mode")
+    parser.add_argument(
+        "--headless",
+        action="store_true",
+        help=(
+            "Force headless even locally (config defaults to headed locally). "
+            "Use this for unattended/agent-driven runs — no one's watching "
+            "the window, and some sandboxes have no display to open one on."
+        ),
+    )
+    parser.add_argument(
+        "--headed",
+        action="store_true",
+        help="No-op locally (already the default) — kept for explicitness/CI overrides",
+    )
     parser.add_argument("--install", action="store_true", help="Install Playwright browsers before running")
     args = parser.parse_args()
 
@@ -55,7 +72,11 @@ def main() -> int:
     if args.headed:
         cmd.append("--headed")
 
-    returncode = run(cmd)
+    env = os.environ.copy()
+    if args.headless:
+        env["HEADLESS"] = "true"
+
+    returncode = run(cmd, env)
     print(_summarize(RESULTS_PATH))
     return returncode
 

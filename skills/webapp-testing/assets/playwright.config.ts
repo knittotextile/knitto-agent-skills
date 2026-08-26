@@ -21,6 +21,13 @@ export default defineConfig({
   ],
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    // Headed locally by default (a visible browser window while tests run)
+    // so you can watch it work without remembering `--headed` every time.
+    // Headless in CI (no display there) or when HEADLESS=true is set
+    // explicitly — e.g. an agent running this unattended via run_e2e.py
+    // --headless, where there's no one watching the window and some
+    // sandboxes have no display server to open one on at all.
+    headless: !!process.env.CI || process.env.HEADLESS === 'true',
     trace: 'on-first-retry',
     // 'on' (not 'only-on-failure') so every test — pass or fail — leaves a
     // final screenshot attached in the html report; that's what makes the
