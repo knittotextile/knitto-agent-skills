@@ -38,12 +38,16 @@ agent. Usahakan **di bawah 500 baris** — detail panjang (skema, referensi
 API, contoh besar) pindahkan ke `references/` dan cukup ditunjuk dari body
 (progressive disclosure), supaya skill tidak boros token saat di-load.
 
-## 3. (Opsional) Buat adapter Cursor
+## 3. (Opsional, legacy) Adapter Cursor untuk instalasi lama
 
-Cursor tidak membaca `SKILL.md`. Kalau skill ini juga ingin dipakai di
-Cursor, buat `cursor.mdc` dengan frontmatter MDC (`description`, `globs`,
-`alwaysApply`) dan isi instruksi yang sama dengan `SKILL.md`, disesuaikan ke
-gaya imperatif ("Selalu gunakan X", bukan "X sebaiknya digunakan").
+Sejak Cursor 2.4, Cursor sudah baca `SKILL.md` native di
+`.cursor/skills/<name>/` — tidak perlu adapter apa pun, cukup salin folder
+skill apa adanya (sama seperti Claude Code/OpenCode/Antigravity/Command
+Code/Codex). `cursor.mdc` (adapter model-rules lama, `.cursor/rules/*.mdc`)
+hanya relevan untuk instalasi Cursor pra-2.4 yang belum punya skill-folder
+native — buat file ini hanya kalau ada permintaan eksplisit untuk
+mendukung versi Cursor lama itu, bukan lagi default untuk setiap skill
+baru.
 
 ## 4. Tambahkan scripts/references/assets bila perlu
 

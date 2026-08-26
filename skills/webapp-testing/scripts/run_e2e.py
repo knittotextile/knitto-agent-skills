@@ -13,8 +13,10 @@ import json
 import shutil
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
+
+# Must match the json reporter's outputFile in assets/playwright.config.ts.
+RESULTS_PATH = Path("playwright-results.json")
 
 
 def run(cmd: list[str]) -> int:
@@ -40,23 +42,22 @@ def main() -> int:
         if code != 0:
             return code
 
-    with tempfile.TemporaryDirectory() as tmp:
-        results_path = Path(tmp) / "results.json"
-        cmd = [npx, "playwright", "test", f"--reporter=json"]
-        if args.grep:
-            cmd += ["--grep", args.grep]
-        if args.project:
-            cmd += ["--project", args.project]
-        if args.headed:
-            cmd.append("--headed")
+    # Deliberately don't pass --reporter here: the CLI flag replaces the
+    # config's reporters entirely rather than adding to them, which would
+    # silently stop the html reporter from writing playwright-report/ (the
+    # folder CI uploads as an artifact). Let playwright.config.ts's
+    # ['html', ...] + ['json', ...] reporters run as configured instead.
+    cmd = [npx, "playwright", "test"]
+    if args.grep:
+        cmd += ["--grep", args.grep]
+    if args.project:
+        cmd += ["--project", args.project]
+    if args.headed:
+        cmd.append("--headed")
 
-        with open(results_path, "w") as out:
-            proc = subprocess.run(cmd, stdout=out, stderr=subprocess.STDOUT)
-
-        summary = _summarize(results_path)
-        print(summary)
-
-    return proc.returncode
+    returncode = run(cmd)
+    print(_summarize(RESULTS_PATH))
+    return returncode
 
 
 def _summarize(results_path: Path) -> str:

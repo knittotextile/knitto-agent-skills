@@ -18,8 +18,12 @@ single Python entrypoint.
 **Related skills:** for granular Playwright patterns (Page Object Model,
 flaky-test triage, artifact management), see `e2e-testing`. For general
 red-green-refactor discipline beyond E2E (unit/integration tests), see
-`test-driven-development`. This skill sits on top of both — it's the
-scaffolding that turns their patterns into files you actually run.
+`test-driven-development`. For the scenario list to implement against
+(functional/edge/error/state-transition cases) before writing any spec
+file, see `test-case-matrix` — run that first, then use each of its
+checklist items as the RED step for one spec here. This skill sits on top
+of all three — it's the scaffolding that turns their patterns into files
+you actually run.
 
 ## When to use
 

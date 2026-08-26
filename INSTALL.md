@@ -28,15 +28,16 @@ README ini — `CATALOG.md` adalah sumber kebenaran yang paling update.
 
 Tanyakan platform AI coding agent mana yang dipakai user saat ini (lihat
 tabel lokasi di [`README.md`](README.md) untuk daftar lengkap): Claude Code,
-OpenCode, Antigravity, Command Code, dan/atau Cursor — tampilkan sebagai
+OpenCode, Antigravity, Command Code, Cursor, dan/atau Codex CLI — tampilkan sebagai
 **checklist multi-select**, karena user bisa saja pakai lebih dari satu
 platform sekaligus (mis. Claude Code untuk coding harian + Cursor di editor
 lain) dan mau pasang skill yang sama ke semuanya dalam satu alur. Platform
 yang dipilih menentukan file mana yang perlu disalin per platform
-(`SKILL.md` langsung vs. `cursor.mdc` untuk skill; file platform yang
-sesuai di `agents/<nama-agent>/` untuk agent) dan ke lokasi mana
-masing-masing (lihat tabel lokasi di [`README.md`](README.md) dan di
-`agents/README.md`).
+(`SKILL.md` langsung untuk semua platform termasuk Cursor 2.4+ dan Codex —
+`cursor.mdc` cuma untuk fallback Cursor pra-2.4 kalau eksplisit diminta;
+file platform yang sesuai di `agents/<nama-agent>/` untuk agent, termasuk
+`codex.toml` untuk Codex CLI) dan ke lokasi mana masing-masing (lihat tabel
+lokasi di [`README.md`](README.md) dan di `agents/README.md`).
 
 Tanyakan ini sebagai pertanyaan **tersendiri dan pertama**, sebelum apa pun
 di bawah — begitu platform (satu atau lebih) terjawab, langsung lanjut ke
@@ -151,6 +152,33 @@ sepotong-sepotong). Untuk skill dengan `references/` yang menyebut skill
 lain (mis. `brd-grill` yang hand-off ke `prd-grill`), tawarkan untuk
 memasang skill terkait itu juga alih-alih memasangnya diam-diam atau
 mengabaikannya sama sekali.
+
+### Langkah 6 — Cek AGENTS.md/CLAUDE.md di repo target (hanya untuk instalasi level project)
+
+Kalau lokasi instalasi di Langkah 4 adalah **project** (bukan global), cek
+apakah repo target sudah punya `AGENTS.md` atau `CLAUDE.md` di root repo.
+
+- Kalau salah satu (atau keduanya) **sudah ada**, jangan menimpa isinya.
+  Tawarkan untuk menambahkan bagian singkat yang mendaftar skill/agent yang
+  baru saja dipasang (nama + lokasi file + trigger/kapan dipakai), supaya
+  file itu tetap jadi sumber kebenaran yang lengkap tanpa kehilangan isi
+  yang sudah ditulis user sebelumnya.
+- Kalau **belum ada sama sekali** (tidak ada `AGENTS.md` maupun
+  `CLAUDE.md`), tawarkan ke user untuk membuatkan salah satunya (tanyakan
+  yang mana kalau tidak jelas dari platform yang dipilih di Langkah 2 —
+  Claude Code memakai `CLAUDE.md`, platform lain umumnya `AGENTS.md`).
+  Isi file yang dibuat minimal mencakup:
+  - Ringkasan singkat project (dari `README.md` repo target kalau ada,
+    atau ditanyakan langsung ke user kalau belum jelas).
+  - Daftar skill/agent yang baru dipasang di Langkah 5: nama, lokasi file
+    hasil instalasi, dan kapan/kenapa agent sebaiknya memakainya (ambil
+    dari deskripsi di `CATALOG.md`, jangan ditulis ulang versimu sendiri).
+  - Konvensi dasar repo yang relevan buat agent (struktur folder, cara
+    menjalankan test/build) kalau bisa disimpulkan dari file project yang
+    ada (`package.json`, `Makefile`, dll) — jangan mengarang kalau tidak
+    yakin, cukup skip bagian ini.
+  Jangan membuat file ini diam-diam tanpa persetujuan user — selalu
+  tawarkan dulu dan tunggu konfirmasi, karena ini file baru di repo user.
 
 ### Aturan tambahan
 

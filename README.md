@@ -21,11 +21,22 @@ menyebabkan error. Jadi satu `SKILL.md` yang ditulis dengan superset field
 | OpenCode     | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/` | `~/.config/opencode/skills/`, dst |
 | Antigravity  | `.agents/skills/<name>/`               | `~/.gemini/config/skills/<name>/` |
 | Command Code | `.commandcode/skills/<name>/`          | `~/.commandcode/skills/<name>/`   |
+| Cursor (2.4+) | `.cursor/skills/<name>/`              | `~/.cursor/skills/<name>/`        |
+| Codex CLI    | `.agents/skills/<name>/`               | `~/.agents/skills/<name>/`        |
 | Cursor       | *(tidak baca SKILL.md — lihat adapter)* | —                                  |
 
-**Cursor** memakai model rules (`.cursor/rules/*.mdc`), bukan skill-folder.
-Untuk itu tiap skill di sini boleh menyertakan `cursor.mdc` sebagai adapter
-turunan dari `SKILL.md` (isi sama, dibungkus frontmatter MDC).
+**Cursor 2.4+** sudah baca `SKILL.md` native di `.cursor/skills/<name>/` —
+struktur dan frontmatter-nya (name, description, opsional metadata/scripts/
+references/assets) kompatibel langsung dengan format superset yang dipakai
+repo ini, tidak perlu adapter apa pun. Skill di sini yang masih menyertakan
+`cursor.mdc` (adopsi dari sebelum Cursor 2.4 support native skill) tetap
+jalan sebagai fallback lewat model rules (`.cursor/rules/*.mdc`) untuk
+instalasi Cursor lama, tapi bukan lagi cara utama.
+
+**Codex CLI** juga baca `SKILL.md` native, di `.agents/skills/<name>/`
+(sama seperti Antigravity/OpenCode) — format `SKILL.md` sudah jadi open
+standard yang diadopsi lintas tool, jadi skill apa pun di sini otomatis
+kompatibel Codex tanpa perubahan.
 
 ## Struktur repo
 

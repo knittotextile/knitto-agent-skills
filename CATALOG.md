@@ -51,6 +51,7 @@ sendiri juga, tapi dirancang saling menyambung).
 | [`react-testing`](skills/react-testing/SKILL.md) 🔷 | Testing komponen React (RTL, Vitest/Jest, MSW, axe) + batas component test vs E2E | testing, react | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`e2e-testing`](skills/e2e-testing/SKILL.md) 🔷 | Pola Playwright E2E: Page Object Model, config, integrasi CI/CD, artifact, strategi flaky test | testing, e2e | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`webapp-testing`](skills/webapp-testing/SKILL.md) | Workflow E2E+TDD siap-eksekusi: script Python (`run_e2e.py`) + config Playwright + CI yaml nyata, bukan cuma pola kode | testing, e2e, tdd, playwright | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`test-case-matrix`](skills/test-case-matrix/SKILL.md) | Tulis matrix test case (functional/edge/error/state) dari PRD/issue jadi markdown checklist per-step + traceability matrix, sebelum test code ditulis | testing, qa, planning | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ## Legenda kompatibilitas
 
@@ -58,7 +59,8 @@ sendiri juga, tapi dirancang saling menyambung).
 - `opencode` — OpenCode (`.opencode/skills/`)
 - `antigravity` — Google Antigravity (`.agents/skills/`)
 - `commandcode` — Command Code (`.commandcode/skills/`)
-- `cursor` — Cursor, via adapter `cursor.mdc`
+- `cursor` — Cursor 2.4+ baca `SKILL.md` native (`.cursor/skills/<name>/`); untuk skill yang menyertakan `cursor.mdc`, itu fallback legacy Cursor pra-2.4, bukan jalur utama lagi
+- `codex` — Codex CLI, baca `SKILL.md` native di `.agents/skills/<name>/` — kompatibel otomatis untuk semua skill di katalog ini, tidak perlu diverifikasi per-skill
 
 ## Agents
 
@@ -68,4 +70,5 @@ lengkap.
 
 | Agent | Deskripsi Singkat | Delegasi ke skill | Platform tersedia |
 |---|---|---|---|
-| [`reviewer`](agents/reviewer/) | Reviewer independen, dipanggil proaktif saat sesi/fitur dinyatakan selesai atau saat diminta review diff | `code-review-and-quality` | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` |
+| [`reviewer`](agents/reviewer/) | Reviewer independen, dipanggil proaktif saat sesi/fitur dinyatakan selesai atau saat diminta review diff | `code-review-and-quality` | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor`, `codex` |
+| [`qa-engineer`](agents/qa-engineer/) | Rencanakan lalu bangun test coverage: selalu mulai dari `test-case-matrix`, baru implementasi via skill testing yang sesuai layer | `test-case-matrix`, `react-testing`, `e2e-testing`, `webapp-testing` | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor`, `codex` |

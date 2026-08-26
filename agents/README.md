@@ -13,7 +13,14 @@ agents/
     antigravity.md     # .agents/agents/<nama-agent>.md
     commandcode.md      # .commandcode/agents/<nama-agent>.md
     cursor.md             # .cursor/agents/<nama-agent>.md
+    codex.toml             # .codex/agents/<nama-agent>.toml
 ```
+
+Catatan: `codex.toml` **beda format** dari yang lain — bukan Markdown +
+frontmatter YAML, tapi TOML murni dengan system prompt di field
+`developer_instructions` (lihat contoh di `reviewer/codex.toml`). Isinya
+tetap dijaga sama secara substansi dengan file platform lain, cuma
+di-encode ke syntax TOML.
 
 ## Cara pakai
 
@@ -28,6 +35,7 @@ file = nama agent untuk sebagian besar platform).
 | Antigravity | `.agents/agents/<name>.md` atau `.agents/agents/<name>/agent.md` | `~/.gemini/config/agents/<name>.md` |
 | Command Code | `.commandcode/agents/<name>.md` | `~/.commandcode/agents/<name>.md` |
 | Cursor | `.cursor/agents/<name>.md` | `~/.cursor/agents/<name>.md` |
+| Codex CLI | `.codex/agents/<name>.toml` | `~/.codex/agents/<name>.toml` |
 
 ## Frontmatter per platform (ringkas)
 
@@ -38,6 +46,7 @@ file = nama agent untuk sebagian besar platform).
 | Antigravity | `tools` (array), `mainAgent`, `subagent`, `commandExecutionPolicy`, `skills` | `subagent: true` supaya bisa dipanggil `invoke_subagent` |
 | Command Code | `tools`, `disallowedTools`, `permissionMode`, `maxTurns`, `background`, `showOutput` | nama `explore`/`plan`/`review`/`general` reserved, tidak bisa dioverride |
 | Cursor | `model`, `readonly`, `is_background` | filename = identitas subagent |
+| Codex CLI | `name`, `description`, `developer_instructions` (wajib); `model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config` (opsional) | TOML, bukan Markdown+YAML — `developer_instructions` = system prompt |
 
 ## Pola: agent mendelegasikan ke skill
 
