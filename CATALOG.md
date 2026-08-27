@@ -13,6 +13,7 @@ lain — bukan ritual tiap sesi.
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
 | [`project-bootstrap`](skills/project-bootstrap/SKILL.md) | Kalibrasi agent ke project yang belum pernah disentuh: deteksi stack/tooling (`detect_stack.py`), install dependency, verifikasi project benar-benar jalan (build/test/dev), lalu tulis/update `CLAUDE.md`/`AGENTS.md` dengan command yang sudah diverifikasi — bukan ditebak | foundation, onboarding, setup | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`agent-doctor`](skills/agent-doctor/SKILL.md) | Verifikasi subagent (mis. `reviewer`, `qa-engineer`) yang terpasang di project benar-benar bisa jalan di platform user saat ini — lokasi file, frontmatter sesuai dialek platform, dan model yang user punya akses (langganan beda per orang/platform) — lalu bantu perbaiki yang bermasalah, termasuk live-invoke test kalau platform-nya cocok dengan sesi yang sedang jalan | foundation, agents, diagnostics | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ### Alur perencanaan → eksekusi
 
@@ -27,6 +28,12 @@ sendiri juga, tapi dirancang saling menyambung).
 | [`incremental-implementation`](skills/incremental-implementation/SKILL.md) 🔷 | Disiplin memecah implementasi jadi langkah kecil yang bisa diverifikasi, bukan satu perubahan besar sekaligus | workflow, implementation | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`planning-and-task-breakdown`](skills/planning-and-task-breakdown/SKILL.md) 🔷 | Pecah spec/requirement jadi task terurut yang implementable, termasuk estimasi scope & identifikasi kerja paralel | planning, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`test-driven-development`](skills/test-driven-development/SKILL.md) 🔷 | Disiplin TDD — tulis test dulu sebelum implementasi/bugfix/perubahan behavior | testing, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+
+### Documentation & comprehension
+
+| Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
+|---|---|---|---|
+| [`codebase-explain`](skills/codebase-explain/SKILL.md) | Jelaskan repo/fitur/alur kerja dalam bahasa awam (tanpa jargon), digroundkan ke kode yang benar-benar dibaca, ditulis jadi file markdown (bukan cuma jawaban chat) — buat non-developer yang mau paham codebase | documentation, comprehension, non-technical | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ### Debugging
 
