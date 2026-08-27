@@ -5,6 +5,15 @@ skill (lihat [`CONTRIBUTING.md`](CONTRIBUTING.md)). Skill bertanda 🔷 di
 kolom Tag diadopsi dari repo open-source MIT — lihat [`SOURCES.md`](SOURCES.md)
 untuk atribusi lengkap, bukan tulisan asli repo ini.
 
+### Foundation
+
+Jalankan sekali di awal kerja pada repo baru/belum dikenal, sebelum skill
+lain — bukan ritual tiap sesi.
+
+| Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
+|---|---|---|---|
+| [`project-bootstrap`](skills/project-bootstrap/SKILL.md) | Kalibrasi agent ke project yang belum pernah disentuh: deteksi stack/tooling (`detect_stack.py`), install dependency, verifikasi project benar-benar jalan (build/test/dev), lalu tulis/update `CLAUDE.md`/`AGENTS.md` dengan command yang sudah diverifikasi — bukan ditebak | foundation, onboarding, setup | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+
 ### Alur perencanaan → eksekusi
 
 `brd-grill` → `prd-grill` → `exec-todo` (masing-masing bisa dipakai berdiri
@@ -19,6 +28,12 @@ sendiri juga, tapi dirancang saling menyambung).
 | [`planning-and-task-breakdown`](skills/planning-and-task-breakdown/SKILL.md) 🔷 | Pecah spec/requirement jadi task terurut yang implementable, termasuk estimasi scope & identifikasi kerja paralel | planning, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`test-driven-development`](skills/test-driven-development/SKILL.md) 🔷 | Disiplin TDD — tulis test dulu sebelum implementasi/bugfix/perubahan behavior | testing, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
+### Debugging
+
+| Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
+|---|---|---|---|
+| [`debugging`](skills/debugging/SKILL.md) | Metodologi root-cause debugging: reproduksi konsisten, isolasi ke kasus terkecil, bisect ke penyebab (regression), uji hipotesis sebelum fix, bedakan symptom vs root cause | debugging, troubleshooting | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+
 ### Review & kualitas
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
@@ -32,7 +47,14 @@ sendiri juga, tapi dirancang saling menyambung).
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
 | [`branching`](skills/branching/SKILL.md) | Kelola branch di model paired-branch (`-main`/`-dev`) + cherry-pick ke `releases/sandbox` staging + promosi ke `releases/main` production — mencegah staging ketinggalan/duplikat fitur | git, branching, staging, deploy | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
+| [`deployment`](skills/deployment/SKILL.md) | Praktik rilis aman: klasifikasi risiko, pre-deploy checklist, rollout bertahap (feature flag/canary), rollback plan ditulis sebelum deploy, verifikasi pasca-deploy — bukan cuma "pipeline hijau" | deployment, release, rollback | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`docker-patterns`](skills/docker-patterns/SKILL.md) 🔷 | Pola Docker/Docker Compose: dev lokal, keamanan container, networking, volume, multi-service | devops, docker | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+
+### Maintenance
+
+| Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
+|---|---|---|---|
+| [`dependency-update`](skills/dependency-update/SKILL.md) | Upgrade dependency aman: cek breaking change lewat changelog, upgrade bertahap per batch risiko, verifikasi build/test tiap batch, prioritas vulnerability fix berdasar exploitability nyata | dependencies, maintenance, security | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ### Backend & database
 
