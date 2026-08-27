@@ -29,11 +29,12 @@ export default defineConfig({
     // default reporter entirely and the terminal stays silent until the
     // whole run finishes.
     ['list'],
-    // open: 'never' — don't auto-launch a browser tab with the report when
-    // run outside CI; that's surprising/disruptive when this is invoked by
-    // an agent rather than a human at a terminal. Open it manually with
-    // `npx playwright show-report docs/qa/playwright-report` when you want
-    // to see it.
+    // Playwright's own report, unmodified — filters (All/Passed/Failed/
+    // Flaky/Skipped), search, per-test steps, location links, browser
+    // badges, retries as tabs. build_report.py (called by run_e2e.py after
+    // every run) only post-processes this file afterwards to add
+    // slowed-down video playback controls — see that script, not a
+    // from-scratch clone of this report.
     ['html', { outputFolder: `${QA_DIR}/playwright-report`, open: 'never' }],
     ['json', { outputFile: `${QA_DIR}/playwright-results.json` }],
   ],

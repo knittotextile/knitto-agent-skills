@@ -1,6 +1,6 @@
 ---
 name: e2e-testing
-description: Playwright E2E testing patterns, Page Object Model, configuration, CI/CD integration, artifact management, and flaky test strategies.
+description: Playwright browser E2E testing patterns — Page Object Model, config snippets, artifact management, and flaky test strategies. Reference only, not executable — for actually running a webapp's E2E suite and generating the standard report, use webapp-testing.
 license: MIT
 metadata:
   category: testing
@@ -13,6 +13,20 @@ compatible_with: [claude-code, opencode, antigravity, commandcode]
 # E2E Testing Patterns
 
 Comprehensive Playwright patterns for building stable, fast, and maintainable E2E test suites.
+
+**Patterns-only, browser E2E scope.** This skill is a reference for how to
+write good Playwright tests (POM, config choices, flaky-test triage) — it
+has no runner, no report, no `.gitignore`/CI wiring of its own. When the
+actual task is "set up or run E2E for a webapp," use `webapp-testing`
+instead — it owns the standard runner and the standard `report.html`
+format, and it points back here for the pattern choices below. Don't
+hand-roll a Playwright config/runner from these snippets alone, or you'll
+end up with a report that doesn't match the project's standard.
+
+Scope is browser-driven E2E only (a real `page` navigating the app).
+Assertions against `page.waitForResponse(...)` etc. are fine as part of a
+UI flow, but pure API testing with no browser (hitting endpoints directly,
+e.g. via Playwright's `request` fixture) is out of scope for this skill.
 
 ## Test File Organization
 

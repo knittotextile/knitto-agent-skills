@@ -82,6 +82,14 @@ def main() -> int:
     if RESULTS_PATH.is_file():
         build_report = Path(__file__).resolve().parent / "build_report.py"
         run([sys.executable, str(build_report)])
+        print(
+            "\nReport: npx playwright show-report docs/qa/playwright-report\n"
+            "  (attachments live in a sibling data/ folder, so open it via this\n"
+            "  command, not by double-clicking index.html)\n"
+            "For a failing test's trace (network log, DOM snapshots), find its\n"
+            "trace.zip under docs/qa/test-results/ and run:\n"
+            "  npx playwright show-trace <path-to-trace.zip>\n"
+        )
 
     return returncode
 

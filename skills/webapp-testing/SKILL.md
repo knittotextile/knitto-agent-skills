@@ -53,7 +53,7 @@ you actually run.
 
    **Always do this in the same pass, don't skip it:** check the project's
    `.gitignore` for `docs/qa/playwright-report/`, `docs/qa/test-results/`,
-   `docs/qa/playwright-results.json`, and `docs/qa/report.html` (see "All
+   and `docs/qa/playwright-results.json` (see "All
    output lives under `docs/qa/`" below) — append whatever's missing. This
    is mandatory setup, not optional cleanup: without it, the very first run
    stages screenshots, videos, and a 1MB+ report file into git.
@@ -64,7 +64,10 @@ you actually run.
 2. **Write the test first (RED).** Before implementing a new flow, write
    an E2E spec under `tests/e2e/` that describes the desired behavior. It
    should fail — see `references/tdd-e2e-workflow.md` for the full
-   red-green-refactor cycle applied to E2E specifically.
+   red-green-refactor cycle applied to E2E specifically. For Page Object
+   Model structure, folder layout, and flaky-test handling, follow the
+   patterns in `e2e-testing` — this skill owns execution and the report
+   format, not the test-writing patterns themselves.
 
    **Use `assets/step-shot-helper.ts`'s `stepShot` pattern, not a flat test
    body.** Add its `stepShot` function to the project's test fixture file,
@@ -101,11 +104,15 @@ you actually run.
    machine-readable results — see that file, don't pass `--reporter` on the
    CLI, it replaces the config's reporters instead of adding to them),
    prints a pass/fail/flaky summary, then automatically calls
-   `build_report.py` to (re)build `docs/qa/report.html` from the fresh
-   results — one command instead of re-deriving Playwright flags each time
-   and remembering to rebuild the report separately, usable the same way
-   whether you type it yourself or the pre-push hook (step 5) calls it for
-   you. Pass through Playwright options as needed: `--grep <pattern>`,
+   `build_report.py` to add video speed controls to the report Playwright
+   just wrote at `docs/qa/playwright-report/` — one command instead of
+   re-deriving Playwright flags each time and remembering to run the
+   post-processing step separately, usable the same way whether you type it
+   yourself or the pre-push hook (step 5) calls it for you. It also prints
+   the report command and where to find a failing test's trace at the end
+   of every run, so you don't have to remember them — see "Playwright's own
+   report, plus slow-motion video" below. Pass through Playwright options as
+   needed: `--grep <pattern>`,
    `--project chromium`. Runs **headed** (a visible browser window) by
    default, so you can watch it work — pass `--headless` for
    unattended/agent-driven runs (an agent isn't watching the window, and
@@ -140,34 +147,37 @@ you actually run.
    every future `git push` on this machine. `rm .git/hooks/pre-push` to
    remove it.
 
-## Two reports, two purposes
+## Playwright's own report, plus slow-motion video
 
-Every run produces **both**, don't treat one as replacing the other:
+`docs/qa/playwright-report/` is Playwright's **own, unmodified** `html`
+reporter output — not a from-scratch clone. That's deliberate: their report
+already has a status filter bar (All/Passed/Failed/Flaky/Skipped, each with
+a live count), a search box, per-test step lists, `file:line` locations,
+browser project badges, and retries shown as tabs — reimplementing all of
+that in a custom generator means permanently trailing the real thing.
 
-- **`docs/qa/report.html`** (built by `build_report.py`, step 3) — the one
-  to actually look at day to day. Grouped by describe-block to match
-  `test-case-matrix`'s categories, one row per test case. Click a row to
-  expand its step list, every screenshot recorded via `stepShot` (not just
-  the final one), and that test's video — click a screenshot to open it
-  full-size in an in-page lightbox with prev/next between that test's
-  photos; the video plays at 0.5× by default (a real run is fast enough to
-  be hard to follow at 1×) with speed buttons (0.25×/0.5×/1×/1.5×) to
-  change it — a client-side playback rate, not a re-encoded file, so
-  switching speed is instant. A single self-contained file (screenshots
-  and video both embedded as base64) — safe to send around without also
-  sending `docs/qa/test-results/`.
-- **`docs/qa/playwright-report/`** (Playwright's own html reporter) — for
-  deep debugging a failure: full trace viewer, network log, DOM snapshots
-  at each action. `report.html` doesn't replace this — reach for this one
-  when a test actually fails and you need to see *why*, step by step at
-  the framework level. Open it with
-  `npx playwright show-report docs/qa/playwright-report`.
+`build_report.py` (step 3) runs *after* Playwright writes that report and
+only adds one thing on top: slow-motion playback controls on every video.
+It appends a small vanilla-JS snippet before `</body>` that finds `<video>`
+elements — a plain HTML5 tag, not part of Playwright's internal React
+bundle, so this stays stable across Playwright version upgrades — sets
+their default rate to 0.5× (a real run is fast enough to be hard to follow
+at 1×), and adds speed buttons (0.25×/0.5×/1×/1.5×) next to each one. It
+does not touch Playwright's own markup, styles, or data.
+
+Open the report with `npx playwright show-report docs/qa/playwright-report`
+— attachments (screenshots, video, traces) live in a sibling `data/`
+folder, so this needs to be served, not opened by double-clicking
+`index.html` directly. For a failure that needs deeper debugging (network
+log, DOM snapshots at each action), open that test's `trace.zip` from
+`docs/qa/test-results/<test>/`:
+`npx playwright show-trace <path-to-trace.zip>`.
 
 `playwright.config.ts` sets `screenshot: 'on'` and `video: 'on'` (not
 `'only-on-failure'`/`'retain-on-failure'`) so every test, pass or fail,
-leaves a screenshot and a video in both reports — that's what makes
-`report.html` skimmable and watchable at a glance instead of a bare
-pass/fail list with evidence only on failure.
+leaves a screenshot and a video — that's what makes the report skimmable
+and watchable at a glance instead of a bare pass/fail list with evidence
+only on failure.
 
 ## All output lives under `docs/qa/`
 
@@ -176,32 +186,31 @@ next to the matrix file `test-case-matrix` writes
 (`docs/qa/<slug>/test-matrix.md`) — one place for everything QA-related
 instead of loose folders scattered at the project root:
 
-- `docs/qa/playwright-report/` — Playwright's own html report
-  (`open: 'never'`, see above).
+- `docs/qa/playwright-report/` — Playwright's own html report, with video
+  speed controls added by `build_report.py`, see "Playwright's own report,
+  plus slow-motion video" above.
 - `docs/qa/playwright-results.json` — machine-readable results;
   `run_e2e.py`'s `RESULTS_PATH` and `build_report.py`'s `RESULTS_PATH` both
   read this exact path, so if you change the `outputFile` in config,
   update both scripts.
-- `docs/qa/test-results/` — raw per-test artifacts (failure
-  screenshots/videos/traces) via `outputDir`.
-- `docs/qa/report.html` — the custom report `build_report.py` builds from
-  `playwright-results.json`, see "Two reports, two purposes" above.
+- `docs/qa/test-results/` — raw per-test artifacts (screenshots, videos,
+  trace.zip for every test) via `outputDir`.
 
-Add `docs/qa/playwright-report/`, `docs/qa/playwright-results.json`,
-`docs/qa/test-results/`, and `docs/qa/report.html` to `.gitignore` — all
-four are regenerated on every run, don't commit them.
-`docs/qa/<slug>/test-matrix.md` (from `test-case-matrix`) is the one thing
-under `docs/qa/` that **should** be committed — it's a planning artifact,
-not a build output.
+Add `docs/qa/playwright-report/`, `docs/qa/playwright-results.json`, and
+`docs/qa/test-results/` to `.gitignore` — all three are regenerated on
+every run, don't commit them. `docs/qa/<slug>/test-matrix.md` (from
+`test-case-matrix`) is the one thing under `docs/qa/` that **should** be
+committed — it's a planning artifact, not a build output.
 
 ## Files in this skill
 
 - `scripts/run_e2e.py` — the test runner/orchestrator (stdlib-only Python);
   calls `build_report.py` automatically after every run
-- `scripts/build_report.py` — builds `docs/qa/report.html` from
-  `playwright-results.json` (stdlib-only Python, see "Two reports, two
-  purposes" above); can also be run standalone to rebuild the report
-  without rerunning the suite
+- `scripts/build_report.py` — post-processes
+  `docs/qa/playwright-report/index.html` (Playwright's own report) to add
+  video speed controls (stdlib-only Python, see "Playwright's own report,
+  plus slow-motion video" above); can also be run standalone to re-inject
+  the controls without rerunning the suite
 - `assets/playwright.config.ts` — ready-to-use Playwright config
 - `assets/step-shot-helper.ts` — the `stepShot` pattern from step 2, add to
   the project's test fixtures
