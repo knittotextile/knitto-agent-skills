@@ -1,6 +1,6 @@
 ---
 name: test-case-matrix
-description: Use when a feature/spec needs test scenarios written down BEFORE implementation or before automating tests — triggers on "/test-case-matrix", "buatkan test matrix", "buatkan test case", "test scenario apa aja", or as the mandatory first step when a qa-engineer-style agent is invoked. Reads the PRD/issue/spec for a feature (or asks for a quick feature description if none exists), optionally builds a parameter/value combination matrix first for features with multiple interacting variables, maps each scenario to the source files it exercises, and writes a single markdown file: header metadata + pass/fail summary, one table per category+priority (functional/edge/error/state-transition) with columns matching manual-tester spreadsheet naming (Test Case ID, Group No, Feature, Process No (FC), TYPE, Test Case, Test Variable, Pre-Condition, Test Data, Test Steps, Expected Result, Requirement, Evidence, Automation Tools, Remarks, Date) — cell content in Bahasa Indonesia with concrete UI-accurate steps, column names left in English — plus a requirement-traceability matrix. One table, one row per case, no separate checklist duplicating status. Does not write or run any test code — that's `react-testing`/`e2e-testing`/`webapp-testing`'s job, this skill only produces the scenario list those skills implement against.
+description: Use when a feature/spec needs test scenarios written down BEFORE implementation or before automating tests — triggers on "/test-case-matrix", "buatkan test matrix", "buatkan test case", "test scenario apa aja", or as the mandatory first step when a qa-engineer-style agent is invoked. Reads the PRD/issue/spec for a feature (or asks for a quick feature description if none exists), optionally builds a parameter/value combination matrix first for features with multiple interacting variables, groups scenarios into PB (Product Backlog/requirement) sections, and writes a single markdown file mirroring the manual-tester spreadsheet layout: header metadata, two-part Summary (pass/fail counts + automation-usage percentage), one section per PB with a mini traceability index (spec → covered? → test case id) followed by a test case table in the tester's exact column order (Group No, Feature, Process No (FC), TYPE, Test Case ID like `TC1-1`, Test Variable, Test Case, Pre-Condition, Test Data, Test Steps, Expected Result, Status, Evidence, Remarks, Automation Tools [Masuk Test Step/Test Data/Tanpa Automation], Date) plus Files/Requirement appended. Cell content in Bahasa Indonesia with concrete UI-accurate steps, column names left in English. Does not write or run any test code — that's `react-testing`/`e2e-testing`/`webapp-testing`'s job, this skill only produces the scenario list those skills implement against.
 license: MIT
 metadata:
   category: testing
@@ -34,7 +34,8 @@ Steps`, `Expected Result`, dst) — jangan diterjemahkan, supaya konsisten
 lintas file dan gampang di-grep. **Isi selnya** yang ditulis dalam
 **Bahasa Indonesia**: `Test Case`, `Feature`, `Pre-Condition`, `Test Data`,
 `Test Steps`, `Expected Result`, `Requirement` (ringkasan), dan `Remarks`.
-`ID`/status code (`TC-F-01`, `[V]`, `Automated`, dst) tetap apa adanya.
+`Test Case ID`/status value (`TC1-1`, `✅ Passed`, `Masuk Test Step`, dst)
+tetap apa adanya.
 Kalau requirement source-nya berbahasa Inggris, terjemahkan isinya saat
 ditulis ke matrix, jangan copy-paste mentah.
 
@@ -73,9 +74,9 @@ mode, role × permission level, etc.):
    pick the combinations that are realistic and that differ in behavior
    (pairwise coverage), plus any combination explicitly called out in the
    requirement source as high-risk.
-3. Each row in this table becomes (or feeds) a `TC-F`/`TC-E` scenario in
-   Step 4 — reference the combination id in that case's `Test Data` or
-   `Test Case` so the link back is visible.
+3. Each row in this table becomes (or feeds) a scenario in Step 4 —
+   reference the combination id in that case's `Test Variable` column
+   (e.g. "K1") so the link back is visible.
 
 This mirrors combinatorial test design: the matrix exists to make sure
 scenario coverage isn't just "one happy path + one error", but the actual
@@ -84,19 +85,32 @@ value combinations that behave differently.
 ## Step 3 — Extract scenarios
 
 From the requirement source, list every scenario across these categories —
-don't stop at the happy path:
+don't stop at the happy path. These categories are an **elicitation
+checklist only** — they don't appear in the final `Test Case ID` anymore
+(see Step 4), they just make sure coverage isn't just "one happy path +
+one error":
 
-- **Functional (`TC-F`)** — each documented behavior/flow, including every
-  stated acceptance criterion.
-- **Edge case (`TC-E`)** — boundary values, empty/null input, max-size
-  input, unusual-but-valid combinations.
-- **Error handling (`TC-ERR`)** — invalid input, failed dependencies
-  (network/API down), permission denied, concurrent-conflict cases.
-- **State transition (`TC-ST`)** — any state machine or multi-step flow in
-  the feature (e.g. draft → published, pending → approved/rejected).
+- **Functional** — each documented behavior/flow, including every stated
+  acceptance criterion.
+- **Edge case** — boundary values, empty/null input, max-size input,
+  unusual-but-valid combinations.
+- **Error handling** — invalid input, failed dependencies (network/API
+  down), permission denied, concurrent-conflict cases.
+- **State transition** — any state machine or multi-step flow in the
+  feature (e.g. draft → published, pending → approved/rejected).
 
 Skip a category only if it's genuinely inapplicable (e.g. a stateless
-read-only endpoint has no `TC-ST`) — don't skip because it's more work.
+read-only endpoint has no state transition) — don't skip because it's more
+work.
+
+Also group scenarios into **PB items** (Product Backlog / requirement
+groups — one PB per distinct feature request, BRD, or PRD covered). If the
+requirement source already has this grouping (BRD/PB numbers), use it
+directly. If it doesn't (informal source), create one PB group per
+distinct sub-feature — this becomes the `### PB-<n>` heading in Step 4.
+Within a PB, group further into **Group No** — one group per user
+flow/scenario cluster that shares the same precondition setup (mirrors how
+`TC1-1`, `TC1-2` in Step 4 share the id prefix `1`).
 
 For each scenario, also identify the source file(s) it exercises (the
 component/page/hook/handler/endpoint under test) — a quick Glob/Grep pass
@@ -109,46 +123,65 @@ file changes, not just when a requirement changes.
 
 Write one file: `docs/qa/<slug>/test-matrix.md` (create the folder if
 missing). Use this exact structure — see `assets/test-matrix-template.md`
-for the literal template to copy and fill in.
+for the literal template to copy and fill in. This mirrors the manual-
+tester spreadsheet layout (header block, two-part Summary, PB-grouped test
+case tables with a per-PB mini traceability index) — don't restructure it
+into a single flat table or a category-grouped layout, the whole point is
+that this reads the same as the tester's own sheet.
 
 - **Header** — feature name, requirement source (link), tester/programmer
   (if known — ask or leave `<belum diisi>` rather than guessing), created/
   updated date, scope / out-of-scope.
-- **Summary** — one table: Total, Passed, Failed, Re-Test, Skip, counted
-  live from the `Status` column below (not maintained separately — recount
-  when the file is updated, don't let it drift from the actual rows).
+- **Summary** — two small tables, both recounted live from the `Status`/
+  `Automation Tools` columns below every time the file is updated (never
+  maintained separately, that's how these drift):
+  - Table 1: `Total Test Case`, `Passed`, `Failed`, `Re-Test`, `Skip`.
+  - Table 2: `Total Penggunaan Automation Test` (count of rows whose
+    `Automation Tools` is `Test Data` or `Masuk Test Step` — anything but
+    `Tanpa Automation`), `Test Data` (count), `Masuk Test Step` (count),
+    `Tanpa Automation` (count), `Presentase` (Total Penggunaan Automation
+    Test ÷ Total Test Case), `Memenuhi Syarat` (`Ya`/`Tidak` — meets the
+    project's automation-coverage threshold; ask the user for the
+    threshold once per project if unknown, default assumption 50%).
 - **Parameter Matrix** — only if Step 2 produced one; the variable/value
   table plus the combinations selected for testing.
-- **Test Cases** — one table per category+priority group, **one row per
-  test case, one table overall per group** (not a separate checklist plus
-  a separate detail table — that duplicates status tracking in two places,
-  which is how these files used to balloon in size). Columns:
-  - `Status` — one of `[ ]` (not done), `[V]` (passed), `[X]` (failed),
-    `[R]` (needs re-test), `[S]` (skipped). This is the **only** place
-    completion status lives; update this same cell as a case's outcome
-    changes, don't add checkboxes anywhere else.
-  - `Test Case ID` — `TC-F-01` / `TC-E-01` / `TC-ERR-01` / `TC-ST-01` etc.
-  - `Group No` — groups related cases under the same flow/PB item within
-    this file, sequential per group (`1`, `1`, `2`, `2`, `3`, ...) — mirrors
-    how the requirement source itself groups related scenarios.
-  - `Feature` — the sub-feature/flow this group of cases belongs to, in
-    Bahasa Indonesia (e.g. "Pengecekan Perubahan Qty Order"), same value
-    repeated for every row in the group.
+- **Test Cases** — one `### PB-<n> — <requirement id> · <link task> ·
+  <link design>` section per PB group from Step 3. Under each PB heading,
+  in this order:
+  1. A mini traceability table scoped to this PB:
+     `NO | PROGRAM SPECIFICATIONS | TEST CASE | TEST CASE ID` — `NO` is
+     sequential within the PB, `PROGRAM SPECIFICATIONS` is the spec/
+     acceptance criterion in Bahasa Indonesia, `TEST CASE` is `Ya`/`Tidak`
+     (does a case cover this spec), `TEST CASE ID` lists the covering
+     id(s) or is blank with `⚠️ Gap` in `TEST CASE` when nothing covers
+     it. This **replaces** a separate global traceability section — don't
+     add another one at the end of the file.
+  2. The test case table itself, **one row per test case**, columns in
+     this exact order:
+     `Group No | Feature | Process No (FC) | TYPE | Test Case ID | Test
+     Variable | Test Case | Pre-Condition | Test Data | Test Steps |
+     Expected Result | Status | Evidence | Remarks | Automation Tools |
+     Date | Files | Requirement` — the first 16 match the tester
+     spreadsheet's own order (don't reorder these), `Files` and
+     `Requirement` are this skill's own addition, appended at the end
+     rather than interleaved.
+
+  Column definitions:
+  - `Group No` — sequential within this PB (`1`, `1`, `1`, `2`, `2`, `3`,
+    ...), one number per user-flow/precondition cluster from Step 3.
+  - `Feature` — the sub-feature/flow this group belongs to, in Bahasa
+    Indonesia, same value repeated for every row in the group.
   - `Process No (FC)` — reference to the flowchart/process step in the
     design spec if the requirement source has one (e.g. "FC 2C.18.9.21 -
     Proses 2"); leave blank if the project doesn't use FC-numbered specs.
   - `TYPE` — `+` for a positive/valid-input scenario, `-` for a
     negative/invalid-input scenario.
+  - `Test Case ID` — `TC<Group No>-<sequence within group>`, e.g. group 1's
+    cases are `TC1-1`, `TC1-2`, `TC1-3`; group 2's are `TC2-1`, `TC2-2`.
+    Not the old `TC-F-01`/`TC-ERR-01` scheme — the category from Step 3 is
+    elicitation-only and doesn't appear in the id anymore.
   - `Test Case` — short descriptive name of what's being tested, in
-    Bahasa Indonesia.
-  - `Test Variable` — the specific input variation/combination this case
-    covers, in Bahasa Indonesia; reference the `Parameter Matrix`
-    combination id (e.g. "K1") when Step 2 produced one, otherwise
-    describe the variation directly.
-  - `Files` — source file path(s) this case exercises (from Step 3),
-    backtick-quoted, comma-separated if more than one. This is what makes
-    the matrix useful when a dependency/file changes: grep this column for
-    the changed path to find every test case that needs re-checking.
+    Bahasa Indonesia (this is the tester's "test case name" column).
   - `Pre-Condition`, `Test Data` — in Bahasa Indonesia; keep literal
     values (input strings, URLs, selectors) untranslated.
   - `Test Steps`, `Expected Result` — two separate columns (not merged),
@@ -156,29 +189,40 @@ for the literal template to copy and fill in.
     inside the cell (`1. <aksi><br>2. <aksi>`); `Expected Result` = the
     matching numbered outcomes in the same cell layout, same numbering as
     the steps they belong to.
-  - `Requirement` — link to the requirement/acceptance criterion this case
-    covers, short description in Bahasa Indonesia if paraphrased.
+  - `Status` — one of `⚪ Not Run`, `🟡 Progress`, `✅ Passed`,
+    `❌ Failed`, `🔁 Re-Test`, `⏭ Skip` (emoji + word, matches the tester's
+    own status words while staying scannable in a long table — markdown
+    renders the emoji in color, plain `[V]`-style codes don't). This is
+    the **only** place completion status lives; update this same cell as a
+    case's outcome changes, don't add checkboxes anywhere else.
   - `Evidence` — link/path to screenshot, recording, or CI run for this
     case once it's been executed; leave blank until then.
-  - `Automation Tools` — how this case is/will be verified: `Automated`
-    (covered by `react-testing`/`e2e-testing`/`webapp-testing` code, link
-    the test file if known), `Manual`, or `Planned`.
   - `Remarks` — free-text notes in Bahasa Indonesia: blocker, bug ticket
     reference, why a case is skipped, anything that doesn't fit another
     column.
+  - `Automation Tools` — exactly one of `Masuk Test Step` (the test step
+    itself is automated end-to-end — covered by `react-testing`/
+    `e2e-testing`/`webapp-testing` code, link the spec file in `Remarks`
+    if known), `Test Data` (automation only seeds/generates the test
+    data, execution itself is manual), or `Tanpa Automation` (fully
+    manual, no automation involved). Every row gets one of these three —
+    there's no separate "Planned" value; a not-yet-automated case is
+    `Tanpa Automation` until it is.
   - `Date` — last-executed date, blank until first run.
-- **Traceability Matrix** — table mapping each requirement/acceptance
-  criterion to the test case id(s) covering it, with a covered/gap marker.
-  Always include this section: if there's no structured requirement doc,
-  derive rows from the informal feature description gathered in Step 1
-  instead of skipping the section.
+  - `Files` — source file path(s) this case exercises (from Step 3),
+    backtick-quoted, comma-separated if more than one. This is what makes
+    the matrix useful when a dependency/file changes: grep this column for
+    the changed path to find every test case that needs re-checking.
+  - `Requirement` — link to the requirement/acceptance criterion this case
+    covers, short description in Bahasa Indonesia if paraphrased.
 
 ## Step 5 — Report gaps
 
-After writing the file, tell the user which requirements have no covering
-test case (⚠️ rows in the traceability matrix) and which categories came up
-empty — those are either genuinely inapplicable or a sign the requirement
-source under-specifies that area; say which you think it is per gap.
+After writing the file, tell the user which `PROGRAM SPECIFICATIONS` rows
+have no covering test case (⚠️ Gap in any PB's mini traceability table) and
+which categories from Step 3 came up empty for a given PB — those are
+either genuinely inapplicable or a sign the requirement source
+under-specifies that area; say which you think it is per gap.
 
 ## What this skill does NOT do
 

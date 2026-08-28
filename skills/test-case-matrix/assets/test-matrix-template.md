@@ -8,12 +8,16 @@
 
 ## Summary
 
-Hitung ulang dari kolom `Status` di tabel Test Cases setiap file ini diupdate —
-jangan dipelihara terpisah.
+Hitung ulang dari kolom `Status`/`Automation Tools` di tabel Test Cases
+setiap file ini diupdate — jangan dipelihara terpisah.
 
-| Total | Passed | Failed | Re-Test | Skip | Automation % |
+| Total Test Case | Passed | Failed | Re-Test | Skip |
+|---|---|---|---|---|
+| <n> | <n> | <n> | <n> | <n> |
+
+| Total Penggunaan Automation Test | Test Data | Masuk Test Step | Tanpa Automation | Presentase | Memenuhi Syarat |
 |---|---|---|---|---|---|
-| <n> | <n> | <n> | <n> | <n> | <n%> |
+| <n> | <n> | <n> | <n> | <n%> | Ya/Tidak |
 
 ## Parameter Matrix
 
@@ -33,34 +37,40 @@ section ini kalau nggak relevan — lihat Step 2 di SKILL.md).
 
 ## Test Cases
 
-Satu tabel per kategori/prioritas. Nama kolom mengikuti istilah tester
-manual (bahasa Inggris, jangan diterjemahkan) — isinya ditulis dalam
-**Bahasa Indonesia**. Status: `[ ]` belum, `[V]` passed, `[X]` failed,
-`[R]` perlu re-test, `[S]` skip — ini satu-satunya tempat status
-dilacak, tidak ada checklist terpisah. `Files` berisi path source code
-yang diuji/terkait (komponen, page, hook, endpoint) — bukan cuma link
-requirement — supaya kalau file itu berubah, jelas test case mana yang
-harus dicek ulang. `TYPE` `+` = skenario positif/input valid, `-` =
-skenario negatif/input invalid.
+Satu section `### PB-<n>` per PB/requirement group. Nama kolom tabel
+mengikuti istilah tester manual persis (bahasa Inggris, urutan sama, jangan
+diterjemahkan/diubah) — isinya ditulis dalam **Bahasa Indonesia**.
 
-### <Kategori 1> (P0)
+`Test Case ID` = `TC<Group No>-<urutan dalam grup>` (mis. `TC1-1`, `TC1-2`,
+`TC2-1`) — bukan skema `TC-F-01`/`TC-ERR-01`. `Status`: `⚪ Not Run`,
+`🟡 Progress`, `✅ Passed`, `❌ Failed`, `🔁 Re-Test`, `⏭ Skip` — satu-satunya
+tempat status dilacak. `TYPE` `+` = skenario positif/input valid, `-` = skenario
+negatif/input invalid. `Automation Tools` selalu salah satu dari `Masuk
+Test Step` (step-nya otomatis end-to-end), `Test Data` (otomasi cuma buat
+data, eksekusi manual), atau `Tanpa Automation` (manual penuh) — tidak ada
+nilai "Planned" terpisah. `Files`/`Requirement` di kolom akhir adalah
+tambahan skill ini, bukan bagian format tester.
 
-| Status | Test Case ID | Group No | Feature | Process No (FC) | TYPE | Test Case | Test Variable | Files | Pre-Condition | Test Data | Test Steps | Expected Result | Requirement | Evidence | Automation Tools | Remarks | Date |
+### PB-1 — <BRD/requirement id> · [Link Task PB](<url>) · [Link Figma](<url>)
+
+Mini traceability khusus PB ini — ganti "Traceability Matrix" global:
+
+| NO | PROGRAM SPECIFICATIONS | TEST CASE | TEST CASE ID |
+|---|---|---|---|
+| 1 | <spec/acceptance criterion, ID> | Ya | TC1-1, TC1-2 |
+| 2 | <spec/acceptance criterion, ID> | Tidak | ⚠️ Gap |
+
+| Group No | Feature | Process No (FC) | TYPE | Test Case ID | Test Variable | Test Case | Pre-Condition | Test Data | Test Steps | Expected Result | Status | Evidence | Remarks | Automation Tools | Date | Files | Requirement |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| [V] | TC-F-01 | 1 | <nama sub-fitur/flow> | <FC x.x - Proses x, atau kosong> | + | <judul deskriptif, ID> | K1 — <ringkas variasi input> | `src/pages/Login.tsx`, `src/hooks/useAuth.ts` | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID><br>2. <aksi, ID> | 1. <hasil, ID><br>2. <hasil, ID> | <link requirement> | <link screenshot/recording> | Automated (`e2e/login.spec.ts`) | | 2026-08-28 |
-| [ ] | TC-F-02 | 1 | <nama sub-fitur/flow> | | - | <judul deskriptif, ID> | K2 — <ringkas variasi input> | `src/components/ProductForm.tsx` | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID> | 1. <hasil, ID> | <link requirement> | | Planned | | |
+| 1 | <nama sub-fitur/flow, ID> | <FC x.x - Proses x, atau kosong> | + | TC1-1 | K1 — <ringkas variasi input, ID> | <judul deskriptif, ID> | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID><br>2. <aksi, ID> | 1. <hasil, ID><br>2. <hasil, ID> | ✅ Passed | <link screenshot/recording> | | Masuk Test Step | 2026-08-28 | `src/pages/Login.tsx`, `src/hooks/useAuth.ts` | <link requirement> |
+| 1 | <nama sub-fitur/flow, ID> | | - | TC1-2 | K2 — <ringkas variasi input, ID> | <judul deskriptif, ID> | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID> | 1. <hasil, ID> | ⚪ Not Run | | | Tanpa Automation | | `src/components/ProductForm.tsx` | <link requirement> |
 
-### <Kategori 2> (P1)
+### PB-2 — <BRD/requirement id> · [Link Task PB](<url>) · [Link Figma](<url>)
 
-| Status | Test Case ID | Group No | Feature | Process No (FC) | TYPE | Test Case | Test Variable | Files | Pre-Condition | Test Data | Test Steps | Expected Result | Requirement | Evidence | Automation Tools | Remarks | Date |
+| NO | PROGRAM SPECIFICATIONS | TEST CASE | TEST CASE ID |
+|---|---|---|---|
+| 1 | <spec/acceptance criterion, ID> | Ya | TC2-1 |
+
+| Group No | Feature | Process No (FC) | TYPE | Test Case ID | Test Variable | Test Case | Pre-Condition | Test Data | Test Steps | Expected Result | Status | Evidence | Remarks | Automation Tools | Date | Files | Requirement |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| [ ] | TC-E-01 | 2 | <nama sub-fitur/flow> | | - | <judul deskriptif, ID> | <ringkas variasi input> | `src/pages/Login.tsx` | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID> | 1. <hasil, ID> | <link requirement> | | Manual | | |
-| [ ] | TC-ERR-01 | 2 | <nama sub-fitur/flow> | | - | <judul deskriptif, ID> | <ringkas variasi input> | `src/api/products.ts` | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID> | 1. <hasil, ID> | <link requirement> | | Planned | | |
-
-## Traceability Matrix
-
-| Requirement | Test Case(s) | Covered? |
-|---|---|---|
-| REQ-1: <ringkas> | TC-F-01, TC-ERR-01 | ✅ |
-| REQ-2: <ringkas> | TC-F-02 | ✅ |
-| REQ-3: <ringkas> | — | ⚠️ Gap |
+| 2 | <nama sub-fitur/flow, ID> | | - | TC2-1 | <ringkas variasi input, ID> | <judul deskriptif, ID> | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID> | 1. <hasil, ID> | ⚪ Not Run | | | Tanpa Automation | | `src/api/products.ts` | <link requirement> |
