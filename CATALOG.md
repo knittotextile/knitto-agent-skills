@@ -80,7 +80,7 @@ sendiri juga, tapi dirancang saling menyambung).
 | [`react-testing`](skills/react-testing/SKILL.md) 🔷 | Testing komponen React (RTL, Vitest/Jest, MSW, axe) + batas component test vs E2E | testing, react | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`e2e-testing`](skills/e2e-testing/SKILL.md) 🔷 | Pola Playwright E2E: Page Object Model, config, integrasi CI/CD, artifact, strategi flaky test | testing, e2e | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`webapp-testing`](skills/webapp-testing/SKILL.md) | Workflow E2E+TDD siap-eksekusi, local-only: script Python (`run_e2e.py`) + config Playwright + report kustom self-contained (`report.html` — grup per kategori, klik test buat expand steps+screenshot, lightbox) + git pre-push hook opsional — tidak ada wiring GitHub Actions/CI provider | testing, e2e, tdd, playwright | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`test-case-matrix`](skills/test-case-matrix/SKILL.md) | Tulis matrix test case (functional/edge/error/state) dari PRD/issue jadi markdown checklist per-step + traceability matrix, sebelum test code ditulis | testing, qa, planning | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`test-case-matrix`](skills/test-case-matrix/SKILL.md) | Tulis matrix test case (functional/edge/error/state) dari PRD/issue jadi markdown checklist per-step + traceability matrix, opsional parameter-combination matrix dulu buat fitur multi-variabel, plus kolom evidence/automation/date, sebelum test code ditulis | testing, qa, planning | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ## Legenda kompatibilitas
 

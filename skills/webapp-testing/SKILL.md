@@ -86,12 +86,23 @@ you actually run.
    })
    ```
 
-   Map each `stepShot` title to one "Steps → Expected" row from this test
-   case's entry in `test-case-matrix`'s matrix — the report should show the
-   same breakdown that's already written down there, not a different one
+   Map each `stepShot` title to one `Test Steps` row from this test case's
+   entry in `test-case-matrix`'s matrix — the report should show the same
+   breakdown that's already written down there, not a different one
    invented per-spec. Without this, a test still runs and reports fine, it
    just has an empty step list and only the one auto "on" screenshot in the
    report (see step 3).
+
+   **Match the matrix's language.** If the source matrix writes `Test Case`
+   and `Test Steps` in Bahasa Indonesia (see `test-case-matrix`), the
+   Playwright `test()` title and every `stepShot` label stay in Bahasa
+   Indonesia too — same wording the matrix uses, not translated back to
+   English. The report is meant to be read side-by-side with the matrix by
+   a manual tester; a language mismatch between them defeats that. Keep the
+   `TC-F-01`-style id prefix and `data-testid`/selector literals as-is
+   (untranslated) inside an otherwise Indonesian title/label — e.g.
+   `test('TC-F-01 — Login berhasil dengan kredensial demo', ...)` with
+   `stepShot(page, testInfo, 'Buka /login', ...)`.
 
 3. **Run the suite via the runner, not raw `npx playwright test`.**
 
