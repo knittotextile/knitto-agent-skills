@@ -38,6 +38,26 @@ instalasi Cursor lama, tapi bukan lagi cara utama.
 standard yang diadopsi lintas tool, jadi skill apa pun di sini otomatis
 kompatibel Codex tanpa perubahan.
 
+**Catatan OpenCode — skill ≠ slash command.** Berbeda dari Claude Code
+(yang otomatis membuat `/nama-skill` untuk tiap skill), OpenCode hanya
+membaca `SKILL.md` lewat tool `skill` yang dipanggil agent sendiri saat
+relevan — **tidak ada** `/nama-skill` otomatis di OpenCode. Kalau user
+OpenCode mau memanggil skill secara eksplisit lewat `/`, perlu file
+command *terpisah* (lihat [docs commands OpenCode](https://opencode.ai/docs/commands/))
+di `.opencode/commands/<nama-skill>.md` (project) atau
+`~/.config/opencode/commands/<nama-skill>.md` (global), isinya minimal:
+
+```markdown
+---
+description: <deskripsi singkat dari CATALOG.md>
+---
+Use the "<nama-skill>" skill (call skill({ name: "<nama-skill>" })) to handle this request: $ARGUMENTS
+```
+
+Ini bukan bagian dari `SKILL.md` itu sendiri — kalau user OpenCode mau
+akses `/nama-skill`, buatkan file wrapper ini sebagai langkah tambahan
+saat instalasi (lihat [`INSTALL.md`](INSTALL.md) Langkah 5).
+
 ## Struktur repo
 
 ```

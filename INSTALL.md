@@ -153,6 +153,21 @@ lain (mis. `brd-grill` yang hand-off ke `prd-grill`), tawarkan untuk
 memasang skill terkait itu juga alih-alih memasangnya diam-diam atau
 mengabaikannya sama sekali.
 
+**Khusus OpenCode — skill tidak otomatis jadi slash command.** Kalau
+OpenCode ada di antara platform yang dipilih di Langkah 2, ingat bahwa
+OpenCode hanya membaca `SKILL.md` lewat tool `skill` yang dipanggil agent
+sendiri — beda dari Claude Code yang otomatis punya `/nama-skill`. Setelah
+menyalin `SKILL.md` ke lokasi OpenCode, **tanyakan** apakah user juga mau
+dibuatkan file command wrapper supaya skill itu bisa dipanggil eksplisit
+lewat `/nama-skill` di OpenCode (lihat format & lokasi di
+[`README.md`](README.md) bagian "Catatan OpenCode"). Kalau ya, buat file
+`.opencode/commands/<nama-skill>.md` (project) atau
+`~/.config/opencode/commands/<nama-skill>.md` (global, ikuti pilihan
+Langkah 4) untuk tiap skill yang dipasang ke OpenCode, isi minimal
+frontmatter `description` (ambil dari `CATALOG.md`) + body yang memanggil
+`skill({ name: "<nama-skill>" })` dengan `$ARGUMENTS`. Jangan buat wrapper
+ini diam-diam tanpa ditanya dulu.
+
 ### Langkah 6 — Cek AGENTS.md/CLAUDE.md di repo target (hanya untuk instalasi level project)
 
 Kalau lokasi instalasi di Langkah 4 adalah **project** (bukan global), cek
