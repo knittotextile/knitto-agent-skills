@@ -1,6 +1,6 @@
 ---
 name: exec-todo
-description: Use when the user wants to actually EXECUTE a plan/checklist file's items — triggers on "/exec-todo <file-or-slug>", "kerjakan fase X", "lanjutkan todo Y", or being pointed at a plan doc (from prd-grill's PRD+ISSUES pair, or a phase-plan file) to implement. Reads the given file, turns its unchecked checklist items into this session's tracked task list, then works through them in order — checking off both the session task list and the markdown checkboxes as each item is verified, dispatching a review step and any required verification at the end per this repo's own "definition of done" if one is documented. Not a planning skill (see prd-grill/brd-grill for that) — this one implements an already-written plan. Not for executing more than one plan file per invocation.
+description: Use when the user wants to actually EXECUTE a plan/checklist file's items — triggers on "/exec-todo <file-or-slug>", "kerjakan fase X", "lanjutkan todo Y", or being pointed at a plan doc (from prd-grill's PRD+ISSUES pair, or a phase-plan file) to implement. Reads the given file, turns its unchecked checklist items into this session's tracked task list, then works through them in order — checking off both the session task list and the markdown checkboxes as each item is verified, dispatching a review step and any required verification at the end per this repo's own "definition of done" if one is documented — the expensive review/QA gate can be deferred and batched across up to 3 pending plans (`/exec-todo --run-pending` runs the batch) when more than one plan is already stacked, while cheap checks (tests/type-check) always run immediately per item. Not a planning skill (see prd-grill/brd-grill for that) — this one implements an already-written plan. Not for executing more than one plan file per invocation (batched review/QA is the one exception, and only for that closing step).
 license: MIT
 metadata:
   category: workflow
@@ -32,6 +32,7 @@ existed, which is exactly the failure mode Step 3 below exists to prevent.
 /exec-todo <path>              # exact path to the plan/checklist file
 /exec-todo <slug or number>    # fuzzy match — resolved in Step 0
 /exec-todo                     # no argument: ask which file, don't guess
+/exec-todo --run-pending       # run the batched review/QA pass on stacked plans (see Step 3)
 ```
 
 ## Step 0 — Resolve the input to exactly one file
@@ -114,33 +115,72 @@ so.
 
 ## Step 3 — The closing gates are not optional busywork
 
-When you reach fixed closing checklist items, follow this repo's own
-documented "definition of done" **exactly**, in whatever order it specifies
-— check for one in a root-level agent-instructions file (`CLAUDE.md`,
-`AGENTS.md`, `CONTRIBUTING.md`) before improvising. If this repo has no such
-documented sequence, use this default, in order:
+The closing gates split into two kinds of cost, and they're handled
+differently:
 
-1. Dispatch a review step proactively (don't wait to be asked) once the
-   feature items are done — use this repo's `reviewer` agent if one exists
+- **Cheap, always-immediate**: unit tests / type-check / build (Step 2 point
+  3 already runs these per item as work lands). Never defer these — they're
+  the reason bugs get caught while the context is still warm. Deferring
+  cheap verification doesn't save tokens, it just moves the cost later and
+  makes it bigger (bugs compound across plans instead of surfacing one at a
+  time).
+- **Expensive, dispatch-based**: a dedicated reviewer/QA-engineer agent pass
+  and a full E2E/manual verification pass. These carry real per-call
+  overhead (agent spawn, re-reading instructions, reloading context), so
+  they're the ones worth batching across multiple plans instead of paying
+  that overhead once per plan.
+
+Once a plan's feature items are all done, before dispatching the expensive
+review/QA pass:
+
+1. Scan the repo's `todo/` location for **other** plan files already in the
+   same state (all feature items `[x]`, closing-gate items still `[ ]`).
+2. If none exist, just run the gates now — there's nothing to batch, and
+   asking would only add an interruption for no benefit.
+3. If one or more exist, ask the user via a choice-style question tool:
+   run the review/QA pass now (covering this plan alone or together with
+   the others found), or stack this plan onto the pending pile and move on.
+   - If stacked: leave every closing-gate checklist item as `[ ]`, mark the
+     corresponding session tasks as deferred (not completed, not dropped),
+     and leave the plan file in `todo/`. Say plainly in the turn's summary
+     that gates were deferred and why.
+   - **Stack cap: 3 plans.** If accepting this plan would put the pile at 4
+     or more, don't offer deferral — run the review/QA pass now, covering
+     the whole pile. Diffs get harder to consolidate the longer they sit,
+     and a stale plan's context costs more to reconstruct than it saves by
+     waiting — past the cap, batching stops being a token saving.
+
+When the review/QA pass actually runs (immediately, or later via
+`/exec-todo --run-pending`), follow this repo's own documented "definition
+of done" **exactly**, in whatever order it specifies — check for one in a
+root-level agent-instructions file (`CLAUDE.md`, `AGENTS.md`,
+`CONTRIBUTING.md`) before improvising. If this repo has no such documented
+sequence, use this default, in order:
+
+1. Dispatch a single review step covering every plan in the batch (one plan
+   if nothing was stacked) — use this repo's `reviewer` agent if one exists
    (see [`agents/reviewer`](../../agents/reviewer/) in this skill collection
    for the pattern), otherwise invoke
    [`code-review-and-quality`](../code-review-and-quality/SKILL.md)
-   directly. Address blocking findings before proceeding.
+   directly, passing it every pending plan's diff in one call rather than
+   one call per plan. Address blocking findings before proceeding.
 2. Run the project's actual verification (E2E/manual browser pass, not just
-   unit tests/type-check) against the real flows the plan touched, if this
-   repo has such a step. If the tooling for it isn't available this
-   session, say so explicitly — don't skip silently.
+   unit tests/type-check) against the real flows each plan in the batch
+   touched, if this repo has such a step. If the tooling for it isn't
+   available this session, say so explicitly — don't skip silently.
 3. Write whatever verification report/artifact this repo's convention
    expects (screenshots, a report file), if any.
 4. Clean up test data and any dev processes started for verification.
-5. Check off the closing checklist items in the file (only after 1-4 pass or
-   their findings are addressed/accepted).
-6. Move the plan doc(s) from `todo/` to `done/` now (both conventions in
-   `prd-grill`'s reference use this split — a `docs/prd/todo/<slug>/` pair
-   or a `doc/phases/todo/...` file) and fix any relative links in it or
-   pointing to it. This step is exactly as mandatory as the other five — a
-   plan that's fully checked but still sitting in `todo/` is an incomplete
-   close-out, not a cosmetic detail.
+5. Per plan in the batch: check off its closing checklist items (only after
+   1-4 pass or their findings are addressed/accepted for that plan
+   specifically — a batched review can still fail one plan and pass
+   another).
+6. Per plan that passed: move it from `todo/` to `done/` now (both
+   conventions in `prd-grill`'s reference use this split — a
+   `docs/prd/todo/<slug>/` pair or a `doc/phases/todo/...` file) and fix any
+   relative links in it or pointing to it. This step is exactly as
+   mandatory as the other five — a plan that's fully checked but still
+   sitting in `todo/` is an incomplete close-out, not a cosmetic detail.
 
 ## Step 4 — Final report
 

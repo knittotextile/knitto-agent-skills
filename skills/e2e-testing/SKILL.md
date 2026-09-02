@@ -26,7 +26,18 @@ end up with a report that doesn't match the project's standard.
 Scope is browser-driven E2E only (a real `page` navigating the app).
 Assertions against `page.waitForResponse(...)` etc. are fine as part of a
 UI flow, but pure API testing with no browser (hitting endpoints directly,
-e.g. via Playwright's `request` fixture) is out of scope for this skill.
+e.g. via Playwright's `request` fixture) is out of scope for this skill —
+see `api-testing` for that.
+
+**Data hygiene note.** A browser-driven test always creates data through a
+real running app — there's no in-process transaction to roll back. Tag
+what a spec creates and tear it down (automatic + a standalone script for
+crashed runs) rather than letting it accumulate in the app's database; see
+`api-testing`'s `references/db-strategy-and-cleanup.md` for the strategy
+and `webapp-testing`'s "Test data hygiene" section for how it's wired into
+the actual runner/`globalTeardown`. If a flow depends on an entity another
+repo/service owns (e.g. an order this app didn't create), see
+`api-testing`'s `references/cross-service-test-data.md` before seeding it.
 
 ## Test File Organization
 

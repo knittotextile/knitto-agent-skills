@@ -1,6 +1,6 @@
 ---
 name: webapp-testing
-description: Executable, local-only E2E + TDD workflow for web apps — real Playwright config, a Python test runner, and a custom self-contained html report (grouped by test-case-matrix category, click a test to expand its steps, every screenshot, and a slowed-down video with adjustable playback speed) — not just markdown code snippets or Playwright's bare default report. Runs up to 3 browser windows in parallel when headed, not an uncapped wall of Chrome windows. No CI provider or GitHub Actions wiring — everything here runs on your own machine, on demand or via an optional local git pre-push hook. Use when setting up or running E2E tests for a webapp end-to-end, not just reading patterns about it.
+description: Executable, local-only E2E + TDD workflow for web apps — real Playwright config, a Python test runner, and a custom self-contained html report (grouped by test-case-matrix category, click a test to expand its steps, every screenshot, and a slowed-down video with adjustable playback speed) — not just markdown code snippets or Playwright's bare default report. Runs up to 3 browser windows in parallel when headed, not an uncapped wall of Chrome windows. No CI provider or GitHub Actions wiring — everything here runs on your own machine, on demand or via an optional local git pre-push hook. Tags and tears down any application data a spec creates (not just report artifacts) so runs don't pollute the app's real database — see `api-testing` for the shared strategy. Use when setting up or running E2E tests for a webapp end-to-end, not just reading patterns about it.
 license: MIT
 metadata:
   category: testing
@@ -21,9 +21,11 @@ red-green-refactor discipline beyond E2E (unit/integration tests), see
 `test-driven-development`. For the scenario list to implement against
 (functional/edge/error/state-transition cases) before writing any spec
 file, see `test-case-matrix` — run that first, then use each of its
-checklist items as the RED step for one spec here. This skill sits on top
-of all three — it's the scaffolding that turns their patterns into files
-you actually run.
+checklist items as the RED step for one spec here. For the database/data
+hygiene concerns below (mock vs real DB, cross-service data dependencies,
+teardown), see `api-testing`'s references — this skill points to them
+rather than duplicating. This skill sits on top of all of these — it's the
+scaffolding that turns their patterns into files you actually run.
 
 ## When to use
 
@@ -68,6 +70,19 @@ you actually run.
    Model structure, folder layout, and flaky-test handling, follow the
    patterns in `e2e-testing` — this skill owns execution and the report
    format, not the test-writing patterns themselves.
+
+   **Before writing a flow that creates or depends on data, check who owns
+   it.** If the flow creates data whose creation logic lives in this repo
+   (a normal signup form, say), proceed as usual. If it depends on an
+   entity actually created/owned by another repo/service (e.g. this app's
+   checkout flow assumes an order that an order-service elsewhere creates),
+   stop and ask for that service's repo path, API contract, or a reachable
+   staging endpoint instead of guessing its shape or writing straight to
+   its tables — see `api-testing`'s
+   [`references/cross-service-test-data.md`](../api-testing/references/cross-service-test-data.md)
+   for the full reasoning. Either way, tag whatever data the test creates
+   (a `run_id`, or a fixed prefix/email domain) so it can be found and
+   removed later — see "Test data hygiene" below.
 
    **Use `assets/step-shot-helper.ts`'s `stepShot` pattern, not a flat test
    body.** Add its `stepShot` function to the project's test fixture file,
@@ -212,6 +227,39 @@ Add `docs/qa/playwright-report/`, `docs/qa/playwright-results.json`, and
 every run, don't commit them. `docs/qa/<slug>/test-matrix.md` (from
 `test-case-matrix`) is the one thing under `docs/qa/` that **should** be
 committed — it's a planning artifact, not a build output.
+
+## Test data hygiene — not just artifact cleanup
+
+Everything in "All output lives under `docs/qa/`" above is about *report
+artifacts* (screenshots, videos, JSON results) — regenerated files, cleaned
+up via `.gitignore`. That's a different problem from *application data*
+these E2E specs create by driving the real UI (a signed-up user, a placed
+order) — that data lands in whatever database the app under test is
+actually connected to, `.gitignore` does nothing for it, and left alone it
+accumulates in that database run after run.
+
+Because a browser-driven E2E test always goes over the network to a real
+running app, it is always the "real DB, black-box" case described in
+`api-testing`'s
+[`references/db-strategy-and-cleanup.md`](../api-testing/references/db-strategy-and-cleanup.md)
+— transaction rollback never applies here. Tagging and teardown are
+mandatory, not optional, whenever a spec creates data:
+
+1. Tag every record a spec creates during the run (a `run_id` generated
+   once per suite invocation, or a fixed prefix like `test+e2e@example.test`
+   for emails).
+2. Add a Playwright `globalTeardown` (see `playwright.config.ts`'s
+   `globalTeardown` option) that deletes everything tagged with this run's
+   id, through the app's own API where possible.
+3. Also keep a **standalone** cleanup script the user can run manually if
+   a run crashed before `globalTeardown` fired — adapt
+   `api-testing`'s [`assets/cleanup_test_data.py`](../api-testing/assets/cleanup_test_data.py)
+   rather than writing one from scratch. It must be idempotent: running it
+   with nothing left to delete is a no-op, not an error.
+
+Don't report an E2E suite "set up" or "passing" while it creates real
+records and neither of these exists — that's exactly the kind of silent
+data pollution this section exists to prevent.
 
 ## Files in this skill
 
