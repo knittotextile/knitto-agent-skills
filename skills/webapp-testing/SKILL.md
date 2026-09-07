@@ -55,10 +55,10 @@ scaffolding that turns their patterns into files you actually run.
 
    **Always do this in the same pass, don't skip it:** check the project's
    `.gitignore` for `docs/qa/playwright-report/`, `docs/qa/test-results/`,
-   and `docs/qa/playwright-results.json` (see "All
-   output lives under `docs/qa/`" below) — append whatever's missing. This
-   is mandatory setup, not optional cleanup: without it, the very first run
-   stages screenshots, videos, and a 1MB+ report file into git.
+   `docs/qa/playwright-results.json`, and `docs/qa/*/test-matrix.html` (see
+   "All output lives under `docs/qa/`" below) — append whatever's missing.
+   This is mandatory setup, not optional cleanup: without it, the very
+   first run stages screenshots, videos, and a 1MB+ report file into git.
    `docs/qa/<slug>/test-matrix.md` (from `test-case-matrix`) is the only
    thing under `docs/qa/` that should stay trackable — everything else
    there is regenerated output.
@@ -183,13 +183,30 @@ browser project badges, and retries shown as tabs — reimplementing all of
 that in a custom generator means permanently trailing the real thing.
 
 `build_report.py` (step 3) runs *after* Playwright writes that report and
-only adds one thing on top: slow-motion playback controls on every video.
-It appends a small vanilla-JS snippet before `</body>` that finds `<video>`
-elements — a plain HTML5 tag, not part of Playwright's internal React
-bundle, so this stays stable across Playwright version upgrades — sets
-their default rate to 0.5× (a real run is fast enough to be hard to follow
-at 1×), and adds speed buttons (0.25×/0.5×/1×/1.5×) next to each one. It
-does not touch Playwright's own markup, styles, or data.
+adds two things on top, without touching Playwright's own markup, styles,
+or data:
+
+1. Slow-motion playback controls on every video. It appends a small
+   vanilla-JS snippet before `</body>` that finds `<video>` elements — a
+   plain HTML5 tag, not part of Playwright's internal React bundle, so this
+   stays stable across Playwright version upgrades — sets their default
+   rate to 0.5× (a real run is fast enough to be hard to follow at 1×), and
+   adds speed buttons (0.25×/0.5×/1×/1.5×) next to each one.
+2. A floating **"Test Matrix"** button (bottom-right corner) that opens a
+   menu of every `docs/qa/<slug>/test-matrix.md` this project has,
+   rendered as a standalone HTML page at `docs/qa/<slug>/test-matrix.html`
+   next to the source markdown. This is a small custom renderer for the
+   specific subset of markdown `test-case-matrix`'s template uses
+   (headers, bold, inline code, links, GFM tables with literal `<br>`
+   inside cells) — not a general CommonMark implementation, since the
+   input is always that one skill's own generated shape. It re-renders and
+   re-injects the menu on every `build_report.py` run (not gated by a
+   marker check like the video controls) because which slugs exist can
+   change between runs; the video-controls snippet stays gated since it
+   never needs updating once present. Lets a tester jump from "did this
+   run pass" straight to "which scenario, with what expected result and
+   pre-condition, does this test case correspond to" without leaving the
+   browser. Skipped silently if no `docs/qa/*/test-matrix.md` exists.
 
 Open the report with `npx playwright show-report docs/qa/playwright-report`
 — attachments (screenshots, video, traces) live in a sibling `data/`
@@ -222,9 +239,12 @@ instead of loose folders scattered at the project root:
 - `docs/qa/test-results/` — raw per-test artifacts (screenshots, videos,
   trace.zip for every test) via `outputDir`.
 
-Add `docs/qa/playwright-report/`, `docs/qa/playwright-results.json`, and
-`docs/qa/test-results/` to `.gitignore` — all three are regenerated on
-every run, don't commit them. `docs/qa/<slug>/test-matrix.md` (from
+Add `docs/qa/playwright-report/`, `docs/qa/playwright-results.json`,
+`docs/qa/test-results/`, and `docs/qa/*/test-matrix.html` to `.gitignore`
+— all of these are regenerated on every run, don't commit them (the
+`.html` render of a matrix is derived from the `.md` and can go stale the
+moment the `.md` is hand-edited, so it's a build output, not a second
+source of truth). `docs/qa/<slug>/test-matrix.md` (from
 `test-case-matrix`) is the one thing under `docs/qa/` that **should** be
 committed — it's a planning artifact, not a build output.
 
@@ -267,9 +287,11 @@ data pollution this section exists to prevent.
   calls `build_report.py` automatically after every run
 - `scripts/build_report.py` — post-processes
   `docs/qa/playwright-report/index.html` (Playwright's own report) to add
-  video speed controls (stdlib-only Python, see "Playwright's own report,
-  plus slow-motion video" above); can also be run standalone to re-inject
-  the controls without rerunning the suite
+  video speed controls and a "Test Matrix" link menu (stdlib-only Python,
+  see "Playwright's own report, plus slow-motion video" above); also
+  renders every `docs/qa/<slug>/test-matrix.md` to a sibling
+  `test-matrix.html`. Can be run standalone to redo all of this without
+  rerunning the suite.
 - `assets/playwright.config.ts` — ready-to-use Playwright config
 - `assets/step-shot-helper.ts` — the `stepShot` pattern from step 2, add to
   the project's test fixtures

@@ -37,7 +37,10 @@ crashed runs) rather than letting it accumulate in the app's database; see
 and `webapp-testing`'s "Test data hygiene" section for how it's wired into
 the actual runner/`globalTeardown`. If a flow depends on an entity another
 repo/service owns (e.g. an order this app didn't create), see
-`api-testing`'s `references/cross-service-test-data.md` before seeding it.
+`api-testing`'s `references/cross-service-test-data.md` before seeding it —
+`webapp-testing`'s step 2 already enforces this "stop and ask" check as a
+required step before writing that kind of spec, so it isn't just a note
+that's easy to skip.
 
 ## Test File Organization
 
