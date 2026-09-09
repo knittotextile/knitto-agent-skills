@@ -133,7 +133,12 @@ Whichever shape applies, always include:
 - The scope decisions from the grill, not generic boilerplate
 - An explicit "out of scope" section, even if short
 - A checklist-style breakdown for implementation — one item per
-  component/endpoint/test file, not one giant item
+  component/endpoint/test file, not one giant item. If a natural item would
+  touch more than ~5 files, can't state acceptance criteria in 3 bullets, or
+  spans independent subsystems, apply
+  `references/task-breakdown-technique.md` (dependency graph, vertical
+  slicing, sizing) to split it before writing the final checklist — don't
+  leave an oversized item in ISSUES.md.
 - If this repo has a fixed "definition of done" (tests pass, review step,
   manual/E2E verification step) documented anywhere (CLAUDE.md, CONTRIBUTING,
   etc.), append those as fixed closing checklist items verbatim — don't

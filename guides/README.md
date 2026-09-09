@@ -15,10 +15,10 @@ mulai fitur baru, mulai dari mana?"), mulai dari sini.
 
 | Flow | Buat situasi | Skill/agent yang dipakai |
 |---|---|---|
-| [`new-feature-flow.md`](new-feature-flow.md) | Fitur baru dari ide mentah sampai deploy | `brd-grill` → `prd-grill` → `exec-todo` → `code-review-and-quality` → `deployment` |
+| [`new-feature-flow.md`](new-feature-flow.md) | Fitur baru dari PB mentah sampai deploy | Pipeline command `/grill` → `/dev` → `/qa` → `/gate` → `/promote` |
 | [`bug-fix-flow.md`](bug-fix-flow.md) | Ada bug yang perlu diperbaiki | `debugging` → `test-driven-development` → `code-review-and-quality` |
 | [`new-repo-onboarding.md`](new-repo-onboarding.md) | Baru pertama kali kerja di repo/project | `project-bootstrap` → `agent-doctor` |
-| [`qa-flow.md`](qa-flow.md) | Nambah test coverage buat fitur | `test-case-matrix` → `react-testing` / `e2e-testing` / `webapp-testing` (setara agent `qa-engineer`) |
+| [`qa-flow.md`](qa-flow.md) | Nambah test coverage buat fitur (juga dipakai `/qa` untuk pilih layer test) | `test-case-matrix` → `react-testing` / `e2e-testing` / `webapp-testing` (setara agent `qa-engineer`) |
 
 ## Cara nulis flow baru
 

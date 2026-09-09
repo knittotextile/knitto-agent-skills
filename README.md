@@ -58,6 +58,58 @@ Ini bukan bagian dari `SKILL.md` itu sendiri — kalau user OpenCode mau
 akses `/nama-skill`, buatkan file wrapper ini sebagai langkah tambahan
 saat instalasi (lihat [`INSTALL.md`](INSTALL.md) Langkah 5).
 
+## Pipeline: DEFINE → SHIP
+
+Selain skill satuan, repo ini punya 5 **command wrapper** yang membungkus
+rantai `brd-grill`/`prd-grill`/`exec-todo`/`code-review-and-quality`/
+`deployment`/`branching` jadi satu pipeline linear per Product Backlog (PB)
+item. Master data-nya di [`commands/`](commands/) — satu folder per
+command, satu file per platform yang benar-benar mendukung command custom
+(**Claude Code, OpenCode, Cursor**). Antigravity dan Codex CLI sengaja
+tidak dapat file command di sini — keduanya punya keterbatasan/mekanisme
+berbeda, lihat [`commands/README.md`](commands/README.md) untuk cara
+menjalankan pipeline ini di kedua platform tersebut.
+
+```
+ DEFINE          BUILD           VERIFY          REVIEW          SHIP
+┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐
+│  PB   │ ───▶ │ Impl  │ ───▶ │ E2E/  │ ───▶ │ Code  │ ───▶ │Deploy │
+│PRD/BRD│      │ +cheap│      │ manual│      │review │      │+close │
+│ grill │      │ check │      │ test  │      │ +sec  │      │ out   │
+└───────┘      └───────┘      └───────┘      └───────┘      └───────┘
+ /grill          /dev            /qa            /gate         /promote
+```
+
+### Commands
+
+5 slash command yang memetakan siklus hidup satu Product Backlog (PB) item.
+Tiap command adalah wrapper tipis di atas skill yang sudah ada — tidak ada
+logika baru, cuma urutan dan gate yang dipaksa.
+
+| Lagi ngapain | Command | Prinsip utama |
+|---|---|---|
+| Gali PB jadi requirement tertulis | `/grill` | Requirement tertulis sebelum kode |
+| Implementasi checklist, item per item | `/dev` | Cheap check per item, bukan full test tiap kali |
+| Buktikan flow-nya beneran jalan | `/qa` | Full E2E/manual, dijalankan sadar — bukan otomatis |
+| Tegakkan standar sebelum merge | `/gate` | Review 5-axis + security bila relevan |
+| Rilis ke produksi | `/promote` | Menolak jalan kalau `/qa`/`/gate` belum lolos |
+
+Titik pentingnya: `/dev` **cuma** menjalankan cheap check (unit test/
+type-check/build) per item, lalu berhenti — full E2E/manual verification
+(`/qa`) dan review (`/gate`) sengaja dipisah jadi command tersendiri,
+supaya biaya waktu/token untuk test/review penuh tidak otomatis kepakai
+tiap kali satu item kecil selesai. Keduanya bisa di-batch lintas beberapa
+PB sekaligus lewat `--run-pending` kalau ada beberapa yang numpuk.
+
+`/promote` menolak jalan sebelum `/qa` dan `/gate` lolos — jadi pipeline
+ini bukan cuma alias urutan, tapi juga menegakkan gate-nya, sama seperti
+`/ship` di addyosmani/agent-skills yang jadi inspirasi struktur pipeline
+ini (lihat [`SOURCES.md`](SOURCES.md) untuk skill yang memang diadopsi
+langsung dari sana).
+
+Detail tiap tahap, kapan skip BRD, dan contoh nyata: lihat
+[`guides/new-feature-flow.md`](guides/new-feature-flow.md).
+
 ## Struktur repo
 
 ```

@@ -18,15 +18,18 @@ lain — bukan ritual tiap sesi.
 ### Alur perencanaan → eksekusi
 
 `brd-grill` → `prd-grill` → `exec-todo` (masing-masing bisa dipakai berdiri
-sendiri juga, tapi dirancang saling menyambung).
+sendiri juga, tapi dirancang saling menyambung). Dibungkus jadi pipeline
+5 command di `.claude/commands/`: **`/grill` → `/dev` → `/qa` → `/gate` →
+`/promote`** — lihat [README § Pipeline](README.md#pipeline-define--ship)
+untuk penjelasan tiap tahap dan kenapa `/qa`/`/gate` sengaja dipisah dari
+`/dev` (supaya full test/review tidak otomatis jalan tiap kali implement).
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
 | [`brd-grill`](skills/brd-grill/SKILL.md) | Ubah Product Backlog mentah jadi BRD (dampak proses/UI/kamus data) lewat tanya-jawab satu-pertanyaan-per-giliran, opsional tabel estimasi effort terkalibrasi, lalu hand-off ke `prd-grill` | planning, brd, requirements, estimation | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
 | [`prd-grill`](skills/prd-grill/SKILL.md) | Ubah ide mentah (atau BRD dari `brd-grill`) jadi PRD/rencana lewat tanya-jawab satu-pertanyaan-per-giliran, lalu tulis PRD+ISSUES (atau ikuti konvensi phase-plan repo yang sudah ada) | planning, prd, docs | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
-| [`exec-todo`](skills/exec-todo/SKILL.md) | Eksekusi checklist dari `prd-grill` sebagai task list ter-tracking, sinkron checkbox file ↔ session, jalankan closing gate (review/verifikasi) repo | planning, execution, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
+| [`exec-todo`](skills/exec-todo/SKILL.md) | Eksekusi feature checklist dari `prd-grill` sebagai task list ter-tracking, sinkron checkbox file ↔ session, cheap check per item — berhenti sebelum closing gate (lihat `/qa`, `/gate`, `/promote`) | planning, execution, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
 | [`incremental-implementation`](skills/incremental-implementation/SKILL.md) 🔷 | Disiplin memecah implementasi jadi langkah kecil yang bisa diverifikasi, bukan satu perubahan besar sekaligus | workflow, implementation | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`planning-and-task-breakdown`](skills/planning-and-task-breakdown/SKILL.md) 🔷 | Pecah spec/requirement jadi task terurut yang implementable, termasuk estimasi scope & identifikasi kerja paralel | planning, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`test-driven-development`](skills/test-driven-development/SKILL.md) 🔷 | Disiplin TDD — tulis test dulu sebelum implementasi/bugfix/perubahan behavior | testing, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ### Documentation & comprehension

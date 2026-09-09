@@ -1,89 +1,114 @@
 # New feature flow
 
-Buat: fitur baru yang masih berupa ide mentah / item backlog, sampai jadi
-kode yang di-review dan siap deploy.
+Buat: fitur baru yang masih berupa ide mentah / Product Backlog item,
+sampai jadi kode yang lolos verifikasi, review, dan ter-deploy.
+
+Ini flow di balik pipeline 5 command di `.claude/commands/`: **`/grill` →
+`/dev` → `/qa` → `/gate` → `/promote`**. Tiap command adalah wrapper tipis
+di atas skill-skill di bawah — lihat isi commandnya kalau mau detail
+step-by-step.
 
 ## Urutan
 
-1. **`brd-grill`** — kalau titik mulainya backlog item mentah dan butuh
-   dampak proses/UI/kamus data digali dulu. Skip kalau kamu udah punya BRD
-   atau requirement udah jelas.
-2. **`prd-grill`** — ubah BRD (atau ide mentah langsung) jadi PRD + checklist
-   eksekusi lewat tanya-jawab satu-pertanyaan-per-giliran.
-3. **`exec-todo`** — eksekusi checklist dari `prd-grill` sebagai task list
-   ter-tracking, sinkron checkbox file ↔ session.
-4. **`test-case-matrix`** (opsional, sebelum/parallel implementasi) — kalau
-   fitur butuh test coverage terencana, bukan cuma ditulis ad-hoc.
-5. **`code-review-and-quality`** — review lima-axis sebelum merge. Bisa
-   dipanggil manual atau lewat agent `reviewer`.
-6. **`deployment`** — checklist rilis aman: risk classification, rollout
-   bertahap, rollback plan.
+1. **`/grill`** (wraps `brd-grill` → `prd-grill`) — ubah PB jadi PRD +
+   checklist ISSUES lewat tanya-jawab satu-pertanyaan-per-giliran.
+   `brd-grill` cuma dipanggil kalau dampak proses/UI/kamus data belum
+   jelas; skip kalau requirement sudah jelas.
+2. **`/dev`** (wraps `exec-todo`) — eksekusi checklist ISSUES sebagai task
+   list ter-tracking, implement satu item per satu, cheap check saja
+   (unit test/type-check/build) per item. **Berhenti** begitu semua
+   feature item selesai — tidak menjalankan test/review mahal.
+3. **`/qa`** (wraps `e2e-testing`/`react-testing`/`webapp-testing`/
+   `api-testing`) — full E2E/manual verification terhadap flow nyata yang
+   disentuh fitur ini. Dipanggil eksplisit, bisa di-batch (`--run-pending`)
+   kalau beberapa PB numpuk menunggu verifikasi.
+4. **`/gate`** (wraps `code-review-and-quality` + `security-review` bila
+   relevan, atau agent `reviewer`) — review 5-axis. Menolak jalan kalau
+   `/qa` belum lolos. Revisi balik ke `/dev` kalau ada blocking finding.
+5. **`/promote`** (wraps `branching`/`deployment`) — rilis: sync ke
+   staging/production sesuai model branch repo, lalu pindahkan plan file
+   dari `todo/` ke `done/`. Menolak jalan kalau `/qa`/`/gate` belum lolos.
+
+**Opsional, sebelum/paralel `/dev`:** **`test-case-matrix`** — kalau fitur
+butuh test coverage terencana (bukan cuma ditulis ad-hoc), tulis dulu
+matrix-nya dari PRD sebelum implementasi jalan; `/qa` nanti eksekusi
+terhadap matrix ini.
+
+## Kenapa `/qa`/`/gate` dipisah dari `/dev`
+
+Sebelumnya `exec-todo` menggabungkan implement + full test/review jadi satu
+langkah, sehingga full testing ter-trigger otomatis tiap kali satu PB
+selesai — boros waktu dan token untuk perubahan kecil. Sekarang `/dev`
+cuma menjalankan cheap check; kamu yang memutuskan kapan bayar biaya
+`/qa`+`/gate`, langsung atau di-batch lintas beberapa PB.
 
 ## Diagram
 
 ```mermaid
 flowchart TD
-    Start([Backlog item mentah]) --> Q1{Dampak proses/UI/data\nsudah jelas?}
-    Q1 -->|belum jelas| BRD1[brd-grill: gali dampak proses/UI/kamus data]
-    BRD1 --> BRD2[brd-grill: tanya-jawab 1 pertanyaan/giliran]
-    BRD2 --> BRD3[brd-grill: opsional tabel estimasi effort]
-    BRD3 --> PRD1
-    Q1 -->|sudah jelas| PRD1[prd-grill: tanya-jawab 1 pertanyaan/giliran]
-    PRD1 --> PRD2[prd-grill: tulis PRD + checklist ISSUES]
-    PRD2 --> EXEC1[exec-todo: sync checklist file <-> session]
-    EXEC1 --> EXEC2[exec-todo: eksekusi task satu per satu]
-    EXEC2 -.opsional / paralel.-> TCM[test-case-matrix: matrix + traceability]
-    EXEC2 --> EXEC3[exec-todo: closing gate repo]
-    TCM -.-> REV1
-    EXEC3 --> REV1[code-review-and-quality: review 5-axis]
-    REV1 --> REV2{Approve?}
-    REV2 -->|minta revisi| EXEC2
-    REV2 -->|approve| DEP1[deployment: risk classification]
-    DEP1 --> DEP2[deployment: pre-deploy checklist]
-    DEP2 --> DEP3[deployment: rollout bertahap feature flag/canary]
-    DEP3 --> DEP4[deployment: verifikasi pasca-deploy]
-    DEP4 --> End([Selesai])
+    Start([PB mentah]) --> Q1{Dampak proses/UI/data\nsudah jelas?}
+    Q1 -->|belum jelas| G1["/grill: brd-grill dulu"]
+    Q1 -->|sudah jelas| G2["/grill: langsung prd-grill"]
+    G1 --> G2
+    G2 --> G3[/grill: tulis PRD + checklist ISSUES/]
+    G3 --> D1[/dev: sync checklist file <-> session/]
+    D1 --> D2[/dev: implement item, cheap check per item/]
+    D2 -.opsional / paralel.-> TCM[test-case-matrix: matrix + traceability]
+    D2 --> Q2[/qa: full E2E/manual verification/]
+    TCM -.-> Q2
+    Q2 --> QG{Lolos?}
+    QG -->|gagal| D2
+    QG -->|lolos| GT[/gate: review 5-axis + security bila relevan/]
+    GT --> GG{Approve?}
+    GG -->|minta revisi| D2
+    GG -->|approve| P1[/promote: sync branch/rilis/]
+    P1 --> P2[/promote: pindah todo/ -> done/]
+    P2 --> End([Selesai])
 ```
 
 ```mermaid
 sequenceDiagram
     participant Dev
-    participant BRD as brd-grill
-    participant PRD as prd-grill
-    participant Exec as exec-todo
-    participant TCM as test-case-matrix
-    participant Rev as code-review-and-quality
-    participant Dep as deployment
+    participant Grill as /grill
+    participant Build as /dev
+    participant QA as /qa
+    participant Gate as /gate
+    participant Ship as /promote
 
-    opt requirement belum jelas
-        Dev->>BRD: backlog item mentah
-        BRD-->>Dev: BRD (dampak proses/UI/data) + estimasi effort
-    end
-    Dev->>PRD: BRD atau ide mentah
-    PRD-->>Dev: PRD + checklist ISSUES
-    Dev->>Exec: checklist dari PRD
+    Dev->>Grill: PB mentah
+    Grill-->>Dev: PRD + checklist ISSUES
+    Dev->>Build: checklist dari PRD
     opt fitur butuh test coverage terencana
-        Dev->>TCM: PRD/issue
-        TCM-->>Dev: test case matrix + traceability
+        Dev->>Build: (paralel) test-case-matrix
     end
-    Exec-->>Dev: implementasi selesai, checklist ter-checked
-    Dev->>Rev: diff/PR
-    Rev-->>Dev: findings 5-axis
+    Build-->>Dev: feature item selesai, cheap check lolos
+    Dev->>QA: minta verifikasi
+    QA-->>Dev: hasil E2E/manual
+    alt verifikasi gagal
+        Dev->>Build: perbaiki
+        Build-->>Dev: revisi selesai
+        Dev->>QA: re-verify
+    end
+    QA-->>Dev: lolos
+    Dev->>Gate: minta review
+    Gate-->>Dev: findings 5-axis
     alt ada revisi
-        Dev->>Exec: perbaiki sesuai findings
-        Exec-->>Dev: revisi selesai
-        Dev->>Rev: re-review
+        Dev->>Build: perbaiki sesuai findings
+        Build-->>Dev: revisi selesai
+        Dev->>Gate: re-review
     end
-    Rev-->>Dev: approve
-    Dev->>Dep: rencana rilis
-    Dep-->>Dev: risk class + rollout plan + rollback plan
-    Dep-->>Dev: verifikasi pasca-deploy
+    Gate-->>Dev: approve
+    Dev->>Ship: promote
+    Ship-->>Dev: rilis + plan file pindah ke done/
 ```
 
 ## Contoh
 
-- Backlog item "tambah export CSV di halaman laporan" → `brd-grill` (karena
-  belum jelas dampaknya ke data yang di-export) → `prd-grill` → `exec-todo`
-  → `code-review-and-quality` → `deployment`.
-- Requirement udah jelas dari stakeholder (skip BRD) → langsung `prd-grill`
-  → `exec-todo` → `code-review-and-quality`.
+- PB "tambah export CSV di halaman laporan" → `/grill` (brd-grill dulu,
+  karena belum jelas dampaknya ke data yang di-export) → `/dev` → `/qa` →
+  `/gate` → `/promote`.
+- Requirement sudah jelas dari stakeholder (skip BRD di dalam `/grill`) →
+  `/grill` → `/dev` → `/qa` → `/gate` → `/promote`.
+- Beberapa PB kecil numpuk selesai `/dev` di hari yang sama → `/qa
+  --run-pending` lalu `/gate --run-pending` sekali untuk semuanya, bukan
+  satu-satu.

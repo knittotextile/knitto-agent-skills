@@ -8,7 +8,6 @@ description: >-
   touching test code, then implements against it using this repo's
   testing skills.
 mode: subagent
-model: inherit
 permission:
   edit: allow
   bash: ask

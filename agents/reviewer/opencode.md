@@ -6,7 +6,6 @@ description: >-
   done/finished/complete. Also use when explicitly asked to review a diff.
   Runs the code-review-and-quality skill against the diff.
 mode: subagent
-model: inherit
 permission:
   edit: deny
   bash: ask

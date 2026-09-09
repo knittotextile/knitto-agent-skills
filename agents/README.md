@@ -48,6 +48,30 @@ file = nama agent untuk sebagian besar platform).
 | Cursor | `model`, `readonly`, `is_background` | filename = identitas subagent |
 | Codex CLI | `name`, `description`, `developer_instructions` (wajib); `model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config` (opsional) | TOML, bukan Markdown+YAML — `developer_instructions` = system prompt |
 
+**Peringatan `model: inherit` — tidak universal, beda dari `SKILL.md`.**
+Di `SKILL.md`, field tak dikenal memang aman diabaikan semua platform
+(superset frontmatter). **File agent per-platform tidak sama** — tiap
+platform punya parser sendiri yang bisa strict di field tertentu:
+
+- **OpenCode**: field `model` divalidasi ketat, harus format
+  `provider/model-id` (mis. `anthropic/claude-sonnet-4-20250514`). Nilai
+  `inherit` **bukan** nilai valid dan menyebabkan agent error saat dimuat.
+  Perilaku "ikut model sesi/parent agent" yang kita mau justru didapat
+  dengan **meng-omit field `model` sepenuhnya** — dokumentasi resmi
+  OpenCode: subagent tanpa `model` otomatis pakai model dari primary agent
+  yang memanggilnya. Jangan tulis `model: inherit` di `opencode.md` mana
+  pun — hapus baris itu kalau ada.
+- **Claude Code**: `model: inherit` valid dan memang berarti "ikut model
+  sesi".
+- **Cursor/Command Code**: belum diverifikasi ulang terhadap dokumentasi
+  resmi — kalau menambah agent baru untuk platform ini, cek dulu apakah
+  `inherit` benar-benar didukung sebelum menyalin pola dari platform lain.
+
+Pelajaran umumnya: jangan asumsikan sebuah nilai/field aman di semua
+platform hanya karena aman di `SKILL.md` atau di satu platform lain — file
+agent per-platform butuh diverifikasi satu-satu terhadap dokumentasi resmi
+platform tersebut sebelum ditulis ke instalasi.
+
 ## Pola: agent mendelegasikan ke skill
 
 Agent di sini sengaja ditulis **tipis** — orkestrasi + orientasi (cari diff,

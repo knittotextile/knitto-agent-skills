@@ -12,9 +12,16 @@ Skill workflow generik, tidak spesifik ke stack tertentu:
 
 - `code-review-and-quality`
 - `incremental-implementation`
-- `planning-and-task-breakdown`
 - `security-and-hardening`
 - `test-driven-development`
+
+`planning-and-task-breakdown` (formerly adopted from this source as a
+standalone skill) was folded into
+[`skills/prd-grill/references/task-breakdown-technique.md`](skills/prd-grill/references/task-breakdown-technique.md)
+— its output convention (`tasks/plan.md`/`tasks/todo.md`) conflicted with
+this repo's `docs/prd/todo/<slug>/ISSUES.md` convention, so the technique
+(dependency graph, vertical slicing, sizing) was kept and rewritten to
+target `ISSUES.md` directly instead of standing alone.
 
 ## [affaan-m/ecc](https://github.com/affaan-m/ecc) (MIT)
 
