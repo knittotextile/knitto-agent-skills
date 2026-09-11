@@ -52,8 +52,8 @@ daripada "1. Buka halaman login" + Expected "Berhasil". Kalau ada
 
 Look for a spec covering this feature, in priority order:
 1. A PRD/ISSUES pair from `prd-grill` (`docs/prd/**/PRD.md`,
-   `docs/prd/**/ISSUES.md`) or a BRD from `brd-grill`, if the slug/feature
-   name matches.
+   `docs/prd/**/ISSUES.md`) or a BRD read via `brd-reader`, if the
+   slug/feature name matches.
 2. A GitHub issue (`gh issue view <n>`) if the user references one.
 3. Any other plan/spec doc in the repo that plausibly covers this feature.
 

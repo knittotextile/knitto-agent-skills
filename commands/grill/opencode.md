@@ -9,14 +9,14 @@ Turn the Product Backlog item "$ARGUMENTS" into a written, confirmed plan
 before any code gets touched.
 
 1. If no argument was given, ask which PB/topic this is for — don't guess.
-2. Decide whether this PB needs a formal BRD first (business requirement
-   docs, process/UI/data-dictionary impact worth capturing) or can go
+2. Decide whether this PB already has a BRD (from a business/system
+   analyst — pasted text or a file) that needs reading first, or can go
    straight to implementation planning:
-   - Needs BRD: call the "brd-grill" skill (`skill({ name: "brd-grill" })`)
+   - Has a BRD: call the "brd-reader" skill (`skill({ name: "brd-reader" })`)
      on "$ARGUMENTS". It hands off to prd-grill itself once the BRD is
-     confirmed — let that handoff happen, don't call prd-grill again
-     separately.
-   - Skips BRD: call the "prd-grill" skill (`skill({ name: "prd-grill" })`)
+     confirmed understood — let that handoff happen, don't call prd-grill
+     again separately. It never authors a new BRD.
+   - No BRD exists: call the "prd-grill" skill (`skill({ name: "prd-grill" })`)
      directly on "$ARGUMENTS".
    - If unclear which applies, ask the user rather than assuming.
 3. If "$ARGUMENTS" looks like `refine <slug>`, pass that through as-is to

@@ -112,7 +112,7 @@ versi terbaru:
 
 ```
 ## Alur perencanaan → eksekusi
-[ ] brd-grill — <deskripsi singkat dari CATALOG.md>
+[ ] brd-reader — <deskripsi singkat dari CATALOG.md>
 [ ] prd-grill — <deskripsi singkat dari CATALOG.md>
 ...
 
@@ -126,7 +126,7 @@ versi terbaru:
 
 Tetap sebutkan keterkaitan antar item saat menawarkan (mis.
 `code-review-and-quality` erat kaitannya dengan agent `reviewer`,
-`prd-grill`/`brd-grill`/`exec-todo` saling terhubung), supaya user tahu opsi
+`prd-grill`/`brd-reader`/`exec-todo` saling terhubung), supaya user tahu opsi
 yang saling melengkapi tanpa perlu ditanya dua kali. Jangan pasang semuanya
 sekaligus tanpa dikonfirmasi via checklist ini, dan jangan pecah jadi
 pertanyaan terpisah per kategori — satu checklist, semua kategori, satu kali
@@ -149,7 +149,7 @@ setara) — satu skill/agent bisa berarti beberapa operasi salin sekaligus
 kalau platformnya lebih dari satu. Setelah semua selesai, laporkan path
 final per platform ke user dalam satu ringkasan (jangan laporkan
 sepotong-sepotong). Untuk skill dengan `references/` yang menyebut skill
-lain (mis. `brd-grill` yang hand-off ke `prd-grill`), tawarkan untuk
+lain (mis. `brd-reader` yang hand-off ke `prd-grill`), tawarkan untuk
 memasang skill terkait itu juga alih-alih memasangnya diam-diam atau
 mengabaikannya sama sekali.
 

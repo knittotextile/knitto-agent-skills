@@ -1,6 +1,6 @@
 ---
 name: exec-todo
-description: Use when the user wants to actually EXECUTE a plan/checklist file's feature items — triggers on "/exec-todo <file-or-slug>", "kerjakan fase X", "lanjutkan todo Y", or being pointed at a plan doc (from prd-grill's PRD+ISSUES pair, or a phase-plan file) to implement. Reads the given file, turns its unchecked feature checklist items into this session's tracked task list, then works through them in order — checking off both the session task list and the markdown checkboxes as each item is verified with cheap checks (tests/type-check/build) run immediately per item. Stops once every feature item is checked off — does NOT dispatch review or run full E2E/manual verification itself; that expensive closing-gate work is deliberately separate (see the `/qa`, `/gate`, `/promote` commands in this collection), so a full test/review pass isn't paid on every invocation. Not a planning skill (see prd-grill/brd-grill for that) — this one implements an already-written plan. Not for executing more than one plan file per invocation.
+description: Use when the user wants to actually EXECUTE a plan/checklist file's feature items — triggers on "/exec-todo <file-or-slug>", "kerjakan fase X", "lanjutkan todo Y", or being pointed at a plan doc (from prd-grill's PRD+ISSUES pair, or a phase-plan file) to implement. Reads the given file, turns its unchecked feature checklist items into this session's tracked task list, then works through them in order — checking off both the session task list and the markdown checkboxes as each item is verified with cheap checks (tests/type-check/build) run immediately per item. Stops once every feature item is checked off — does NOT dispatch review or run full E2E/manual verification itself; that expensive closing-gate work is deliberately separate (see the `/qa`, `/gate`, `/promote` commands in this collection), so a full test/review pass isn't paid on every invocation. Not a planning skill (see prd-grill/brd-reader for that) — this one implements an already-written plan. Not for executing more than one plan file per invocation.
 license: MIT
 metadata:
   category: workflow
@@ -20,7 +20,7 @@ compatible_with: [claude-code, opencode, antigravity, commandcode]
 
 Turn a plan/checklist file's **feature items** into an actively-tracked,
 actually-implemented piece of work. [`prd-grill`](../prd-grill/SKILL.md)
-(optionally preceded by [`brd-grill`](../brd-grill/SKILL.md)) writes the
+(optionally preceded by [`brd-reader`](../brd-reader/SKILL.md)) writes the
 plan; `exec-todo` implements it. See `references/project-example.md` for a
 concrete worked example this skill was generalized from.
 

@@ -61,7 +61,7 @@ saat instalasi (lihat [`INSTALL.md`](INSTALL.md) Langkah 5).
 ## Pipeline: DEFINE → SHIP
 
 Selain skill satuan, repo ini punya 5 **command wrapper** yang membungkus
-rantai `brd-grill`/`prd-grill`/`exec-todo`/`code-review-and-quality`/
+rantai `brd-reader`/`prd-grill`/`exec-todo`/`code-review-and-quality`/
 `deployment`/`branching` jadi satu pipeline linear per Product Backlog (PB)
 item. Master data-nya di [`commands/`](commands/) — satu folder per
 command, satu file per platform yang benar-benar mendukung command custom

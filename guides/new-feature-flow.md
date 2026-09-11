@@ -10,10 +10,11 @@ step-by-step.
 
 ## Urutan
 
-1. **`/grill`** (wraps `brd-grill` → `prd-grill`) — ubah PB jadi PRD +
+1. **`/grill`** (wraps `brd-reader` → `prd-grill`) — ubah PB jadi PRD +
    checklist ISSUES lewat tanya-jawab satu-pertanyaan-per-giliran.
-   `brd-grill` cuma dipanggil kalau dampak proses/UI/kamus data belum
-   jelas; skip kalau requirement sudah jelas.
+   `brd-reader` cuma dipanggil kalau PB itu sudah punya BRD dari
+   analyst (baca & pahami dulu); skip langsung ke `prd-grill` kalau belum
+   ada BRD sama sekali. `brd-reader` tidak pernah menulis BRD baru.
 2. **`/dev`** (wraps `exec-todo`) — eksekusi checklist ISSUES sebagai task
    list ter-tracking, implement satu item per satu, cheap check saja
    (unit test/type-check/build) per item. **Berhenti** begitu semua
@@ -46,9 +47,9 @@ cuma menjalankan cheap check; kamu yang memutuskan kapan bayar biaya
 
 ```mermaid
 flowchart TD
-    Start([PB mentah]) --> Q1{Dampak proses/UI/data\nsudah jelas?}
-    Q1 -->|belum jelas| G1["/grill: brd-grill dulu"]
-    Q1 -->|sudah jelas| G2["/grill: langsung prd-grill"]
+    Start([PB mentah]) --> Q1{Sudah ada BRD\ndari analyst?}
+    Q1 -->|ada| G1["/grill: brd-reader dulu"]
+    Q1 -->|belum ada| G2["/grill: langsung prd-grill"]
     G1 --> G2
     G2 --> G3[/grill: tulis PRD + checklist ISSUES/]
     G3 --> D1[/dev: sync checklist file <-> session/]
@@ -104,10 +105,10 @@ sequenceDiagram
 
 ## Contoh
 
-- PB "tambah export CSV di halaman laporan" → `/grill` (brd-grill dulu,
-  karena belum jelas dampaknya ke data yang di-export) → `/dev` → `/qa` →
-  `/gate` → `/promote`.
-- Requirement sudah jelas dari stakeholder (skip BRD di dalam `/grill`) →
+- PB "tambah export CSV di halaman laporan" sudah punya BRD dari analyst →
+  `/grill` (brd-reader baca BRD-nya dulu) → `/dev` → `/qa` → `/gate` →
+  `/promote`.
+- Belum ada BRD sama sekali (skip brd-reader di dalam `/grill`) →
   `/grill` → `/dev` → `/qa` → `/gate` → `/promote`.
 - Beberapa PB kecil numpuk selesai `/dev` di hari yang sama → `/qa
   --run-pending` lalu `/gate --run-pending` sekali untuk semuanya, bukan

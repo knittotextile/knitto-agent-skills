@@ -4,7 +4,7 @@
 REVIEW → SHIP** per Product Backlog (PB) item: `/grill` → `/dev` → `/qa`
 → `/gate` → `/promote`. Tiap command sengaja tipis — tidak ada logika baru,
 cuma orkestrasi urutan + gate di atas skill yang sudah ada
-(`brd-grill`/`prd-grill`, `exec-todo`, testing skills, `code-review-and-
+(`brd-reader`/`prd-grill`, `exec-todo`, testing skills, `code-review-and-
 quality`/`security-review`, `branching`/`deployment`).
 
 Sama seperti `agents/`, command **tidak punya format lintas-platform
@@ -58,7 +58,7 @@ user-global (bukan per-project, jadi tidak bisa didistribusikan lewat
 repo ini), dan dipanggil dengan nama berbeda (`/prompts:<nama>`, bukan
 `/<nama>`). OpenAI mengarahkan pemakaian skill langsung
 (`@nama-skill`) sebagai gantinya. Untuk Codex, jalankan tiap tahap
-pipeline dengan memanggil skill-nya langsung: `@brd-grill`/`@prd-grill`
+pipeline dengan memanggil skill-nya langsung: `@brd-reader`/`@prd-grill`
 untuk `/grill`, `@exec-todo` untuk `/dev`, dst — bukan lewat command.
 
 ## Kenapa `/qa`/`/gate` command terpisah dari `/dev`

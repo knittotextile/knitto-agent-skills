@@ -41,15 +41,15 @@ this generic skill infers on the fly.
 /prd-grill refine <slug>        # reopen an existing plan doc, grill only the delta
 ```
 
-## Being invoked after brd-grill
+## Being invoked after brd-reader
 
 If this invocation comes as a hand-off from
-[`brd-grill`](../brd-grill/SKILL.md) (a BRD file path and prior grill
-answers were passed in), treat the BRD as the source of truth for *what* —
-don't re-ask process/UI/data-impact questions already answered there. Read
-the BRD in full, then jump straight to Step 3 asking only genuinely new,
-implementation-level questions (which files, which endpoints, which
-components) that the BRD wouldn't have covered.
+[`brd-reader`](../brd-reader/SKILL.md) (a BRD file/text and its confirmed
+understanding were passed in), treat the BRD as the source of truth for
+*what* — don't re-ask process/UI/data-impact questions already answered
+there. Read the BRD in full, then jump straight to Step 3 asking only
+genuinely new, implementation-level questions (which files, which
+endpoints, which components) that the BRD wouldn't have covered.
 
 ## Step 1 — Scope: new plan vs. correction to an existing one
 
