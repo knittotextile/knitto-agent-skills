@@ -29,6 +29,13 @@ Before invoking it, orient yourself quickly:
 2. Find the spec/task this corresponds to, if one exists in this repo
    (a PRD, an issue, a phase/plan doc), so the review has the intended
    scope/requirements as context, not just the diff in isolation.
+3. **Don't self-trigger mid-pipeline.** If step 2 found a tracked plan file
+   and its verification closing item isn't checked off yet, this work is
+   mid-pipeline, not done — an implementation step's own "feature work is
+   done" report means "ready for verification," not "ready for review."
+   Say so and stop; defer to this repo's review pipeline stage. This
+   proactive trigger is for work with no tracked plan file (ad hoc
+   sessions, standalone bug fixes).
 
 Then run the skill against that diff+context.
 

@@ -9,34 +9,41 @@ allowed-tools: [Read, Write, Edit, Glob, Grep, Bash, TaskUpdate, Skill, AskUserQ
 Pipeline stage: **SHIP**. Previous stage `/gate`. Last stage — nothing
 follows this.
 
-Ship `$ARGUMENTS` and close out its plan file, now that `/qa` and `/gate`
-have both passed.
+Open the PRs that carry `$ARGUMENTS`'s branch forward, now that `/qa` and
+`/gate` have both passed. This is git-PR mechanics only — no CI/deploy
+checks, no waiting on a release to go live. Its plan file is already in
+`done/` (moved by `/gate` once review approved).
 
 ## Steps
 
 1. Resolve `$ARGUMENTS` to the plan file. Confirm every closing checklist
    item is checked (feature items from `/dev`, verification from `/qa`,
-   review from `/gate`) — if anything is still open, say which stage to run
-   first instead of proceeding.
-2. Branch/release flow: invoke [`branching`](../../skills/branching/SKILL.md)
-   `promote <slug>` if this repo uses the paired feature-branch +
-   long-lived releases/* model (its own Step 0 detects this) — this opens
-   the production PR and checks whether a separate `releases/main` push is
-   needed to actually deploy.
-3. If this repo instead uses a different deploy convention (plain
-   GitHub Flow, trunk-based, or a documented CI pipeline), use
-   [`deployment`](../../skills/deployment/SKILL.md) for the actual release
-   steps instead of `branching`.
-4. Once live: move the plan file from `todo/` to `done/` (per
-   [`prd-grill`'s output conventions](../../skills/prd-grill/references/output-conventions.md))
-   and fix any relative links in it or pointing to it. This step is exactly
-   as mandatory as the deploy step itself — a shipped feature whose plan
-   file is still sitting in `todo/` is an incomplete close-out.
-5. Offer to clean up the merged feature branches (ask first, don't delete
-   unilaterally — see `branching`'s own cleanup step).
+   review from `/gate`, plan already in `done/`) — if anything is still
+   open, say which stage to run first instead of proceeding.
+2. If this repo uses the paired feature-branch + long-lived releases/*
+   model ([`branching`](../../skills/branching/SKILL.md)'s own Step 0
+   detects this):
+   - Open a PR from `<slug>-main` into the trunk (`main`), if one isn't
+     open already.
+   - Also run `branching`'s `sync <slug>` step here (not as a separate
+     command): create/update `<slug>-dev`, cherry-pick the commits not yet
+     picked, and open/update a PR from `-dev` into the staging branch
+     (`releases/sandbox` or `releases/staging` — check which one this repo
+     has per `branching` Step 0; if both exist, ask the user which is the
+     real target instead of guessing).
+   - That's it — don't check whether merging triggers a deploy, don't look
+     for a `releases/main` push, don't gate on CI. This command's job ends
+     at "PRs opened."
+3. If this repo doesn't use that model, just make sure `<slug>-main`'s PR
+   into the trunk branch is open per whatever convention this repo's docs
+   describe — still no deploy/CI checks.
+4. Offer to clean up branches once the PRs are merged (ask first, don't
+   delete unilaterally — see `branching`'s own cleanup step).
 
 ## What this is not
 
 - Not a way to bypass `/qa` or `/gate` to ship faster — refuse to promote a
   plan with open verification or review items, and say so plainly.
+- Not a deploy/release step — it never checks CI, never touches
+  `releases/main`, never waits for anything to go live. It only opens PRs.
 - Not for shipping more than one plan file per invocation.

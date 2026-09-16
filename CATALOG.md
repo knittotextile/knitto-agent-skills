@@ -2,8 +2,9 @@
 
 Index semua skill di repo ini. Update tabel ini setiap menambah/mengubah
 skill (lihat [`CONTRIBUTING.md`](CONTRIBUTING.md)). Skill bertanda 🔷 di
-kolom Tag diadopsi dari repo open-source MIT — lihat [`SOURCES.md`](SOURCES.md)
-untuk atribusi lengkap, bukan tulisan asli repo ini.
+kolom Tag diadopsi dari repo open-source MIT, dan 🔶 diadopsi dari repo
+open-source Apache-2.0 — lihat [`SOURCES.md`](SOURCES.md) untuk atribusi
+lengkap, bukan tulisan asli repo ini.
 
 ### Foundation
 
@@ -14,6 +15,7 @@ lain — bukan ritual tiap sesi.
 |---|---|---|---|
 | [`project-bootstrap`](skills/project-bootstrap/SKILL.md) | Kalibrasi agent ke project yang belum pernah disentuh: deteksi stack/tooling (`detect_stack.py`), install dependency, verifikasi project benar-benar jalan (build/test/dev), lalu tulis/update `CLAUDE.md`/`AGENTS.md` dengan command yang sudah diverifikasi — bukan ditebak | foundation, onboarding, setup | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`agent-doctor`](skills/agent-doctor/SKILL.md) | Verifikasi subagent (mis. `reviewer`, `qa-engineer`) yang terpasang di project benar-benar bisa jalan di platform user saat ini — lokasi file, frontmatter sesuai dialek platform, dan model yang user punya akses (langganan beda per orang/platform) — lalu bantu perbaiki yang bermasalah, termasuk live-invoke test kalau platform-nya cocok dengan sesi yang sedang jalan | foundation, agents, diagnostics | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`skill-sync`](skills/skill-sync/SKILL.md) | Cek skill/agent/command yang sudah terpasang di project terhadap sumbernya (catalog ini, via URL/clone lokal) pakai lockfile `.agent-skills-lock.json` dari saat instalasi, lalu update yang berubah di upstream — file yang sudah di-override sengaja oleh project tidak pernah ditimpa tanpa konfirmasi; command: `/skill-sync` | foundation, maintenance, sync | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 
 ### Alur perencanaan → eksekusi
 
@@ -85,6 +87,13 @@ untuk penjelasan tiap tahap dan kenapa `/qa`/`/gate` sengaja dipisah dari
 | [`api-testing`](skills/api-testing/SKILL.md) | Testing endpoint REST/GraphQL langsung (tanpa browser) via Supertest/httpx — pilih mode DB per test (mock, real+rollback, atau real+black-box) dengan tagging & script cleanup wajib buat mode black-box, plus deteksi dependency lintas-repo (entity yang dibuat service lain) sebelum seeding data | testing, api, backend, database | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`webapp-testing`](skills/webapp-testing/SKILL.md) | Workflow E2E+TDD siap-eksekusi, local-only: script Python (`run_e2e.py`) + config Playwright + report kustom self-contained (`report.html` — grup per kategori, klik test buat expand steps+screenshot, lightbox) + git pre-push hook opsional — tidak ada wiring GitHub Actions/CI provider | testing, e2e, tdd, playwright | `claude-code`, `opencode`, `antigravity`, `commandcode` |
 | [`test-case-matrix`](skills/test-case-matrix/SKILL.md) | Tulis matrix test case (functional/edge/error/state) dari PRD/issue jadi markdown checklist per-step + traceability matrix, opsional parameter-combination matrix dulu buat fitur multi-variabel, plus kolom evidence/automation/date, sebelum test code ditulis | testing, qa, planning | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+
+### Web standards & discoverability
+
+| Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
+|---|---|---|---|
+| [`modern-web-guidance`](skills/modern-web-guidance/SKILL.md) 🔶 | Search tool (via `npx`) ke database panduan platform web modern (performa/CWV, aksesibilitas, keamanan, forms, built-in AI, WebMCP) yang di-maintain tim Chrome — bukan konten statis, supaya tidak basi seiring API browser berubah. Di katalog ini di-scope ke luar kategori UI/visual (sudah dipegang tim UI/UX + template React) | performance, accessibility, webmcp, built-in-ai | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
+| [`ai-discoverability`](skills/ai-discoverability/SKILL.md) | Bikin konten situs bisa ditemukan/diparse/dikutip AI crawler & answer engine (ChatGPT, Perplexity, Claude, dll) serta search engine biasa — `llms.txt`, structured data (JSON-LD), `robots.txt` untuk bot AI, canonical URL, `sitemap.xml`, meta tag, dan cek SSR/prerendering supaya konten terbaca tanpa JS | seo, discoverability, llm | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
 
 ## Legenda kompatibilitas
 

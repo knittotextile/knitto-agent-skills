@@ -1,7 +1,7 @@
 ## 🤖 Untuk AI agent yang membaca repo ini
 
 Kamu (AI agent) sedang diarahkan ke repo ini — lewat link GitHub yang
-di-paste user, atau lewat clone lokal. **WAJIB** ikuti Langkah 1–5 di bawah
+di-paste user, atau lewat clone lokal. **WAJIB** ikuti Langkah 1–6 di bawah
 ini secara berurutan sebelum menyalin file apa pun. Ini bukan saran, ini
 aturan mengikat:
 
@@ -11,8 +11,8 @@ aturan mengikat:
   relevan" lalu langsung memasangnya diam-diam.
 - **DILARANG** melompati/menggabung langkah di luar cara yang sudah
   ditentukan di masing-masing langkah (mis. Langkah 2 dan 3 memang
-  dirancang menyatu dalam satu alur — lihat instruksinya — tapi Langkah 4
-  dan 5 tetap terpisah, jangan digabung sendiri).
+  dirancang menyatu dalam satu alur — lihat instruksinya — tapi Langkah 4,
+  5, dan 6 tetap terpisah, jangan digabung sendiri).
 
 Tujuannya: siapa pun yang "caplok" skill dari repo ini lewat AI agent
 harus dapat pengalaman yang sama — cepat, jelas, dan tidak salah pasang
@@ -141,7 +141,31 @@ platform yang dipilih di Langkah 2 lebih dari satu, lokasi ini berlaku sama
 untuk semua platform tersebut kecuali user secara eksplisit minta beda per
 platform.
 
-### Langkah 5 — Eksekusi
+### Langkah 5 — Tanyakan bahasa operasional
+
+Tanyakan ke user: skill/agent yang baru dipasang ini sebaiknya berinteraksi
+(pertanyaan, laporan, dan dokumen yang ditulis — PRD/BRD, test-case matrix,
+report review, dst) pakai **Bahasa Indonesia [ID]** atau **English [EN]**?
+Tampilkan sebagai pertanyaan pilihan (checklist/choice tool kalau tersedia,
+teks biasa kalau tidak) — jangan menebak dari bahasa yang dipakai user
+mengetik permintaan instalasi ini, karena itu bisa beda dari bahasa yang
+dia mau dipakai skill sehari-hari.
+
+Ini **bukan** menerjemahkan isi `SKILL.md`/agent file — konten itu tetap
+Bahasa Inggris apa adanya (sumber kebenaran katalog ini), sesuai "Aturan
+tambahan" di bawah yang melarang modifikasi isi saat menyalin. Ini murni
+preferensi bahasa **interaksi** (respons ke user) dan **dokumen yang
+dihasilkan** skill saat dipakai nanti.
+
+Simpan jawabannya untuk dicatat di Langkah 7 sebagai instruksi standing di
+`AGENTS.md`/`CLAUDE.md` — kalau Langkah 7 di-skip user (mis. instalasi
+level global tanpa file project untuk ditulisi), tetap tawarkan mencatat
+preferensi ini ke file memory global platform yang bersangkutan (mis.
+`~/.claude/CLAUDE.md` untuk Claude Code, atau lokasi setara platform lain
+— cek konvensi masing-masing) sebagai section singkat tambahan, bukan
+menimpa isi lain di file itu.
+
+### Langkah 6 — Eksekusi
 
 Setelah dikonfirmasi, salin folder/file yang dipilih ke lokasi yang sesuai
 untuk **setiap platform** yang dipilih di Langkah 2 (bisa pakai `cp -r` atau
@@ -152,6 +176,23 @@ sepotong-sepotong). Untuk skill dengan `references/` yang menyebut skill
 lain (mis. `brd-reader` yang hand-off ke `prd-grill`), tawarkan untuk
 memasang skill terkait itu juga alih-alih memasangnya diam-diam atau
 mengabaikannya sama sekali.
+
+**Tulis/update lockfile `.agent-skills-lock.json`** setelah salin selesai,
+di lokasi yang sama dengan level instalasi dari Langkah 4:
+- **Project**: `.agent-skills-lock.json` di root project target.
+- **Global**: `~/.agent-skills-lock.json` — satu file bersama di home
+  directory, terlepas dari platform mana saja yang dipilih di Langkah 2
+  (bukan per-platform, supaya [`skill-sync`](skills/skill-sync/SKILL.md)
+  cukup cek satu lokasi tetap untuk semua instalasi global user).
+
+Ini supaya `skill-sync` nanti bisa cek update tanpa menebak. Satu entry per skill/agent yang baru
+dipasang, isi minimal: nama, path file per platform yang disalin,
+`source_url` (URL/lokasi clone repo ini), `source_commit` (commit SHA repo
+ini saat instalasi — `git rev-parse HEAD` di clone lokal), dan hash konten
+tiap file persis setelah disalin (baseline). Jangan lewati langkah ini
+tanpa alasan eksplisit dari user — tanpa lockfile, project itu tidak bisa
+di-sync ke versi terbaru nanti kecuali lewat mode ad-hoc yang lebih ribet
+(minta konfirmasi tiap file).
 
 **Khusus OpenCode — skill tidak otomatis jadi slash command.** Kalau
 OpenCode ada di antara platform yang dipilih di Langkah 2, ingat bahwa
@@ -168,16 +209,17 @@ frontmatter `description` (ambil dari `CATALOG.md`) + body yang memanggil
 `skill({ name: "<nama-skill>" })` dengan `$ARGUMENTS`. Jangan buat wrapper
 ini diam-diam tanpa ditanya dulu.
 
-### Langkah 6 — Cek AGENTS.md/CLAUDE.md di repo target (hanya untuk instalasi level project)
+### Langkah 7 — Cek AGENTS.md/CLAUDE.md di repo target (hanya untuk instalasi level project)
 
 Kalau lokasi instalasi di Langkah 4 adalah **project** (bukan global), cek
 apakah repo target sudah punya `AGENTS.md` atau `CLAUDE.md` di root repo.
 
 - Kalau salah satu (atau keduanya) **sudah ada**, jangan menimpa isinya.
   Tawarkan untuk menambahkan bagian singkat yang mendaftar skill/agent yang
-  baru saja dipasang (nama + lokasi file + trigger/kapan dipakai), supaya
-  file itu tetap jadi sumber kebenaran yang lengkap tanpa kehilangan isi
-  yang sudah ditulis user sebelumnya.
+  baru saja dipasang (nama + lokasi file + trigger/kapan dipakai), **plus**
+  section bahasa operasional dari jawaban Langkah 5 (lihat format di bawah)
+  — supaya file itu tetap jadi sumber kebenaran yang lengkap tanpa
+  kehilangan isi yang sudah ditulis user sebelumnya.
 - Kalau **belum ada sama sekali** (tidak ada `AGENTS.md` maupun
   `CLAUDE.md`), tawarkan ke user untuk membuatkan salah satunya (tanyakan
   yang mana kalau tidak jelas dari platform yang dipilih di Langkah 2 —
@@ -185,9 +227,20 @@ apakah repo target sudah punya `AGENTS.md` atau `CLAUDE.md` di root repo.
   Isi file yang dibuat minimal mencakup:
   - Ringkasan singkat project (dari `README.md` repo target kalau ada,
     atau ditanyakan langsung ke user kalau belum jelas).
-  - Daftar skill/agent yang baru dipasang di Langkah 5: nama, lokasi file
+  - Daftar skill/agent yang baru dipasang di Langkah 6: nama, lokasi file
     hasil instalasi, dan kapan/kenapa agent sebaiknya memakainya (ambil
     dari deskripsi di `CATALOG.md`, jangan ditulis ulang versimu sendiri).
+  - Section bahasa operasional dari jawaban Langkah 5, format:
+    ```
+    ## Bahasa operasional
+    Skill/agent dari agent-skills catalog ini berinteraksi (pertanyaan,
+    laporan, dokumen yang dihasilkan) dalam **Bahasa Indonesia**, kecuali
+    user secara eksplisit minta Bahasa Inggris untuk sesi/task tertentu.
+    ```
+    (atau kebalikannya kalau user pilih `[EN]` — tetap Bahasa Inggris
+    kecuali diminta ID untuk sesi tertentu). Isi `SKILL.md`/agent file itu
+    sendiri tidak diterjemahkan — section ini hanya soal bahasa interaksi
+    dan dokumen yang dihasilkan saat skill dipakai.
   - Konvensi dasar repo yang relevan buat agent (struktur folder, cara
     menjalankan test/build) kalau bisa disimpulkan dari file project yang
     ada (`package.json`, `Makefile`, dll) — jangan mengarang kalau tidak

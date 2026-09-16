@@ -56,13 +56,13 @@ Use the "<nama-skill>" skill (call skill({ name: "<nama-skill>" })) to handle th
 
 Ini bukan bagian dari `SKILL.md` itu sendiri — kalau user OpenCode mau
 akses `/nama-skill`, buatkan file wrapper ini sebagai langkah tambahan
-saat instalasi (lihat [`INSTALL.md`](INSTALL.md) Langkah 5).
+saat instalasi (lihat [`INSTALL.md`](INSTALL.md) Langkah 6).
 
 ## Pipeline: DEFINE → SHIP
 
 Selain skill satuan, repo ini punya 5 **command wrapper** yang membungkus
 rantai `brd-reader`/`prd-grill`/`exec-todo`/`code-review-and-quality`/
-`deployment`/`branching` jadi satu pipeline linear per Product Backlog (PB)
+`branching` jadi satu pipeline linear per Product Backlog (PB)
 item. Master data-nya di [`commands/`](commands/) — satu folder per
 command, satu file per platform yang benar-benar mendukung command custom
 (**Claude Code, OpenCode, Cursor**). Antigravity dan Codex CLI sengaja
@@ -70,12 +70,22 @@ tidak dapat file command di sini — keduanya punya keterbatasan/mekanisme
 berbeda, lihat [`commands/README.md`](commands/README.md) untuk cara
 menjalankan pipeline ini di kedua platform tersebut.
 
+**Penting: `/promote` (tahap SHIP) tidak men-deploy apa pun.** Ia cuma
+membuka/update PR — dari `<slug>-main` ke trunk, dan (kalau repo pakai
+model `branching`) sync cherry-pick ke branch staging — lalu berhenti.
+Tidak ada cek CI, tidak menunggu deploy live, tidak menyentuh
+`releases/main`. Keputusan deploy/rilis sesungguhnya tetap di tangan
+proses CI/CD masing-masing repo, di luar pipeline ini; lihat skill
+`deployment` kalau butuh checklist judgment-call seputar rilis itu
+sendiri (rollback plan, gradual rollout, dll) — itu terpisah dari
+`/promote` dan tidak dipanggil otomatis olehnya.
+
 ```
  DEFINE          BUILD           VERIFY          REVIEW          SHIP
 ┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐
-│  PB   │ ───▶ │ Impl  │ ───▶ │ E2E/  │ ───▶ │ Code  │ ───▶ │Deploy │
-│PRD/BRD│      │ +cheap│      │ manual│      │review │      │+close │
-│ grill │      │ check │      │ test  │      │ +sec  │      │ out   │
+│  PB   │ ───▶ │ Impl  │ ───▶ │ E2E/  │ ───▶ │ Code  │ ───▶ │ Buka  │
+│PRD/BRD│      │ +cheap│      │ manual│      │review │      │PR ke  │
+│ grill │      │ check │      │ test  │      │ +sec  │      │trunk  │
 └───────┘      └───────┘      └───────┘      └───────┘      └───────┘
  /grill          /dev            /qa            /gate         /promote
 ```
@@ -92,7 +102,7 @@ logika baru, cuma urutan dan gate yang dipaksa.
 | Implementasi checklist, item per item | `/dev` | Cheap check per item, bukan full test tiap kali |
 | Buktikan flow-nya beneran jalan | `/qa` | Full E2E/manual, dijalankan sadar — bukan otomatis |
 | Tegakkan standar sebelum merge | `/gate` | Review 5-axis + security bila relevan |
-| Rilis ke produksi | `/promote` | Menolak jalan kalau `/qa`/`/gate` belum lolos |
+| Buka PR promosi ke trunk/staging | `/promote` | Menolak jalan kalau `/qa`/`/gate` belum lolos; murni git-PR mechanics, bukan deploy |
 
 Titik pentingnya: `/dev` **cuma** menjalankan cheap check (unit test/
 type-check/build) per item, lalu berhenti — full E2E/manual verification
@@ -105,7 +115,10 @@ PB sekaligus lewat `--run-pending` kalau ada beberapa yang numpuk.
 ini bukan cuma alias urutan, tapi juga menegakkan gate-nya, sama seperti
 `/ship` di addyosmani/agent-skills yang jadi inspirasi struktur pipeline
 ini (lihat [`SOURCES.md`](SOURCES.md) untuk skill yang memang diadopsi
-langsung dari sana).
+langsung dari sana) — bedanya, `/ship` di sana boleh mencakup langkah
+deploy, sedangkan `/promote` di repo ini sengaja berhenti di "PR terbuka"
+saja, karena mekanisme deploy setiap repo bisa sangat berbeda dan bukan
+sesuatu yang aman untuk diasumsikan/dieksekusi otomatis oleh agent.
 
 Detail tiap tahap, kapan skip BRD, dan contoh nyata: lihat
 [`guides/new-feature-flow.md`](guides/new-feature-flow.md).
@@ -159,3 +172,8 @@ tersebut sebelum menyalin skill/agent apa pun.
 ## Cara menambah skill baru
 
 Lihat [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## Lisensi
+
+[MIT](LICENSE) — setiap skill/agent/command di sini juga mendeklarasikan
+`license: MIT` di frontmatter-nya masing-masing.

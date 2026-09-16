@@ -5,6 +5,7 @@ license: MIT
 compatibility: "Requires reading a diff (git or equivalent) and the repo's own conventions docs if present."
 metadata:
   category: review
+  source: "addyosmani/agent-skills (MIT)"
   author: lintang
   version: "1.0.0"
 allowed-tools: [Read, Grep, Glob, Bash]

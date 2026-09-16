@@ -27,6 +27,13 @@ Before reviewing:
 2. Find the spec/plan doc this corresponds to, if this repo has a planning
    convention (PRD, issue, phase file) — read the latest/highest version,
    not a superseded one.
+3. **Don't self-trigger mid-pipeline.** If step 2 found a tracked plan file
+   and its verification closing item isn't checked off yet, this work is
+   mid-pipeline, not done — a "feature work is done" report from an
+   implementation step means "ready for verification," not "ready for
+   review." Stop and say so; defer to the repo's review pipeline stage
+   instead. This agent's proactive trigger is for work with no tracked plan
+   file (ad hoc sessions, standalone bug fixes).
 
 ## Larangan / constraints
 

@@ -25,6 +25,14 @@ Before invoking it, orient yourself quickly:
    this repo uses, e.g. output from a `prd-grill`-style skill) so the
    review has the intended scope/requirements as context, not just the
    diff in isolation.
+3. **Don't self-trigger mid-pipeline.** If step 2 found a tracked plan file
+   (`docs/prd/todo/<slug>/ISSUES.md` or equivalent) and its verification
+   closing item isn't checked off yet, this work is mid-pipeline, not done —
+   `exec-todo`'s own "feature work is done" report means "ready for `/qa`",
+   not "ready for review." Say so and stop; don't review here. Defer to
+   `/gate`, which runs deliberately after `/qa`. This proactive trigger is
+   for work with **no** tracked plan file (ad hoc sessions, bug fixes) where
+   there's no `/gate` command to defer to.
 
 Then run the skill against that diff+context.
 

@@ -1,7 +1,10 @@
 # New feature flow
 
+![New feature flow diagram](https://s3.knitto.org/assets/skills/new-feature-flow.png)
+
 Buat: fitur baru yang masih berupa ide mentah / Product Backlog item,
-sampai jadi kode yang lolos verifikasi, review, dan ter-deploy.
+sampai jadi kode yang lolos verifikasi, review, dan PR-nya terbuka. Pipeline
+ini berhenti di "PR terbuka" — tidak ada langkah deploy/CI di dalamnya.
 
 Ini flow di balik pipeline 5 command di `.claude/commands/`: **`/grill` →
 `/dev` → `/qa` → `/gate` → `/promote`**. Tiap command adalah wrapper tipis
@@ -26,9 +29,25 @@ step-by-step.
 4. **`/gate`** (wraps `code-review-and-quality` + `security-review` bila
    relevan, atau agent `reviewer`) — review 5-axis. Menolak jalan kalau
    `/qa` belum lolos. Revisi balik ke `/dev` kalau ada blocking finding.
-5. **`/promote`** (wraps `branching`/`deployment`) — rilis: sync ke
-   staging/production sesuai model branch repo, lalu pindahkan plan file
-   dari `todo/` ke `done/`. Menolak jalan kalau `/qa`/`/gate` belum lolos.
+   Begitu approve tanpa revisi: commit sisa perubahan, lalu pindahkan plan
+   file dari `todo/` ke `done/` — plan dianggap "selesai" begitu terverifikasi
+   dan direview, tidak menunggu langkah branch/rilis.
+5. **`/promote`** (wraps `branching`) — murni buka PR: PR
+   `<slug>-main` → `main`, plus (kalau repo pakai model paired-branch)
+   `branching`'s `sync <slug>` (buat/update `-dev`, cherry-pick, PR
+   `-dev` → branch staging) dijalankan dari sini juga, bukan command
+   terpisah. Nama branch staging tidak fixed — repo bisa pakai
+   `releases/sandbox` atau `releases/staging`; kalau keduanya ada di repo
+   yang sama, `/promote` klarifikasi dulu ke user branch mana yang
+   dimaksud, bukan nebak. Tidak ada cek CI/deploy sama sekali — job-nya
+   selesai begitu PR-PR itu terbuka. Menolak jalan kalau `/qa`/`/gate`
+   belum lolos.
+
+**PB kecil (bukan fitur multi-file, bukan bug)?** Jangan paksakan lewat
+`/grill` — `prd-grill` sendiri menolak "trivial one-line tasks" dan
+command lain di pipeline ini (`/dev`/`/qa`/`/gate`/`/promote`) semuanya
+butuh file plan untuk resolve argumennya. Pakai
+[`small-change-flow.md`](small-change-flow.md) sebagai gantinya.
 
 **Opsional, sebelum/paralel `/dev`:** **`test-case-matrix`** — kalau fitur
 butuh test coverage terencana (bukan cuma ditulis ad-hoc), tulis dulu
@@ -62,9 +81,9 @@ flowchart TD
     QG -->|lolos| GT[/gate: review 5-axis + security bila relevan/]
     GT --> GG{Approve?}
     GG -->|minta revisi| D2
-    GG -->|approve| P1[/promote: sync branch/rilis/]
-    P1 --> P2[/promote: pindah todo/ -> done/]
-    P2 --> End([Selesai])
+    GG -->|approve| GD[/gate: commit + pindah todo/ -> done/]
+    GD --> P1["/promote: PR -main -> main + sync -dev -> releases/sandbox"]
+    P1 --> End([Selesai: PR terbuka])
 ```
 
 ```mermaid
@@ -99,8 +118,9 @@ sequenceDiagram
         Dev->>Gate: re-review
     end
     Gate-->>Dev: approve
+    Gate-->>Dev: commit + plan file pindah ke done/
     Dev->>Ship: promote
-    Ship-->>Dev: rilis + plan file pindah ke done/
+    Ship-->>Dev: PR -main->main + PR -dev->releases/sandbox terbuka
 ```
 
 ## Contoh

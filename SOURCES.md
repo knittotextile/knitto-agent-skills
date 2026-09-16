@@ -40,6 +40,23 @@ dll):
 - `react-testing`
 - `security-review`
 
+## [GoogleChrome/modern-web-guidance](https://github.com/GoogleChrome/modern-web-guidance) (Apache-2.0)
+
+Beda dengan skill MIT di atas, ini **bukan konten statis** — `SKILL.md`
+di sumbernya membungkus tool `npx modern-web-guidance` yang query ke
+database panduan semantik (performa, aksesibilitas, keamanan, forms,
+built-in AI, WebMCP) yang di-maintain tim Chrome Google. Instruksi inti
+(langkah search/retrieve, catatan npx/Windows, kebijakan browser support)
+tidak diubah dari sumber aslinya; yang ditambahkan cuma frontmatter
+lintas-platform dan satu catatan scope khusus katalog ini (skip kategori
+guide `ui-atoms`/`ui-behaviors`/`ui-components`/`visual-design` karena
+project ini sudah punya tim UI/UX + template React sendiri):
+
+- `modern-web-guidance`
+
+Lisensinya **Apache-2.0**, bukan MIT — beda dari skill lain di daftar ini,
+jadi jangan disamakan tag/lisensinya di `CATALOG.md`.
+
 ## Diinspirasi (bukan disalin) dari repo project privat
 
 - `exec-todo` — digeneralisasi dari versi project-scoped di repo
