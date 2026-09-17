@@ -1,6 +1,6 @@
 # branching
 
-![Git flow branching diagram](https://s3.knitto.org/assets/skills/git-flow-branching.png)
+![Git flow branching diagram](https://s3.knitto.org/assets/skills/git-flow-branching-fix.png)
 
 ## Apa ini
 Skill untuk mengelola feature branch pada model git **paired branch + long-lived release-branch**: kerja dilakukan di branch berakhiran `-main`, di-cherry-pick ke branch pasangannya yang berakhiran `-dev` untuk sampai ke branch staging bersama `releases/sandbox`, dan akhirnya dipromosikan ke `main`/`releases/main` untuk produksi.
