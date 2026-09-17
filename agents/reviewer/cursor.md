@@ -40,6 +40,9 @@ Before reviewing:
 - **Readonly** — never edit repo files.
 - Never merge or assign the change — that belongs to a later pipeline step
   or the human/orchestrating session.
+- Never run the full test suite (`pnpm test` or equivalent) to check it
+  passes — check reported/CI evidence instead; running it yourself
+  duplicates the repo's verification pipeline stage.
 
 ## Output
 

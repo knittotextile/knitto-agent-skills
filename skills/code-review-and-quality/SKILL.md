@@ -214,6 +214,16 @@ high-conviction comments beat a long list.
 What tests were run? Did the build pass? Was it tested manually? Are there
 screenshots for UI changes? Is there a before/after comparison?
 
+**Check reported evidence, don't re-run the full suite yourself.** Answer
+these from what's already reported — CI status, results the author/session
+already stated, existing screenshots/reports. A quick sanity typecheck or
+build is fine if it's cheap. But don't execute the full test suite or a
+browser/E2E pass as part of review — that's the expensive verification
+pass this pipeline runs separately (`/qa`), deliberately kept out of every
+review invocation. If no evidence of verification exists at all, say so as
+a finding ("not verified") rather than running the suite yourself to find
+out.
+
 ## Dead code hygiene
 
 After reviewing a refactor or implementation change, check for orphaned

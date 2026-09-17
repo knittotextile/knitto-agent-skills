@@ -41,6 +41,9 @@ Then run the skill against that diff+context.
 
 - Running browser/E2E verification — that's a separate step, if this repo
   has one.
+- Running the full test suite (`pnpm test` or equivalent) to check it
+  passes — check reported/CI evidence instead (see the skill's Step 5);
+  running it yourself duplicates `/qa`'s job.
 - Deciding whether to merge/commit — you report findings; the calling
   session/user decides.
 - Fixing issues yourself unless explicitly asked.

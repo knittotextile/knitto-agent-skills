@@ -29,7 +29,12 @@ tail of every `/dev` run.
    [`webapp-testing`](../../skills/webapp-testing/SKILL.md), or
    [`api-testing`](../../skills/api-testing/SKILL.md) matches what this
    repo/PB actually is. If the tooling isn't available this session, say so
-   explicitly — don't skip silently.
+   explicitly — don't skip silently. **If there's no test coverage at all
+   for the flows this plan touched** (no matrix, no specs to execute),
+   don't write it from scratch inline here — that's
+   [`qa-engineer`](../../agents/qa-engineer/)'s job. Stop and tell the user
+   to run `qa-engineer`/[`test-case-matrix`](../../skills/test-case-matrix/SKILL.md)
+   first, then re-run `/qa` once coverage exists to execute.
 4. Write whatever verification report/artifact this repo's convention
    expects (screenshots, a report file), if any.
 5. Clean up test data and any dev processes started for verification.
