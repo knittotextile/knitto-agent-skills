@@ -60,6 +60,23 @@ the `source_url` it was installed from, the `source_commit` (catalog repo
 commit SHA at install time), and a content hash per installed file as it
 stood right after copying.
 
+**When both lockfiles exist, cross-check for untracked files in the other
+scope before moving to Step 1.** This catches the case where a multi-scope
+install (e.g. commands installed to both a project and globally to
+`~/.claude/commands/` in the same session) only wrote its lockfile entry
+to one scope, leaving the other scope's copy of the same file physically
+present but invisible to sync — it never gets checked for staleness. For
+each entry present in lockfile A, check whether a file at the equivalent
+path also exists physically in scope B (e.g. `~/.claude/commands/<name>.md`
+for a `command`-type entry) without a matching entry in lockfile B's
+entries. If found, flag it to the user as "untracked in scope B — mau
+di-backfill entry-nya ke `<lockfile B path>` (sumber sama, hash dihitung
+dari file yang ada sekarang)?" rather than silently ignoring it. Backfilling
+means adding an entry to lockfile B with the same `source_url`/
+`source_commit` as lockfile A's entry and a freshly computed hash of scope
+B's current file content — do this only after the user confirms, and note
+it in the final Step 5 report.
+
 ## Step 1 — Ask which tracked skills/agents to sync
 
 Unless a specific skill/agent name was already given as an argument, list

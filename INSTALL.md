@@ -194,6 +194,19 @@ tanpa alasan eksplisit dari user — tanpa lockfile, project itu tidak bisa
 di-sync ke versi terbaru nanti kecuali lewat mode ad-hoc yang lebih ribet
 (minta konfirmasi tiap file).
 
+**Kalau file yang sama dipasang fisik ke lebih dari satu scope sekaligus**
+(mis. `/grill`, `/dev`, `/qa`, `/gate`, `/promote` dipasang ke project DAN
+juga ke `~/.claude/commands/` secara global dalam sesi instalasi yang
+sama) — tulis entry lockfile di **kedua scope**, bukan cuma satu. Ini
+pernah gagal: command-command itu ter-install fisik di
+`~/.claude/commands/`, tapi entrynya cuma masuk ke lockfile project,
+sehingga `~/.agent-skills-lock.json` "buta" terhadap file itu dan
+`skill-sync` tidak pernah mengecek stale-nya. Kalau instalasi menyentuh
+scope project dan global sekaligus, tulis/update **kedua** file lockfile
+(`.agent-skills-lock.json` di root project, dan `~/.agent-skills-lock.json`)
+dengan entry yang identik (nama, `source_url`, `source_commit`, hash) untuk
+tiap file yang benar-benar disalin ke scope tersebut.
+
 **Khusus OpenCode — skill tidak otomatis jadi slash command.** Kalau
 OpenCode ada di antara platform yang dipilih di Langkah 2, ingat bahwa
 OpenCode hanya membaca `SKILL.md` lewat tool `skill` yang dipanggil agent
