@@ -14,8 +14,19 @@ from /qa so review and verification can be run (or batched) independently.
    instructions (`.cursor/skills/code-review-and-quality/SKILL.md`). If
    the PB touches auth, data handling, or anything security-sensitive,
    also apply `security-review`.
-4. Address blocking findings before proceeding — loop back to /dev for
-   fixes if the review finds real defects, then re-run this command.
+4. Address blocking findings before proceeding. If the review finds real
+   defects, write each blocking finding back into the plan's ISSUES.md as a
+   new unchecked "- [ ]" feature checklist item (one per defect, worded as
+   the fix to make, not just the finding text) before sending the user to
+   /dev. This is required: /dev calls exec-todo, which only acts on
+   unchecked feature lines already in the file — if findings aren't written
+   there, exec-todo sees everything checked and does nothing, and the user
+   gets stuck bouncing between /gate and /dev with no fix happening. Insert
+   the new items before the closing checklist items, noting which finding
+   each one addresses. Non-blocking notes don't need to be written back —
+   only blockers. Then send the user back to /dev, and tell them to re-run
+   /qa → /gate afterward since a code fix can invalidate prior
+   verification too.
 5. Once findings are addressed or accepted, check off the plan's
    review-related closing checklist item(s) for each plan in the batch
    that passed. A batched review can pass one plan and fail another —
