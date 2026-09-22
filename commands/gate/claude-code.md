@@ -53,11 +53,16 @@ batched) independently.
    passed. A batched review can pass one plan and fail another — check off
    per-plan, not the whole batch at once.
 6. For each plan that just passed fully (every closing checklist item now
-   checked): commit any outstanding changes, then move its plan file from
-   `todo/` to `done/` (per
-   [`prd-grill`'s output conventions](../../skills/prd-grill/references/output-conventions.md))
-   and fix any relative links in it or pointing to it. This happens here,
-   not in `/promote` — the plan counts as "done" once verified and
+   checked): commit any outstanding changes, then run
+   `node .claude/skills/prd-grill/scripts/move-plan.mjs --slug <slug> --to done`
+   (per [`prd-grill`'s output conventions](../../skills/prd-grill/references/output-conventions.md))
+   instead of moving the files by hand — it's a single atomic `git mv` plus
+   a rewrite of every relative link that pointed at the old `todo/` path,
+   confirmed necessary because a manual file-by-file move (write at the new
+   path, delete at the old one) can leave an empty `todo/<slug>/` directory
+   behind when the delete step is incomplete, and that inconsistency showed
+   up for real across different tools running this same step. This happens
+   here, not in `/promote` — the plan counts as "done" once verified and
    reviewed, independent of when the branch/release side actually ships.
 
 ## What this is not

@@ -32,10 +32,14 @@ from /qa so review and verification can be run (or batched) independently.
    that passed. A batched review can pass one plan and fail another —
    check off per-plan, not the whole batch at once.
 6. For each plan that just passed fully (every closing checklist item now
-   checked): commit any outstanding changes, then move its plan file from
-   todo/ to done/ (per prd-grill's output conventions) and fix any relative
-   links in it or pointing to it. This happens here, not in /promote — the
-   plan counts as "done" once verified and reviewed, independent of when
+   checked): commit any outstanding changes, then run
+   "node .cursor/skills/prd-grill/scripts/move-plan.mjs --slug <slug> --to done"
+   (per prd-grill's output conventions) instead of moving the files by
+   hand — it's a single atomic git mv plus a rewrite of every relative link
+   that pointed at the old todo/ path, confirmed necessary because a manual
+   file-by-file move can leave an empty todo/<slug>/ directory behind. This
+   happens here, not in /promote — the plan counts as "done" once verified
+   and reviewed, independent of when
    the branch/release side actually ships.
 
 Not the verification pass — that's /qa, already done before this runs.

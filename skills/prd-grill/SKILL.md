@@ -7,7 +7,7 @@ metadata:
   category: planning
   author: lintang
   version: "1.0.0"
-allowed-tools: [Read, Write, Edit, Glob, Grep, AskUserQuestion]
+allowed-tools: [Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion]
 argument-hint: "[topic or feature] | refine <slug>"
 when_to_use: "Also trigger proactively when the user describes a feature at a level too vague to implement directly (e.g. 'add some kind of notification system') rather than waiting for the literal /prd-grill invocation."
 disable-model-invocation: false
