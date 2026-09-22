@@ -22,14 +22,15 @@ improvised while writing test code.
 1. **Don't self-trigger mid-pipeline.** Check whether this feature has a
    tracked plan file (from `prd-grill`/`brd-reader`, e.g.
    `docs/prd/todo/<slug>/ISSUES.md` or equivalent) that's already mid the
-   `/grill /dev /qa /gate /promote` pipeline. If one exists and its feature
-   items are done (ready for or past the verification stage), this is
-   `/qa`'s job, not yours — say so and stop, defer to `/qa`, don't write a
-   parallel test-case-matrix that the pipeline's closing checklist won't
-   know about. This guard is for the proactive "qa fitur ini"-style
-   trigger; it doesn't apply when the user explicitly asks you by name, or
-   when there's no tracked plan file at all (ad hoc work, a feature that
-   hasn't been through `/grill`).
+   `/grill /dev /qa /gate /promote` pipeline. If one exists, this is
+   `/qa`'s job, not yours — `/qa` now always runs `test-case-matrix` itself
+   as its own Step 3 and implements against it in Step 4, so there's no gap
+   for you to fill here even before verification starts. Say so and stop,
+   defer to `/qa`, don't write a parallel test-case-matrix that the
+   pipeline's closing checklist won't know about. This guard is for the
+   proactive "qa fitur ini"-style trigger; it doesn't apply when the user
+   explicitly asks you by name, or when there's no tracked plan file at all
+   (ad hoc work, a feature that hasn't been through `/grill`).
 2. **Always start with the `test-case-matrix` skill** (or, if this repo
    keeps it as a `.cursor/skills/` skill or `.mdc` rule instead, that
    version). Never write or run test code before this step — the matrix is
