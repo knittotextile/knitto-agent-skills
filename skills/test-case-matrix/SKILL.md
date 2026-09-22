@@ -6,7 +6,7 @@ metadata:
   category: testing
   author: lintang
   version: "1.0.0"
-allowed-tools: [Read, Write, Glob, Grep]
+allowed-tools: [Read, Write, Glob, Grep, Bash]
 argument-hint: "[feature/slug or PRD path]"
 compatible_with: [claude-code, opencode, antigravity, commandcode]
 ---
@@ -122,12 +122,29 @@ file changes, not just when a requirement changes.
 ## Step 4 — Write the matrix
 
 Write one file: `docs/qa/<slug>/test-matrix.md` (create the folder if
-missing). Use this exact structure — see `assets/test-matrix-template.md`
-for the literal template to copy and fill in. This mirrors the manual-
-tester spreadsheet layout (header block, two-part Summary, PB-grouped test
-case tables with a per-PB mini traceability index) — don't restructure it
-into a single flat table or a category-grouped layout, the whole point is
-that this reads the same as the tester's own sheet.
+missing). **Scaffold it with `scripts/new-test-matrix.mjs` first, don't
+hand-copy `assets/test-matrix-template.md` from memory:**
+
+```bash
+node scripts/new-test-matrix.mjs <slug> --feature "<Nama Fitur>" \
+  --source "docs/prd/todo/<slug>/PRD.md, .../ISSUES.md" \
+  --pb "PB-1 — <requirement group 1>" --pb "PB-2 — <requirement group 2>"
+```
+
+(repeat `--pb` once per PB group from Step 3; omit it entirely for a
+single-PB feature). This writes the file with the header block, both
+Summary tables, and one correctly-18-columned test case table per `--pb`
+already in place — confirmed necessary 2026-09-22: an audit of 38 real
+`test-matrix.md` files across a live program found 33 had silently drifted
+into a simplified 4-column ad-hoc format because the structure was
+reconstructed from memory each time instead of started from the template.
+Scaffolding removes that failure mode — the shape can't drift if it's
+generated, not recalled. Then fill in every `<placeholder>` per Steps 1-3.
+This mirrors the manual-tester spreadsheet layout (header block, two-part
+Summary, PB-grouped test case tables with a per-PB mini traceability index)
+— don't restructure it into a single flat table or a category-grouped
+layout, the whole point is that this reads the same as the tester's own
+sheet.
 
 - **Header** — feature name, requirement source (link), tester/programmer
   (if known — ask or leave `<belum diisi>` rather than guessing), created/
@@ -216,13 +233,28 @@ that this reads the same as the tester's own sheet.
   - `Requirement` — link to the requirement/acceptance criterion this case
     covers, short description in Bahasa Indonesia if paraphrased.
 
-## Step 5 — Report gaps
+## Step 5 — Lint, then report gaps
 
-After writing the file, tell the user which `PROGRAM SPECIFICATIONS` rows
-have no covering test case (⚠️ Gap in any PB's mini traceability table) and
-which categories from Step 3 came up empty for a given PB — those are
-either genuinely inapplicable or a sign the requirement source
-under-specifies that area; say which you think it is per gap.
+Before reporting anything, run the structural check:
+
+```bash
+node scripts/lint-test-matrix.mjs docs/qa/<slug>/test-matrix.md
+```
+
+Fix any `ERROR`-level finding (wrong/missing columns, missing Summary
+tables — these mean the file doesn't actually match this skill's format)
+before moving on. `WARNING`-level findings (bad `Status`/`Automation Tools`
+value, `Test Case ID` not matching `TC<n>-<m>`, Summary counts stale, no
+traceability index) are worth fixing too but don't block. Run it with no
+arguments (or a directory) to sweep every `test-matrix.md` under the repo
+at once — useful for checking a whole program's existing coverage, not just
+the file just written.
+
+Then tell the user which `PROGRAM SPECIFICATIONS` rows have no covering
+test case (⚠️ Gap in any PB's mini traceability table) and which categories
+from Step 3 came up empty for a given PB — those are either genuinely
+inapplicable or a sign the requirement source under-specifies that area;
+say which you think it is per gap.
 
 ## What this skill does NOT do
 
