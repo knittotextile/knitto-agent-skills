@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: web-standards
   author: lintang
-compatible_with: [claude-code, opencode, antigravity, commandcode]
+compatible_with: [claude-code, opencode, antigravity]
 ---
 
 # AI Discoverability

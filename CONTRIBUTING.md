@@ -13,7 +13,7 @@ lowercase, angka, dan tanda hubung saja (`^[a-z0-9]+(-[a-z0-9]+)*$`), maks
 ## 2. Isi `SKILL.md`
 
 Field frontmatter berikut adalah **superset** — dikumpulkan dari field yang
-dikenali Claude Code, OpenCode, Antigravity, dan Command Code. Field yang
+dikenali Claude Code, OpenCode, dan Antigravity. Field yang
 tidak dikenal sebuah platform akan diabaikan platform itu, jadi aman ditulis
 semua.
 
@@ -21,17 +21,16 @@ semua.
 |---|---|---|---|
 | `name` | Ya | semua | Harus sama dengan nama folder |
 | `description` | Ya | semua | Maks ~1024 char. Ini yang dibaca agent untuk memutuskan kapan skill dipakai — tulis jelas & spesifik, termasuk kapan *tidak* dipakai |
-| `license` | Opsional | OpenCode, Command Code | |
-| `compatibility` | Opsional | OpenCode, Command Code | Maks 500 char, syarat environment |
+| `license` | Opsional | OpenCode | |
+| `compatibility` | Opsional | OpenCode | Maks 500 char, syarat environment |
 | `metadata` | Opsional | semua (map string→string) | Pakai untuk `category`, `author`, `version` |
-| `allowed-tools` | Opsional | Command Code | Tools yang pre-approved (experimental) |
-| `disallowed-tools` | Opsional | Command Code | |
-| `argument-hint` | Opsional | Command Code | Ditampilkan di menu `/` |
-| `when_to_use` | Opsional | Command Code | Konteks tambahan untuk auto-invocation |
-| `disable-model-invocation` | Opsional | Command Code | `true` = sembunyikan dari model |
-| `user-invocable` | Opsional | Command Code | `false` = sembunyikan dari menu `/` |
-| `model` / `effort` | Opsional | Command Code | Pin model / reasoning effort |
-| `compatible_with` | Opsional, khusus repo ini | — | List platform yang sudah diverifikasi jalan, mis. `[claude-code, opencode, antigravity, commandcode]` — dipakai untuk mengisi `CATALOG.md` |
+| `allowed-tools` | Opsional | Claude Code | Daftar tool yang diizinkan untuk skill |
+| `disallowed-tools` | Opsional | Claude Code | Daftar tool yang tidak boleh dipakai skill |
+| `argument-hint` | Opsional | Claude Code | Petunjuk argumen yang ditampilkan di menu `/` |
+| `disable-model-invocation` | Opsional | Claude Code | `true` = sembunyikan dari pemanggilan model |
+| `user-invocable` | Opsional | Claude Code | `false` = sembunyikan dari menu `/` |
+| `model` / `effort` | Opsional | Claude Code | Pin model / reasoning effort |
+| `compatible_with` | Opsional, khusus repo ini | — | List platform yang sudah diverifikasi jalan, mis. `[claude-code, opencode, antigravity]` — dipakai untuk mengisi `CATALOG.md` |
 
 Body markdown di bawah frontmatter: instruksi langkah-demi-langkah untuk
 agent. Usahakan **di bawah 500 baris** — detail panjang (skema, referensi
@@ -42,8 +41,8 @@ API, contoh besar) pindahkan ke `references/` dan cukup ditunjuk dari body
 
 Sejak Cursor 2.4, Cursor sudah baca `SKILL.md` native di
 `.cursor/skills/<name>/` — tidak perlu adapter apa pun, cukup salin folder
-skill apa adanya (sama seperti Claude Code/OpenCode/Antigravity/Command
-Code/Codex). `cursor.mdc` (adapter model-rules lama, `.cursor/rules/*.mdc`)
+skill apa adanya (sama seperti Claude Code/OpenCode/Antigravity/Codex).
+`cursor.mdc` (adapter model-rules lama, `.cursor/rules/*.mdc`)
 hanya relevan untuk instalasi Cursor pra-2.4 yang belum punya skill-folder
 native — buat file ini hanya kalau ada permintaan eksplisit untuk
 mendukung versi Cursor lama itu, bukan lagi default untuk setiap skill

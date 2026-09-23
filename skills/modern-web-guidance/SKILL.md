@@ -22,7 +22,7 @@ metadata:
   category: web-standards
   source: "GoogleChrome/modern-web-guidance (Apache-2.0)"
   author: lintang
-compatible_with: [claude-code, opencode, antigravity, commandcode]
+compatible_with: [claude-code, opencode, antigravity]
 ---
 
 # Modern Web Guidance

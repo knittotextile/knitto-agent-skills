@@ -13,7 +13,7 @@ when_to_use: "Also trigger when the user pastes raw BRD content (sections like t
 disable-model-invocation: false
 user-invocable: true
 effort: medium
-compatible_with: [claude-code, opencode, antigravity, commandcode]
+compatible_with: [claude-code, opencode, antigravity]
 ---
 
 # /brd-reader

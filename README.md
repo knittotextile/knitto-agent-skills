@@ -4,7 +4,7 @@
 > lengkap skill & agent beserta deskripsi singkatnya ada di sana.
 
 Kumpulan **skill lintas-platform** untuk AI coding agent: Claude Code, OpenCode,
-Antigravity (Google), Command Code, dan Cursor. Satu skill = satu folder =
+Antigravity (Google), Cursor, dan Codex CLI. Satu skill = satu folder =
 satu file `SKILL.md` yang bisa langsung dipakai di semua platform tersebut
 (kecuali Cursor, yang punya adapter terpisah — lihat bawah).
 
@@ -20,7 +20,6 @@ menyebabkan error. Jadi satu `SKILL.md` yang ditulis dengan superset field
 | Claude Code  | `.claude/skills/<name>/`               | `~/.claude/skills/<name>/`        |
 | OpenCode     | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/` | `~/.config/opencode/skills/`, dst |
 | Antigravity  | `.agents/skills/<name>/`               | `~/.gemini/config/skills/<name>/` |
-| Command Code | `.commandcode/skills/<name>/`          | `~/.commandcode/skills/<name>/`   |
 | Cursor (2.4+) | `.cursor/skills/<name>/`              | `~/.cursor/skills/<name>/`        |
 | Codex CLI    | `.agents/skills/<name>/`               | `~/.agents/skills/<name>/`        |
 | Cursor       | *(tidak baca SKILL.md — lihat adapter)* | —                                  |
@@ -69,11 +68,11 @@ Selain skill satuan, repo ini punya 5 **command wrapper** yang membungkus
 rantai `brd-reader`/`prd-grill`/`exec-todo`/`code-review-and-quality`/
 `branching` jadi satu pipeline linear per Product Backlog (PB)
 item. Master data-nya di [`commands/`](commands/) — satu folder per
-command, satu file per platform yang benar-benar mendukung command custom
-(**Claude Code, OpenCode, Cursor**). Antigravity dan Codex CLI sengaja
-tidak dapat file command di sini — keduanya punya keterbatasan/mekanisme
-berbeda, lihat [`commands/README.md`](commands/README.md) untuk cara
-menjalankan pipeline ini di kedua platform tersebut.
+command dengan adapter untuk **Claude Code, OpenCode, Cursor, dan
+Antigravity**. Antigravity memakai skill adapter untuk menampilkan slash
+command pipeline; Codex CLI menjalankan skill yang mendasarinya secara
+langsung. Lihat [`commands/README.md`](commands/README.md) untuk detail
+format dan instalasi per platform.
 
 **Penting: `/promote` (tahap SHIP) tidak men-deploy apa pun.** Ia cuma
 membuka/update PR — dari `<slug>-main` ke trunk, dan (kalau repo pakai
@@ -133,7 +132,7 @@ Detail tiap tahap, kapan skip BRD, dan contoh nyata: lihat
 ```
 skills/
   <nama-skill>/
-    SKILL.md          # wajib — format superset, dipakai Claude Code/OpenCode/Antigravity/Command Code
+    SKILL.md          # wajib — format superset, dipakai Claude Code/OpenCode/Antigravity
     cursor.mdc         # opsional — adapter untuk Cursor
     scripts/            # opsional — kode executable yang dipanggil skill
     references/         # opsional — dokumentasi/detail yang di-load on-demand
@@ -145,7 +144,6 @@ agents/
     claude-code.md     # subagent Claude Code
     opencode.md          # subagent OpenCode
     antigravity.md         # subagent Antigravity
-    commandcode.md           # subagent Command Code
     cursor.md                  # subagent Cursor
   README.md               # konvensi lengkap tiap platform — lihat ini dulu
 

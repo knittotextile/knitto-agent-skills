@@ -19,6 +19,7 @@ commands/
     claude-code.md   # .claude/commands/<nama>.md
     opencode.md        # .opencode/commands/<nama>.md
     cursor.md             # .cursor/commands/<nama>.md
+    antigravity.md       # .agents/skills/<nama>/SKILL.md (installed adapter)
 ```
 
 ## Cara pakai
@@ -30,6 +31,7 @@ Salin file platform yang relevan ke lokasi yang platform itu baca:
 | Claude Code | `.claude/commands/<nama>.md` | `~/.claude/commands/<nama>.md` |
 | OpenCode | `.opencode/commands/<nama>.md` | `~/.config/opencode/commands/<nama>.md` |
 | Cursor | `.cursor/commands/<nama>.md` | (ikuti config Cursor kamu) |
+| Antigravity 2.0 | `.agents/skills/<nama>/SKILL.md` | `~/.gemini/config/skills/<nama>/SKILL.md` |
 
 ## Frontmatter per platform (ringkas)
 
@@ -39,18 +41,20 @@ Salin file platform yang relevan ke lokasi yang platform itu baca:
 | OpenCode V2 | `description`, `agent`, `model` (opsional) | `$ARGUMENTS`, `$1`/`$2` | body = prompt, memanggil skill lewat `skill({ id: "..." })` |
 | Cursor | **tidak ada frontmatter** — plain markdown | **tidak ada placeholder terdokumentasi** — command cuma insert prompt apa adanya | body mengarahkan agent menerapkan instruksi skill terkait dari `.cursor/skills/<nama>/SKILL.md` langsung (bukan tool call, karena Cursor baca SKILL.md native) |
 
-## Platform yang sengaja tidak dibuatkan file command di sini
+## Catatan dukungan platform
 
-**Antigravity** — tidak ada mekanisme command custom yang terdokumentasi
-resmi dan reliable. Yang ada cuma "legacy command TOML", yang menurut
-catatan proyek serupa (addyosmani/agent-skills) **buggy/tidak ke-discover**
-di sebagian rilis Antigravity — solusi mereka sendiri adalah "invoke skill
-di bawahnya langsung", bukan lewat command wrapper. Path yang confirmed
-jalan di Antigravity: skill di `.agents/skills/<nama>.md` **otomatis**
-di-compile jadi slash command `/<nama>` — jadi kalau mau `/grill` dkk di
-Antigravity, jalur yang benar adalah menjadikan skill itu sendiri
-user-invocable (bukan menambah command wrapper terpisah), bukan sesuatu
-yang bisa disediakan lewat folder `commands/` ini.
+**Antigravity 2.0** — command pipeline kustom bukan builtin platform command.
+Dokumentasi Antigravity mendukung skill sebagai slash command `/<skill-name>`.
+Karena itu `antigravity.md` di tiap folder command adalah adapter skill:
+pasang sebagai `.agents/skills/<nama>/SKILL.md` (workspace) atau
+`~/.gemini/config/skills/<nama>/SKILL.md` (global). Dengan adapter ini,
+pipeline tersedia sebagai `/grill`, `/dev`, `/qa`, `/gate`, dan `/promote`.
+Skill umum seperti `prd-grill` tetap tersedia dengan ID masing-masing.
+
+Jangan memasang adapter di `.agents/skills/<nama>.md`: Antigravity
+mengharapkan sebuah direktori skill dengan file `SKILL.md` di dalamnya.
+Workflows lama memang mendukung slash command, tetapi sedang didepresiasi
+dan bukan format yang dipakai adapter ini.
 
 **Codex CLI** — mekanisme "custom prompts" (`~/.codex/prompts/<nama>.md`)
 sudah **dinyatakan deprecated oleh OpenAI sendiri**, hanya bisa di lokasi

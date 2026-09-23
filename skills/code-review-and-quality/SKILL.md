@@ -12,7 +12,7 @@ allowed-tools: [Read, Grep, Glob, Bash]
 disable-model-invocation: false
 user-invocable: true
 effort: high
-compatible_with: [claude-code, opencode, antigravity, commandcode]
+compatible_with: [claude-code, opencode, antigravity]
 ---
 
 # Code Review and Quality

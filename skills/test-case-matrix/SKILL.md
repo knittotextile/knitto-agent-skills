@@ -8,7 +8,7 @@ metadata:
   version: "1.0.0"
 allowed-tools: [Read, Write, Glob, Grep, Bash]
 argument-hint: "[feature/slug or PRD path]"
-compatible_with: [claude-code, opencode, antigravity, commandcode]
+compatible_with: [claude-code, opencode, antigravity]
 ---
 
 # /test-case-matrix

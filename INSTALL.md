@@ -28,7 +28,7 @@ README ini — `CATALOG.md` adalah sumber kebenaran yang paling update.
 
 Tanyakan platform AI coding agent mana yang dipakai user saat ini (lihat
 tabel lokasi di [`README.md`](README.md) untuk daftar lengkap): Claude Code,
-OpenCode, Antigravity, Command Code, Cursor, dan/atau Codex CLI — tampilkan sebagai
+OpenCode, Antigravity, Cursor, dan/atau Codex CLI — tampilkan sebagai
 **checklist multi-select**, karena user bisa saja pakai lebih dari satu
 platform sekaligus (mis. Claude Code untuk coding harian + Cursor di editor
 lain) dan mau pasang skill yang sama ke semuanya dalam satu alur. Platform
@@ -221,6 +221,24 @@ Langkah 4) untuk tiap skill yang dipasang ke OpenCode, isi minimal
   frontmatter `description` (ambil dari `CATALOG.md`) + body yang memanggil
   `skill({ id: "<nama-skill>" })` dengan `$ARGUMENTS`. Jangan buat wrapper
 ini diam-diam tanpa ditanya dulu.
+
+**Khusus Antigravity — pipeline command dipasang sebagai skill adapter.**
+Slash command kustom Antigravity 2.0 berasal dari skill, bukan command builtin
+atau format custom-workflow baru. Jika Antigravity dipilih dan user ingin
+pipeline `/grill`, `/dev`, `/qa`, `/gate`, `/promote`, tampilkan checklist
+terpisah untuk memilih adapter command yang diinginkan. Sumbernya adalah
+`commands/<nama>/antigravity.md`; pasang file itu sebagai:
+
+- Project: `.agents/skills/<nama>/SKILL.md`
+- Global: `~/.gemini/config/skills/<nama>/SKILL.md`
+
+Jangan menyalinnya sebagai `.agents/skills/<nama>.md` dan jangan memasangnya
+tanpa pilihan eksplisit user. Jelaskan bahwa skill adapter akan muncul sebagai
+`/<nama>` setelah Antigravity menemukan skill tersebut. Tawarkan skill
+pendukung yang relevan dari katalog (mis. `prd-grill`/`brd-reader` untuk
+`/grill`, `exec-todo` untuk `/dev`, `test-case-matrix` dan skill testing untuk
+`/qa`, `code-review-and-quality` untuk `/gate`, serta `branching` untuk
+`/promote`); jangan memasang skill pendukung tanpa konfirmasi.
 
 ### Langkah 7 — Cek AGENTS.md/CLAUDE.md di repo target (hanya untuk instalasi level project)
 

@@ -13,7 +13,7 @@ when_to_use: "Also trigger proactively when the user describes a feature at a le
 disable-model-invocation: false
 user-invocable: true
 effort: medium
-compatible_with: [claude-code, opencode, antigravity, commandcode]
+compatible_with: [claude-code, opencode, antigravity]
 ---
 
 # /prd-grill

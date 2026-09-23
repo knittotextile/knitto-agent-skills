@@ -13,9 +13,9 @@ lain — bukan ritual tiap sesi.
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`project-bootstrap`](skills/project-bootstrap/SKILL.md) | Kalibrasi agent ke project yang belum pernah disentuh: deteksi stack/tooling (`detect_stack.py`), install dependency, verifikasi project benar-benar jalan (build/test/dev), lalu tulis/update `CLAUDE.md`/`AGENTS.md` dengan command yang sudah diverifikasi — bukan ditebak | foundation, onboarding, setup | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`agent-doctor`](skills/agent-doctor/SKILL.md) | Verifikasi subagent (mis. `reviewer`, `qa-engineer`) yang terpasang di project benar-benar bisa jalan di platform user saat ini — lokasi file, frontmatter sesuai dialek platform, dan model yang user punya akses (langganan beda per orang/platform) — lalu bantu perbaiki yang bermasalah, termasuk live-invoke test kalau platform-nya cocok dengan sesi yang sedang jalan | foundation, agents, diagnostics | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`skill-sync`](skills/skill-sync/SKILL.md) | Cek skill/agent/command yang sudah terpasang di project terhadap sumbernya (catalog ini, via URL/clone lokal) pakai lockfile `.agent-skills-lock.json` dari saat instalasi, lalu update yang berubah di upstream — file yang sudah di-override sengaja oleh project tidak pernah ditimpa tanpa konfirmasi; command: `/skill-sync` | foundation, maintenance, sync | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`project-bootstrap`](skills/project-bootstrap/SKILL.md) | Kalibrasi agent ke project yang belum pernah disentuh: deteksi stack/tooling (`detect_stack.py`), install dependency, verifikasi project benar-benar jalan (build/test/dev), lalu tulis/update `CLAUDE.md`/`AGENTS.md` dengan command yang sudah diverifikasi — bukan ditebak | foundation, onboarding, setup | `claude-code`, `opencode`, `antigravity` |
+| [`agent-doctor`](skills/agent-doctor/SKILL.md) | Verifikasi subagent (mis. `reviewer`, `qa-engineer`) yang terpasang di project benar-benar bisa jalan di platform user saat ini — lokasi file, frontmatter sesuai dialek platform, dan model yang user punya akses (langganan beda per orang/platform) — lalu bantu perbaiki yang bermasalah, termasuk live-invoke test kalau platform-nya cocok dengan sesi yang sedang jalan | foundation, agents, diagnostics | `claude-code`, `opencode`, `antigravity` |
+| [`skill-sync`](skills/skill-sync/SKILL.md) | Cek skill/agent/command yang sudah terpasang di project terhadap sumbernya (catalog ini, via URL/clone lokal) pakai lockfile `.agent-skills-lock.json` dari saat instalasi, lalu update yang berubah di upstream — file yang sudah di-override sengaja oleh project tidak pernah ditimpa tanpa konfirmasi; command: `/skill-sync` | foundation, maintenance, sync | `claude-code`, `opencode`, `antigravity` |
 
 ### Alur perencanaan → eksekusi
 
@@ -28,79 +28,78 @@ untuk penjelasan tiap tahap dan kenapa `/qa`/`/gate` sengaja dipisah dari
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`brd-reader`](skills/brd-reader/SKILL.md) | Baca & pahami BRD yang sudah ditulis analyst (teks/file) — ekstrak dampak proses/UI/kamus data serta gap/ambiguitas, konfirmasi ke user, lalu hand-off ke `prd-grill`. Tidak menulis BRD baru | planning, brd, requirements | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
-| [`prd-grill`](skills/prd-grill/SKILL.md) | Ubah ide mentah (atau BRD yang sudah dipahami via `brd-reader`) jadi PRD/rencana lewat tanya-jawab satu-pertanyaan-per-giliran, lalu tulis PRD+ISSUES (atau ikuti konvensi phase-plan repo yang sudah ada) | planning, prd, docs | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
-| [`exec-todo`](skills/exec-todo/SKILL.md) | Eksekusi feature checklist dari `prd-grill` sebagai task list ter-tracking, sinkron checkbox file ↔ session, cheap check per item — berhenti sebelum closing gate (lihat `/qa`, `/gate`, `/promote`) | planning, execution, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
-| [`incremental-implementation`](skills/incremental-implementation/SKILL.md) 🔷 | Disiplin memecah implementasi jadi langkah kecil yang bisa diverifikasi, bukan satu perubahan besar sekaligus | workflow, implementation | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`test-driven-development`](skills/test-driven-development/SKILL.md) 🔷 | Disiplin TDD — tulis test dulu sebelum implementasi/bugfix/perubahan behavior | testing, workflow | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`brd-reader`](skills/brd-reader/SKILL.md) | Baca & pahami BRD yang sudah ditulis analyst (teks/file) — ekstrak dampak proses/UI/kamus data serta gap/ambiguitas, konfirmasi ke user, lalu hand-off ke `prd-grill`. Tidak menulis BRD baru | planning, brd, requirements | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
+| [`prd-grill`](skills/prd-grill/SKILL.md) | Ubah ide mentah (atau BRD yang sudah dipahami via `brd-reader`) jadi PRD/rencana lewat tanya-jawab satu-pertanyaan-per-giliran, lalu tulis PRD+ISSUES (atau ikuti konvensi phase-plan repo yang sudah ada) | planning, prd, docs | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
+| [`exec-todo`](skills/exec-todo/SKILL.md) | Eksekusi feature checklist dari `prd-grill` sebagai task list ter-tracking, sinkron checkbox file ↔ session, cheap check per item — berhenti sebelum closing gate (lihat `/qa`, `/gate`, `/promote`) | planning, execution, workflow | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
+| [`incremental-implementation`](skills/incremental-implementation/SKILL.md) 🔷 | Disiplin memecah implementasi jadi langkah kecil yang bisa diverifikasi, bukan satu perubahan besar sekaligus | workflow, implementation | `claude-code`, `opencode`, `antigravity` |
+| [`test-driven-development`](skills/test-driven-development/SKILL.md) 🔷 | Disiplin TDD — tulis test dulu sebelum implementasi/bugfix/perubahan behavior | testing, workflow | `claude-code`, `opencode`, `antigravity` |
 
 ### Documentation & comprehension
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`codebase-explain`](skills/codebase-explain/SKILL.md) | Jelaskan repo/fitur/alur kerja dalam bahasa awam (tanpa jargon), digroundkan ke kode yang benar-benar dibaca, ditulis jadi file markdown (bukan cuma jawaban chat) — buat non-developer yang mau paham codebase | documentation, comprehension, non-technical | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`codebase-explain`](skills/codebase-explain/SKILL.md) | Jelaskan repo/fitur/alur kerja dalam bahasa awam (tanpa jargon), digroundkan ke kode yang benar-benar dibaca, ditulis jadi file markdown (bukan cuma jawaban chat) — buat non-developer yang mau paham codebase | documentation, comprehension, non-technical | `claude-code`, `opencode`, `antigravity` |
 
 ### Debugging
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`debugging`](skills/debugging/SKILL.md) | Metodologi root-cause debugging: reproduksi konsisten, isolasi ke kasus terkecil, bisect ke penyebab (regression), uji hipotesis sebelum fix, bedakan symptom vs root cause | debugging, troubleshooting | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`debugging`](skills/debugging/SKILL.md) | Metodologi root-cause debugging: reproduksi konsisten, isolasi ke kasus terkecil, bisect ke penyebab (regression), uji hipotesis sebelum fix, bedakan symptom vs root cause | debugging, troubleshooting | `claude-code`, `opencode`, `antigravity` |
 
 ### Review & kualitas
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`code-review-and-quality`](skills/code-review-and-quality/SKILL.md) | Metodologi review lima-axis (correctness, readability, architecture, security, performance) dengan severity label dan quality gate | review, quality, security, performance | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`security-and-hardening`](skills/security-and-hardening/SKILL.md) 🔷 | Prinsip hardening saat menangani input user, auth, penyimpanan data, atau integrasi eksternal | security | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`security-review`](skills/security-review/SKILL.md) 🔷 | Checklist keamanan saat menambah auth, endpoint API, secret, atau fitur pembayaran/sensitif | security | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`code-review-and-quality`](skills/code-review-and-quality/SKILL.md) | Metodologi review lima-axis (correctness, readability, architecture, security, performance) dengan severity label dan quality gate | review, quality, security, performance | `claude-code`, `opencode`, `antigravity` |
+| [`security-and-hardening`](skills/security-and-hardening/SKILL.md) 🔷 | Prinsip hardening saat menangani input user, auth, penyimpanan data, atau integrasi eksternal | security | `claude-code`, `opencode`, `antigravity` |
+| [`security-review`](skills/security-review/SKILL.md) 🔷 | Checklist keamanan saat menambah auth, endpoint API, secret, atau fitur pembayaran/sensitif | security | `claude-code`, `opencode`, `antigravity` |
 
 ### Git & deploy
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`branching`](skills/branching/SKILL.md) | Kelola branch di model paired-branch (`-main`/`-dev`) + cherry-pick ke `releases/sandbox` staging + promosi ke `releases/main` production — mencegah staging ketinggalan/duplikat fitur | git, branching, staging, deploy | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
-| [`deployment`](skills/deployment/SKILL.md) | Praktik rilis aman: klasifikasi risiko, pre-deploy checklist, rollout bertahap (feature flag/canary), rollback plan ditulis sebelum deploy, verifikasi pasca-deploy — bukan cuma "pipeline hijau" | deployment, release, rollback | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`docker-patterns`](skills/docker-patterns/SKILL.md) 🔷 | Pola Docker/Docker Compose: dev lokal, keamanan container, networking, volume, multi-service | devops, docker | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`branching`](skills/branching/SKILL.md) | Kelola branch di model paired-branch (`-main`/`-dev`) + cherry-pick ke `releases/sandbox` staging + promosi ke `releases/main` production — mencegah staging ketinggalan/duplikat fitur | git, branching, staging, deploy | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
+| [`deployment`](skills/deployment/SKILL.md) | Praktik rilis aman: klasifikasi risiko, pre-deploy checklist, rollout bertahap (feature flag/canary), rollback plan ditulis sebelum deploy, verifikasi pasca-deploy — bukan cuma "pipeline hijau" | deployment, release, rollback | `claude-code`, `opencode`, `antigravity` |
+| [`docker-patterns`](skills/docker-patterns/SKILL.md) 🔷 | Pola Docker/Docker Compose: dev lokal, keamanan container, networking, volume, multi-service | devops, docker | `claude-code`, `opencode`, `antigravity` |
 
 ### Maintenance
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`dependency-update`](skills/dependency-update/SKILL.md) | Upgrade dependency aman: cek breaking change lewat changelog, upgrade bertahap per batch risiko, verifikasi build/test tiap batch, prioritas vulnerability fix berdasar exploitability nyata | dependencies, maintenance, security | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`dependency-update`](skills/dependency-update/SKILL.md) | Upgrade dependency aman: cek breaking change lewat changelog, upgrade bertahap per batch risiko, verifikasi build/test tiap batch, prioritas vulnerability fix berdasar exploitability nyata | dependencies, maintenance, security | `claude-code`, `opencode`, `antigravity` |
 
 ### Backend & database
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`api-design`](skills/api-design/SKILL.md) 🔷 | Pola desain REST API: resource naming, status code, pagination, filtering, error response, versioning, rate limit | backend, api | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`backend-patterns`](skills/backend-patterns/SKILL.md) 🔷 | Pola arsitektur backend Node.js/Express/Next.js API routes, optimasi database | backend | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`database-migrations`](skills/database-migrations/SKILL.md) 🔷 | Praktik migrasi schema, migrasi data, rollback, zero-downtime deploy (Postgres/MySQL + ORM umum) | database | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`mysql-patterns`](skills/mysql-patterns/SKILL.md) 🔷 | Pola schema, query, indexing, transaction, replication, connection-pool MySQL/MariaDB | database, mysql | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`api-design`](skills/api-design/SKILL.md) 🔷 | Pola desain REST API: resource naming, status code, pagination, filtering, error response, versioning, rate limit | backend, api | `claude-code`, `opencode`, `antigravity` |
+| [`backend-patterns`](skills/backend-patterns/SKILL.md) 🔷 | Pola arsitektur backend Node.js/Express/Next.js API routes, optimasi database | backend | `claude-code`, `opencode`, `antigravity` |
+| [`database-migrations`](skills/database-migrations/SKILL.md) 🔷 | Praktik migrasi schema, migrasi data, rollback, zero-downtime deploy (Postgres/MySQL + ORM umum) | database | `claude-code`, `opencode`, `antigravity` |
+| [`mysql-patterns`](skills/mysql-patterns/SKILL.md) 🔷 | Pola schema, query, indexing, transaction, replication, connection-pool MySQL/MariaDB | database, mysql | `claude-code`, `opencode`, `antigravity` |
 
 ### Frontend & testing
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`react-patterns`](skills/react-patterns/SKILL.md) 🔷 | Pola React 18/19: hooks, server/client boundary, Suspense, form actions, state management, aksesibilitas | frontend, react | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`react-testing`](skills/react-testing/SKILL.md) 🔷 | Testing komponen React (RTL, Vitest/Jest, MSW, axe) + batas component test vs E2E | testing, react | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`e2e-testing`](skills/e2e-testing/SKILL.md) 🔷 | Pola Playwright E2E: Page Object Model, config, integrasi CI/CD, artifact, strategi flaky test | testing, e2e | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`api-testing`](skills/api-testing/SKILL.md) | Testing endpoint REST/GraphQL langsung (tanpa browser) via Supertest/httpx — pilih mode DB per test (mock, real+rollback, atau real+black-box) dengan tagging & script cleanup wajib buat mode black-box, plus deteksi dependency lintas-repo (entity yang dibuat service lain) sebelum seeding data | testing, api, backend, database | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`webapp-testing`](skills/webapp-testing/SKILL.md) | Workflow E2E+TDD siap-eksekusi, local-only: script Python (`run_e2e.py`) + config Playwright + report kustom self-contained (`report.html` — grup per kategori, klik test buat expand steps+screenshot, lightbox) + git pre-push hook opsional — tidak ada wiring GitHub Actions/CI provider | testing, e2e, tdd, playwright | `claude-code`, `opencode`, `antigravity`, `commandcode` |
-| [`test-case-matrix`](skills/test-case-matrix/SKILL.md) | Tulis matrix test case (functional/edge/error/state) dari PRD/issue jadi markdown checklist per-step + traceability matrix, opsional parameter-combination matrix dulu buat fitur multi-variabel, plus kolom evidence/automation/date, sebelum test code ditulis | testing, qa, planning | `claude-code`, `opencode`, `antigravity`, `commandcode` |
+| [`react-patterns`](skills/react-patterns/SKILL.md) 🔷 | Pola React 18/19: hooks, server/client boundary, Suspense, form actions, state management, aksesibilitas | frontend, react | `claude-code`, `opencode`, `antigravity` |
+| [`react-testing`](skills/react-testing/SKILL.md) 🔷 | Testing komponen React (RTL, Vitest/Jest, MSW, axe) + batas component test vs E2E | testing, react | `claude-code`, `opencode`, `antigravity` |
+| [`e2e-testing`](skills/e2e-testing/SKILL.md) 🔷 | Pola Playwright E2E: Page Object Model, config, integrasi CI/CD, artifact, strategi flaky test | testing, e2e | `claude-code`, `opencode`, `antigravity` |
+| [`api-testing`](skills/api-testing/SKILL.md) | Testing endpoint REST/GraphQL langsung (tanpa browser) via Supertest/httpx — pilih mode DB per test (mock, real+rollback, atau real+black-box) dengan tagging & script cleanup wajib buat mode black-box, plus deteksi dependency lintas-repo (entity yang dibuat service lain) sebelum seeding data | testing, api, backend, database | `claude-code`, `opencode`, `antigravity` |
+| [`webapp-testing`](skills/webapp-testing/SKILL.md) | Workflow E2E+TDD siap-eksekusi, local-only: script Python (`run_e2e.py`) + config Playwright + report kustom self-contained (`report.html` — grup per kategori, klik test buat expand steps+screenshot, lightbox) + git pre-push hook opsional — tidak ada wiring GitHub Actions/CI provider | testing, e2e, tdd, playwright | `claude-code`, `opencode`, `antigravity` |
+| [`test-case-matrix`](skills/test-case-matrix/SKILL.md) | Tulis matrix test case (functional/edge/error/state) dari PRD/issue jadi markdown checklist per-step + traceability matrix, opsional parameter-combination matrix dulu buat fitur multi-variabel, plus kolom evidence/automation/date, sebelum test code ditulis | testing, qa, planning | `claude-code`, `opencode`, `antigravity` |
 
 ### Web standards & discoverability
 
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
-| [`modern-web-guidance`](skills/modern-web-guidance/SKILL.md) 🔶 | Search tool (via `npx`) ke database panduan platform web modern (performa/CWV, aksesibilitas, keamanan, forms, built-in AI, WebMCP) yang di-maintain tim Chrome — bukan konten statis, supaya tidak basi seiring API browser berubah. Di katalog ini di-scope ke luar kategori UI/visual (sudah dipegang tim UI/UX + template React) | performance, accessibility, webmcp, built-in-ai | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
-| [`ai-discoverability`](skills/ai-discoverability/SKILL.md) | Bikin konten situs bisa ditemukan/diparse/dikutip AI crawler & answer engine (ChatGPT, Perplexity, Claude, dll) serta search engine biasa — `llms.txt`, structured data (JSON-LD), `robots.txt` untuk bot AI, canonical URL, `sitemap.xml`, meta tag, dan cek SSR/prerendering supaya konten terbaca tanpa JS | seo, discoverability, llm | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor` (via `cursor.mdc`) |
+| [`modern-web-guidance`](skills/modern-web-guidance/SKILL.md) 🔶 | Search tool (via `npx`) ke database panduan platform web modern (performa/CWV, aksesibilitas, keamanan, forms, built-in AI, WebMCP) yang di-maintain tim Chrome — bukan konten statis, supaya tidak basi seiring API browser berubah. Di katalog ini di-scope ke luar kategori UI/visual (sudah dipegang tim UI/UX + template React) | performance, accessibility, webmcp, built-in-ai | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
+| [`ai-discoverability`](skills/ai-discoverability/SKILL.md) | Bikin konten situs bisa ditemukan/diparse/dikutip AI crawler & answer engine (ChatGPT, Perplexity, Claude, dll) serta search engine biasa — `llms.txt`, structured data (JSON-LD), `robots.txt` untuk bot AI, canonical URL, `sitemap.xml`, meta tag, dan cek SSR/prerendering supaya konten terbaca tanpa JS | seo, discoverability, llm | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
 
 ## Legenda kompatibilitas
 
 - `claude-code` — Claude Code (`.claude/skills/`)
 - `opencode` — OpenCode (`.opencode/skills/`)
 - `antigravity` — Google Antigravity (`.agents/skills/`)
-- `commandcode` — Command Code (`.commandcode/skills/`)
 - `cursor` — Cursor 2.4+ baca `SKILL.md` native (`.cursor/skills/<name>/`); untuk skill yang menyertakan `cursor.mdc`, itu fallback legacy Cursor pra-2.4, bukan jalur utama lagi
 - `codex` — Codex CLI, baca `SKILL.md` native di `.agents/skills/<name>/` — kompatibel otomatis untuk semua skill di katalog ini, tidak perlu diverifikasi per-skill
 
@@ -112,5 +111,5 @@ lengkap.
 
 | Agent | Deskripsi Singkat | Delegasi ke skill | Platform tersedia |
 |---|---|---|---|
-| [`reviewer`](agents/reviewer/) | Reviewer independen, dipanggil proaktif saat sesi/fitur dinyatakan selesai atau saat diminta review diff | `code-review-and-quality` | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor`, `codex` |
-| [`qa-engineer`](agents/qa-engineer/) | Rencanakan lalu bangun test coverage: selalu mulai dari `test-case-matrix`, baru implementasi via skill testing yang sesuai layer | `test-case-matrix`, `react-testing`, `e2e-testing`, `webapp-testing` | `claude-code`, `opencode`, `antigravity`, `commandcode`, `cursor`, `codex` |
+| [`reviewer`](agents/reviewer/) | Reviewer independen, dipanggil proaktif saat sesi/fitur dinyatakan selesai atau saat diminta review diff | `code-review-and-quality` | `claude-code`, `opencode`, `antigravity`, `cursor`, `codex` |
+| [`qa-engineer`](agents/qa-engineer/) | Rencanakan lalu bangun test coverage: selalu mulai dari `test-case-matrix`, baru implementasi via skill testing yang sesuai layer | `test-case-matrix`, `react-testing`, `e2e-testing`, `webapp-testing` | `claude-code`, `opencode`, `antigravity`, `cursor`, `codex` |

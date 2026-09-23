@@ -11,7 +11,6 @@ agents/
     claude-code.md   # .claude/agents/<nama-agent>.md
     opencode.md       # .opencode/agents/<nama-agent>.md
     antigravity.md     # .agents/agents/<nama-agent>.md
-    commandcode.md      # .commandcode/agents/<nama-agent>.md
     cursor.md             # .cursor/agents/<nama-agent>.md
     codex.toml             # .codex/agents/<nama-agent>.toml
 ```
@@ -33,7 +32,6 @@ file = nama agent untuk sebagian besar platform).
 | Claude Code | `.claude/agents/<name>.md` | `~/.claude/agents/<name>.md` |
 | OpenCode | `.opencode/agents/<name>.md` | (ikuti config opencode) |
 | Antigravity | `.agents/agents/<name>.md` atau `.agents/agents/<name>/agent.md` | `~/.gemini/config/agents/<name>.md` |
-| Command Code | `.commandcode/agents/<name>.md` | `~/.commandcode/agents/<name>.md` |
 | Cursor | `.cursor/agents/<name>.md` | `~/.cursor/agents/<name>.md` |
 | Codex CLI | `.codex/agents/<name>.toml` | `~/.codex/agents/<name>.toml` |
 
@@ -44,7 +42,6 @@ file = nama agent untuk sebagian besar platform).
 | Claude Code | `tools`, `model` | `tools` daftar tool string dipisah koma |
 | OpenCode V2 | `description`, `mode` (`primary`/`subagent`/`all`), `model` (opsional), `permissions` (daftar `action`/`resource`/`effect`) | body markdown = system prompt; nama agent berasal dari nama file |
 | Antigravity | `tools` (array), `mainAgent`, `subagent`, `commandExecutionPolicy`, `skills` | `subagent: true` supaya bisa dipanggil `invoke_subagent` |
-| Command Code | `tools`, `disallowedTools`, `permissionMode`, `maxTurns`, `background`, `showOutput` | nama `explore`/`plan`/`review`/`general` reserved, tidak bisa dioverride |
 | Cursor | `model`, `readonly`, `is_background` | filename = identitas subagent |
 | Codex CLI | `name`, `description`, `developer_instructions` (wajib); `model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config` (opsional) | TOML, bukan Markdown+YAML — `developer_instructions` = system prompt |
 
@@ -57,7 +54,7 @@ tiap platform punya parser dan aturan model sendiri:
   dan opsional `#variant`. Jangan gunakan `model: inherit`.
 - **Claude Code**: `model: inherit` valid dan memang berarti "ikut model
   sesi".
-- **Cursor/Command Code**: belum diverifikasi ulang terhadap dokumentasi
+- **Cursor**: belum diverifikasi ulang terhadap dokumentasi
   resmi — kalau menambah agent baru untuk platform ini, cek dulu apakah
   `inherit` benar-benar didukung sebelum menyalin pola dari platform lain.
 
