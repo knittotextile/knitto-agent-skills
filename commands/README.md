@@ -36,7 +36,7 @@ Salin file platform yang relevan ke lokasi yang platform itu baca:
 | Platform | Field yang didukung | Placeholder argumen | Catatan |
 |---|---|---|---|
 | Claude Code | `description`, `argument-hint`, `allowed-tools` | `$ARGUMENTS` | body = prompt, memanggil skill lewat `Skill` tool |
-| OpenCode | `description`, `agent`, `model` (opsional) | `$ARGUMENTS`, `$1`/`$2` | body = prompt, memanggil skill lewat `skill({ name: "..." })` |
+| OpenCode V2 | `description`, `agent`, `model` (opsional) | `$ARGUMENTS`, `$1`/`$2` | body = prompt, memanggil skill lewat `skill({ id: "..." })` |
 | Cursor | **tidak ada frontmatter** — plain markdown | **tidak ada placeholder terdokumentasi** — command cuma insert prompt apa adanya | body mengarahkan agent menerapkan instruksi skill terkait dari `.cursor/skills/<nama>/SKILL.md` langsung (bukan tool call, karena Cursor baca SKILL.md native) |
 
 ## Platform yang sengaja tidak dibuatkan file command di sini

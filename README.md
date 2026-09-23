@@ -43,7 +43,7 @@ kompatibel Codex tanpa perubahan.
 membaca `SKILL.md` lewat tool `skill` yang dipanggil agent sendiri saat
 relevan — **tidak ada** `/nama-skill` otomatis di OpenCode. Kalau user
 OpenCode mau memanggil skill secara eksplisit lewat `/`, perlu file
-command *terpisah* (lihat [docs commands OpenCode](https://opencode.ai/docs/commands/))
+command *terpisah* (lihat [docs commands OpenCode V2](https://opencode.ai/v2/docs/commands))
 di `.opencode/commands/<nama-skill>.md` (project) atau
 `~/.config/opencode/commands/<nama-skill>.md` (global), isinya minimal:
 
@@ -51,12 +51,17 @@ di `.opencode/commands/<nama-skill>.md` (project) atau
 ---
 description: <deskripsi singkat dari CATALOG.md>
 ---
-Use the "<nama-skill>" skill (call skill({ name: "<nama-skill>" })) to handle this request: $ARGUMENTS
+Use the "<nama-skill>" skill (call skill({ id: "<nama-skill>" })) to handle this request: $ARGUMENTS
 ```
 
 Ini bukan bagian dari `SKILL.md` itu sendiri — kalau user OpenCode mau
 akses `/nama-skill`, buatkan file wrapper ini sebagai langkah tambahan
 saat instalasi (lihat [`INSTALL.md`](INSTALL.md) Langkah 6).
+
+Skill OpenCode tidak memilih modelnya sendiri: skill berjalan dalam konteks
+agent/sesi aktif. Untuk subagent OpenCode, biarkan `model` tidak disetel agar
+model mengikuti sesi/agent pemanggil; isi `model` hanya jika memang ingin
+memaksa `provider/model` tertentu.
 
 ## Pipeline: DEFINE → SHIP
 

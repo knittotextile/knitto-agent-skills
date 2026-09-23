@@ -12,7 +12,6 @@ argument-hint: "new <slug> | sync <slug> | promote <slug>"
 when_to_use: "Also trigger proactively when the user says a feature is ready to test on staging/sandbox, or ready for production, in a repo already using this branch model."
 disable-model-invocation: false
 user-invocable: true
-model: inherit
 effort: medium
 compatible_with: [claude-code, opencode, antigravity, commandcode]
 ---

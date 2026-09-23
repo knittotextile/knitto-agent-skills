@@ -5,7 +5,7 @@ agent: build
 
 Sync installed skills/agents/commands in this project against the catalog
 they came from, using the "skill-sync" skill
-(`skill({ name: "skill-sync" })`).
+(`skill({ id: "skill-sync" })`).
 
 1. Apply the "skill-sync" skill's steps in order: locate the lockfile(s)
    and confirm scope (project/global/both — ask if both exist), ask which

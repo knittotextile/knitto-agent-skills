@@ -6,7 +6,7 @@ agent: build
 Pipeline stage: BUILD. Previous stage /grill, next stage /qa.
 
 Implement the checklist in "$ARGUMENTS" (path, slug, or number). Call the
-"exec-todo" skill (`skill({ name: "exec-todo" })`) directly with that
+"exec-todo" skill (`skill({ id: "exec-todo" })`) directly with that
 argument — it already implements exactly this scope: resolve the file,
 parse feature items into a tracked task list, implement each with cheap
 checks only (unit tests/type-check/build), and stop once every feature item

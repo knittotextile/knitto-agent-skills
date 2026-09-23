@@ -42,25 +42,19 @@ file = nama agent untuk sebagian besar platform).
 | Platform | Field khas | Catatan |
 |---|---|---|
 | Claude Code | `tools`, `model` | `tools` daftar tool string dipisah koma |
-| OpenCode | `mode` (`primary`/`subagent`/`all`), `permission` (per-tool `allow/ask/deny`) | body markdown = system prompt |
+| OpenCode V2 | `description`, `mode` (`primary`/`subagent`/`all`), `model` (opsional), `permissions` (daftar `action`/`resource`/`effect`) | body markdown = system prompt; nama agent berasal dari nama file |
 | Antigravity | `tools` (array), `mainAgent`, `subagent`, `commandExecutionPolicy`, `skills` | `subagent: true` supaya bisa dipanggil `invoke_subagent` |
 | Command Code | `tools`, `disallowedTools`, `permissionMode`, `maxTurns`, `background`, `showOutput` | nama `explore`/`plan`/`review`/`general` reserved, tidak bisa dioverride |
 | Cursor | `model`, `readonly`, `is_background` | filename = identitas subagent |
 | Codex CLI | `name`, `description`, `developer_instructions` (wajib); `model`, `model_reasoning_effort`, `sandbox_mode`, `mcp_servers`, `skills.config` (opsional) | TOML, bukan Markdown+YAML — `developer_instructions` = system prompt |
 
-**Peringatan `model: inherit` — tidak universal, beda dari `SKILL.md`.**
-Di `SKILL.md`, field tak dikenal memang aman diabaikan semua platform
-(superset frontmatter). **File agent per-platform tidak sama** — tiap
-platform punya parser sendiri yang bisa strict di field tertentu:
+**Model OpenCode V2 untuk subagent.** File agent per-platform tidak sama —
+tiap platform punya parser dan aturan model sendiri:
 
-- **OpenCode**: field `model` divalidasi ketat, harus format
-  `provider/model-id` (mis. `anthropic/claude-sonnet-4-20250514`). Nilai
-  `inherit` **bukan** nilai valid dan menyebabkan agent error saat dimuat.
-  Perilaku "ikut model sesi/parent agent" yang kita mau justru didapat
-  dengan **meng-omit field `model` sepenuhnya** — dokumentasi resmi
-  OpenCode: subagent tanpa `model` otomatis pakai model dari primary agent
-  yang memanggilnya. Jangan tulis `model: inherit` di `opencode.md` mana
-  pun — hapus baris itu kalau ada.
+- **OpenCode V2**: jika subagent harus mengikuti model sesi/parent yang
+  memanggilnya, **hilangkan field `model`**. Subagent tanpa `model`
+  menggunakan model parent; bila `model` diisi, gunakan `provider/model`
+  dan opsional `#variant`. Jangan gunakan `model: inherit`.
 - **Claude Code**: `model: inherit` valid dan memang berarti "ikut model
   sesi".
 - **Cursor/Command Code**: belum diverifikasi ulang terhadap dokumentasi

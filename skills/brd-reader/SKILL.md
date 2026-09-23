@@ -12,7 +12,6 @@ argument-hint: "[path to BRD file] | paste BRD text | refine <slug>"
 when_to_use: "Also trigger when the user pastes raw BRD content (sections like tujuan/latar belakang/proses bisnis/kebutuhan data) and asks for it to be understood, summarized, or turned into a plan."
 disable-model-invocation: false
 user-invocable: true
-model: inherit
 effort: medium
 compatible_with: [claude-code, opencode, antigravity, commandcode]
 ---

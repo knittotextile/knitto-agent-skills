@@ -136,7 +136,7 @@ content in the project, and the file's current content in the source
 If the lockfile entry for a skill lists an **OpenCode command wrapper**
 path (`.opencode/commands/<name>.md` or the global equivalent, created per
 INSTALL.md Langkah 6), track and classify that file the same way as the
-`SKILL.md` it wraps — a wrapper's body only calls `skill({ name: ... })`
+`SKILL.md` it wraps — an OpenCode wrapper's body calls `skill({ id: ... })`
 with `$ARGUMENTS`, but its frontmatter `description` is copied from
 `CATALOG.md` at install time, so if the catalog's description changed
 upstream the wrapper goes stale even though the underlying skill file

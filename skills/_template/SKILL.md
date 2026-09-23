@@ -13,7 +13,6 @@ argument-hint: "<opsional argumen>"
 when_to_use: "Konteks tambahan opsional untuk auto-invocation"
 disable-model-invocation: false
 user-invocable: true
-model: inherit
 effort: medium
 compatible_with: [claude-code]
 ---

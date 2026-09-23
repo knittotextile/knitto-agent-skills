@@ -21,11 +21,11 @@ before any code gets touched.
 3. Decide whether this PB already has a BRD (from a business/system
    analyst — pasted text or a file) that needs reading first, or can go
    straight to implementation planning:
-   - Has a BRD: call the "brd-reader" skill (`skill({ name: "brd-reader" })`)
+   - Has a BRD: call the "brd-reader" skill (`skill({ id: "brd-reader" })`)
      on "$ARGUMENTS". It hands off to prd-grill itself once the BRD is
      confirmed understood — let that handoff happen, don't call prd-grill
      again separately. It never authors a new BRD.
-   - No BRD exists: call the "prd-grill" skill (`skill({ name: "prd-grill" })`)
+   - No BRD exists: call the "prd-grill" skill (`skill({ id: "prd-grill" })`)
      directly on "$ARGUMENTS".
    - If unclear which applies, ask the user rather than assuming.
 4. If "$ARGUMENTS" looks like `refine <slug>`, pass that through as-is to

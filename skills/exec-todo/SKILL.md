@@ -11,7 +11,6 @@ allowed-tools: [Read, Write, Edit, Glob, Grep, Bash, TaskCreate, TaskUpdate, Ask
 argument-hint: "<path-or-slug>"
 disable-model-invocation: false
 user-invocable: true
-model: inherit
 effort: medium
 compatible_with: [claude-code, opencode, antigravity, commandcode]
 ---

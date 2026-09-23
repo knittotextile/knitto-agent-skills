@@ -11,7 +11,6 @@ metadata:
 allowed-tools: [Read, Grep, Glob, Bash]
 disable-model-invocation: false
 user-invocable: true
-model: inherit
 effort: high
 compatible_with: [claude-code, opencode, antigravity, commandcode]
 ---

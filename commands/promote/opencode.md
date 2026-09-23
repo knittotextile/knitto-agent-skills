@@ -20,7 +20,7 @@ done/ (moved by /gate once review approved).
    - Open a PR from `<slug>-main` into the trunk (main), if one isn't open
      already.
    - Also run the "branching" skill's `sync <slug>` step here
-     (`skill({ name: "branching" })`, not as a separate command):
+      (`skill({ id: "branching" })`, not as a separate command):
      create/update `<slug>-dev`, cherry-pick the commits not yet picked,
      and open/update a PR from -dev into the staging branch
      (releases/sandbox or releases/staging — check which one this repo

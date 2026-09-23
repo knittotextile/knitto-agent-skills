@@ -16,7 +16,7 @@ run (or batched) independently.
    but unreviewed, offer to batch the review pass across them (stack cap
    of 3) — one review call covering every plan in the batch.
 3. Dispatch the review: call the "code-review-and-quality" skill
-   (`skill({ name: "code-review-and-quality" })`). If the PB touches auth,
+   (`skill({ id: "code-review-and-quality" })`). If the PB touches auth,
    data handling, or anything security-sensitive, also call the
    "security-review" skill.
 4. Address blocking findings before proceeding. If the review finds real

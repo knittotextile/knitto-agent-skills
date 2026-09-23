@@ -218,8 +218,8 @@ lewat `/nama-skill` di OpenCode (lihat format & lokasi di
 `.opencode/commands/<nama-skill>.md` (project) atau
 `~/.config/opencode/commands/<nama-skill>.md` (global, ikuti pilihan
 Langkah 4) untuk tiap skill yang dipasang ke OpenCode, isi minimal
-frontmatter `description` (ambil dari `CATALOG.md`) + body yang memanggil
-`skill({ name: "<nama-skill>" })` dengan `$ARGUMENTS`. Jangan buat wrapper
+  frontmatter `description` (ambil dari `CATALOG.md`) + body yang memanggil
+  `skill({ id: "<nama-skill>" })` dengan `$ARGUMENTS`. Jangan buat wrapper
 ini diam-diam tanpa ditanya dulu.
 
 ### Langkah 7 — Cek AGENTS.md/CLAUDE.md di repo target (hanya untuk instalasi level project)

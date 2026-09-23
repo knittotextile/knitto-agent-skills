@@ -1,14 +1,20 @@
 ---
-name: reviewer
 description: >-
   Use PROACTIVELY, without waiting to be asked, whenever the user or the
   assistant states that a development session, feature, or task is
   done/finished/complete. Also use when explicitly asked to review a diff.
   Runs the code-review-and-quality skill against the diff.
 mode: subagent
-permission:
-  edit: deny
-  bash: ask
+permissions:
+  - action: read
+    resource: "*"
+    effect: allow
+  - action: edit
+    resource: "*"
+    effect: deny
+  - action: shell
+    resource: "*"
+    effect: ask
 ---
 
 You are an independent reviewer. You did not write the code you are about
