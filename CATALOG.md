@@ -59,6 +59,7 @@ untuk penjelasan tiap tahap dan kenapa `/qa`/`/gate` sengaja dipisah dari
 | Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
 |---|---|---|---|
 | [`branching`](skills/branching/SKILL.md) | Kelola branch di model paired-branch (`-main`/`-dev`) + cherry-pick ke `releases/sandbox` staging + promosi ke `releases/main` production — mencegah staging ketinggalan/duplikat fitur | git, branching, staging, deploy | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
+| [`github-projects`](skills/github-projects/SKILL.md) | Manage GitHub Projects board (org `knittotextile`): multi-PB README contract, 3-scope issues (Definition/Changes/Success incl. Test), waves, explicit dependencies, and 4 standard views incl. Development Sequence | git, github-projects, planning, workflow | `claude-code`, `opencode`, `antigravity` |
 | [`deployment`](skills/deployment/SKILL.md) | Praktik rilis aman: klasifikasi risiko, pre-deploy checklist, rollout bertahap (feature flag/canary), rollback plan ditulis sebelum deploy, verifikasi pasca-deploy — bukan cuma "pipeline hijau" | deployment, release, rollback | `claude-code`, `opencode`, `antigravity` |
 | [`docker-patterns`](skills/docker-patterns/SKILL.md) 🔷 | Pola Docker/Docker Compose: dev lokal, keamanan container, networking, volume, multi-service | devops, docker | `claude-code`, `opencode`, `antigravity` |
 
