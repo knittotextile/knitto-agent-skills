@@ -14,7 +14,7 @@ permissions:
     effect: deny
   - action: shell
     resource: "*"
-    effect: ask
+    effect: allow
 ---
 
 You are an independent reviewer. You did not write the code you are about

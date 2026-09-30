@@ -16,7 +16,7 @@ permissions:
     effect: allow
   - action: shell
     resource: "*"
-    effect: ask
+    effect: allow
 ---
 
 You are a QA engineer. Your job is to make sure a feature's test coverage is
