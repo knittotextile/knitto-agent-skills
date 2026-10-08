@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // new-test-matrix.mjs — scaffold docs/qa/<slug>/test-matrix.md with the
 // EXACT structure SKILL.md Step 4 requires (header block, both Summary
-// tables, one PB section with a correctly-columned 18-column test case
+// tables, one PB section with a correctly-columned 19-column test case
 // table), instead of leaving the agent to reproduce that structure from
 // memory every time.
 //
@@ -66,9 +66,9 @@ if (pbTitles.length === 0) pbTitles = [`PB-1 — ${feature}`];
 const today = new Date().toISOString().slice(0, 10);
 
 const TEST_CASE_HEADER =
-  "| Group No | Feature | Process No (FC) | TYPE | Test Case ID | Test Variable | Test Case | Pre-Condition | Test Data | Test Steps | Expected Result | Status | Evidence | Remarks | Automation Tools | Date | Files | Requirement |";
+  "| Group No | Feature | Process No (FC) | TYPE | Test Case ID | Test Variable | Scenario | Test Case | Pre-Condition | Test Data | Test Steps | Expected Result | Status | Evidence | Remarks | Automation Tools | Date | Files | Requirement |";
 const TEST_CASE_SEP =
-  "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|";
+  "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|";
 
 function pbSection(title, n) {
   return `### ${title}
@@ -77,19 +77,23 @@ Mini traceability khusus PB ini — ganti "Traceability Matrix" global:
 
 | NO | PROGRAM SPECIFICATIONS | TEST CASE | TEST CASE ID |
 |---|---|---|---|
-| 1 | <spec/acceptance criterion, ID> | Tidak | ⚠️ Gap |
+| 1 | <spec/acceptance criterion, ID> | [ ] | ⚠️ Gap |
 
 ${TEST_CASE_HEADER}
 ${TEST_CASE_SEP}
-| 1 | <nama sub-fitur/flow, ID> | <FC x.x - Proses x, atau kosong> | + | TC${n}-1 | <ringkas variasi input, ID, atau kosong> | <judul deskriptif, ID> | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID> | 1. <hasil, ID> | ⚪ Not Run | | | Tanpa Automation | | \`<path/file/relevan.ts>\` | <link requirement> |
+| 1 | <nama sub-fitur/flow, ID> | <FC x.x - Proses x, atau kosong> | + | TC${n}-1 | <ringkas variasi input, ID, atau kosong> | <skenario yang diuji grup ini, ID> | <judul deskriptif, ID> | <state awal, ID> | <input spesifik, ID> | 1. <aksi, ID> | 1. <hasil, ID> | Progress | | | Tanpa Automation | | \`<path/file/relevan.ts>\` | <link requirement> |
 `;
 }
 
 const body = `# Test Matrix — ${feature}
 
+| PROGRAM VERSION RELEASE | - | TESTER | - | TEST CASE CREATED AT | ${today} |
+|---|---|---|---|---|---|
+| FOLDER TEST APP | - | PROGRAMMER | - | TEST CASE UPDATED AT | ${today} |
+| IP DEV | - | TASK DEV | - | | |
+| IP PROD | - | | | | |
+
 **Sumber requirement:** ${source}
-**Tester:** <nama, atau "belum diisi"> · **Programmer:** <nama, atau "belum diisi">
-**Dibuat:** ${today} · **Diupdate:** ${today}
 **Scope:** ${scope}
 **Out of scope:** ${outOfScope}
 
@@ -100,11 +104,13 @@ setiap file ini diupdate — jangan dipelihara terpisah.
 
 | Total Test Case | Passed | Failed | Re-Test | Skip |
 |---|---|---|---|---|
-| ${pbTitles.length} | 0 | 0 | 0 | ${pbTitles.length} |
+| ${pbTitles.length} | 0 | 0 | 0 | 0 |
 
 | Total Penggunaan Automation Test | Test Data | Masuk Test Step | Tanpa Automation | Presentase | Memenuhi Syarat |
 |---|---|---|---|---|---|
-| 0 | 0 | 0 | ${pbTitles.length} | 0% | Tidak |
+| 0 | 0 | 0 | ${pbTitles.length} | 0% | Belum Memenuhi Syarat |
+
+\`Memenuhi Syarat\` bila \`Presentase\` > 24% (rumus sheet V4).
 
 ## Test Cases
 

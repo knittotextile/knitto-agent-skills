@@ -26,13 +26,20 @@ const args = process.argv.slice(2);
 const JSON_OUT = args.includes("--json");
 const explicitPaths = args.filter((a) => !a.startsWith("--"));
 
+// Spreadsheet "FORMAT TEST CASE V4" column order (+ this skill's Files/Requirement).
 const EXPECTED_COLUMNS = [
   "Group No", "Feature", "Process No (FC)", "TYPE", "Test Case ID",
-  "Test Variable", "Test Case", "Pre-Condition", "Test Data", "Test Steps",
+  "Test Variable", "Scenario", "Test Case", "Pre-Condition", "Test Data", "Test Steps",
   "Expected Result", "Status", "Evidence", "Remarks", "Automation Tools",
   "Date", "Files", "Requirement",
 ];
-const STATUS_VALUES = new Set(["⚪ Not Run", "🟡 Progress", "✅ Passed", "❌ Failed", "🔁 Re-Test", "⏭ Skip"]);
+// Pre-V4 layout (skill v1): no Scenario column. Still parsed, flagged as WARNING so
+// existing files migrate when touched instead of failing every lint run at once.
+const LEGACY_COLUMNS = EXPECTED_COLUMNS.filter((c) => c !== "Scenario");
+const STATUS_VALUES = new Set(["Progress", "Passed", "Failed", "Re-Test", "Skip"]);
+const LEGACY_STATUS_VALUES = new Set(["⚪ Not Run", "🟡 Progress", "✅ Passed", "❌ Failed", "🔁 Re-Test", "⏭ Skip"]);
+const CHECKBOX_VALUES = new Set(["[x]", "[X]", "[ ]"]);
+const MEMENUHI_THRESHOLD = 0.24;
 const AUTOMATION_VALUES = new Set(["Masuk Test Step", "Test Data", "Tanpa Automation"]);
 const TEST_CASE_ID_RE = /^TC\d+-\d+$/;
 
@@ -115,9 +122,13 @@ function lintFile(filePath) {
 
   const summary1 = tables.find((t) => t.header[0] === "Total Test Case");
   const summary2 = tables.find((t) => t.header[0] === "Total Penggunaan Automation Test");
-  const testCaseTables = tables.filter((t) => t.header.length === EXPECTED_COLUMNS.length && t.header[0] === "Group No");
+  const sameHeader = (t, cols) => t.header.length === cols.length && cols.every((c, i) => t.header[i] === c);
+  const legacyTables = tables.filter((t) => t.header[0] === "Group No" && sameHeader(t, LEGACY_COLUMNS));
+  const testCaseTables = tables.filter(
+    (t) => t.header.length === EXPECTED_COLUMNS.length && t.header[0] === "Group No"
+  );
   const wrongShapedTables = tables.filter(
-    (t) => t.header[0] === "Group No" && t.header.length !== EXPECTED_COLUMNS.length
+    (t) => t.header[0] === "Group No" && t.header.length !== EXPECTED_COLUMNS.length && !legacyTables.includes(t)
   );
   const traceabilityTables = tables.filter(
     (t) => t.header.length === 4 && t.header[0] === "NO" && t.header[1] === "PROGRAM SPECIFICATIONS"
@@ -126,7 +137,15 @@ function lintFile(filePath) {
   if (!summary1) findings.push({ level: "ERROR", type: "MISSING_SUMMARY_1", detail: "No 'Total Test Case | Passed | Failed | Re-Test | Skip' Summary table found." });
   if (!summary2) findings.push({ level: "ERROR", type: "MISSING_SUMMARY_2", detail: "No 'Total Penggunaan Automation Test | ...' Summary table found." });
 
-  if (testCaseTables.length === 0 && wrongShapedTables.length === 0) {
+  for (const t of legacyTables) {
+    findings.push({
+      level: "WARNING",
+      type: "LEGACY_FORMAT",
+      detail: `Table at line ${t.line} uses the pre-V4 ${LEGACY_COLUMNS.length}-column layout (no "Scenario" column). Migrate: insert "Scenario" after "Test Variable".`,
+    });
+  }
+
+  if (testCaseTables.length === 0 && wrongShapedTables.length === 0 && legacyTables.length === 0) {
     findings.push({ level: "ERROR", type: "NO_TEST_CASE_TABLE", detail: "No table starting with a 'Group No' column found at all — this file doesn't look like it followed the test-case-matrix template." });
   }
 
@@ -148,15 +167,22 @@ function lintFile(filePath) {
         });
       }
     }
+  }
+
+  const allCaseTables = [...testCaseTables, ...legacyTables];
+  for (const t of allCaseTables) {
+    const col = (name) => t.header.indexOf(name);
+    const idIdx = col("Test Case ID"), statusIdx = col("Status"), autoIdx = col("Automation Tools");
     for (const row of t.rows) {
-      const idIdx = 4, statusIdx = 11, autoIdx = 14;
       const id = row[idIdx];
       const status = row[statusIdx];
       const automation = row[autoIdx];
       if (id && id !== `TC${row[0]}-?` && !TEST_CASE_ID_RE.test(id)) {
         findings.push({ level: "WARNING", type: "BAD_TEST_CASE_ID", detail: `Row "${id}" doesn't match TC<n>-<m> pattern (e.g. TC1-1).` });
       }
-      if (status && !STATUS_VALUES.has(status)) {
+      if (status && LEGACY_STATUS_VALUES.has(status)) {
+        findings.push({ level: "WARNING", type: "LEGACY_STATUS", detail: `Row ${id || "?"}: Status "${status}" is the pre-V4 emoji form — use the V4 value (${[...STATUS_VALUES].join(", ")}; not run yet = Progress).` });
+      } else if (status && !STATUS_VALUES.has(status)) {
         findings.push({ level: "WARNING", type: "BAD_STATUS", detail: `Row ${id || "?"}: Status "${status}" isn't one of ${[...STATUS_VALUES].join(", ")}.` });
       }
       if (automation && !AUTOMATION_VALUES.has(automation)) {
@@ -165,15 +191,33 @@ function lintFile(filePath) {
     }
   }
 
-  if (traceabilityTables.length === 0 && testCaseTables.length > 0) {
+  if (traceabilityTables.length === 0 && allCaseTables.length > 0) {
     findings.push({ level: "WARNING", type: "NO_TRACEABILITY_INDEX", detail: "No per-PB 'NO | PROGRAM SPECIFICATIONS | TEST CASE | TEST CASE ID' mini traceability table found." });
+  }
+  for (const t of traceabilityTables) {
+    for (const row of t.rows) {
+      if (row[2] && !CHECKBOX_VALUES.has(row[2])) {
+        findings.push({ level: "WARNING", type: "TRACEABILITY_NOT_CHECKBOX", detail: `Traceability row ${row[0] || "?"} (line ${t.line}): TEST CASE "${row[2]}" should be a checkbox — [x] covered, [ ] gap.` });
+      }
+    }
   }
 
   if (summary1) {
     const totalCol = summary1.rows[0]?.[0];
-    const actualTotal = testCaseTables.reduce((n, t) => n + t.rows.length, 0);
-    if (totalCol && Number(totalCol) !== actualTotal && testCaseTables.length > 0) {
+    const actualTotal = allCaseTables.reduce((n, t) => n + t.rows.length, 0);
+    if (totalCol && Number(totalCol) !== actualTotal && allCaseTables.length > 0) {
       findings.push({ level: "WARNING", type: "SUMMARY_COUNT_MISMATCH", detail: `Summary says Total Test Case = ${totalCol}, but ${actualTotal} row(s) actually exist across the test case table(s) — recount and rewrite the Summary.` });
+    }
+  }
+
+  if (summary2) {
+    const [, , , , pct, verdict] = summary2.rows[0] ?? [];
+    const ratio = Number.parseFloat(String(pct ?? "").replace("%", "").replace(",", ".")) / 100;
+    if (verdict && !Number.isNaN(ratio)) {
+      const expected = ratio > MEMENUHI_THRESHOLD ? "Memenuhi Syarat" : "Belum Memenuhi Syarat";
+      if (verdict !== expected) {
+        findings.push({ level: "WARNING", type: "MEMENUHI_SYARAT", detail: `Presentase ${pct} → "Memenuhi Syarat" should be "${expected}" (V4 threshold: > 24%), found "${verdict}".` });
+      }
     }
   }
 

@@ -42,19 +42,25 @@ quick Glob/Grep pass.
 
 ## Step 4 — Write the matrix
 
-One file: `docs/qa/<slug>/test-matrix.md`. Structure: header (feature,
-requirement source link, tester/programmer, dates, scope), a two-part
-Summary (pass/fail/re-test/skip counts, plus automation-usage percentage —
-both recounted live from the table, never maintained separately), then per
-PB a mini traceability table (spec → covered? → test case id) followed by
-the test case table in this exact column order: `Group No | Feature |
-Process No (FC) | TYPE | Test Case ID | Test Variable | Test Case |
-Pre-Condition | Test Data | Test Steps | Expected Result | Status |
-Evidence | Remarks | Automation Tools | Date | Files | Requirement`.
+One file: `docs/qa/<slug>/test-matrix.md`, mirroring spreadsheet "FORMAT
+TEST CASE V4". Structure: the V4 header metadata (PROGRAM VERSION RELEASE,
+FOLDER TEST APP, IP DEV, IP PROD, TESTER, PROGRAMMER, TASK DEV, TEST CASE
+CREATED/UPDATED AT — unknown = `-`) plus requirement source and scope, a
+two-part Summary (pass/fail/re-test/skip counts, plus automation-usage
+percentage with `Memenuhi Syarat` when > 24%, else `Belum Memenuhi Syarat`
+— both recounted live from the table, never maintained separately), then
+per PB a mini traceability table (spec → `[x]`/`[ ]` checkbox → test case
+id) followed by the test case table in this exact column order: `Group No |
+Feature | Process No (FC) | TYPE | Test Case ID | Test Variable | Scenario |
+Test Case | Pre-Condition | Test Data | Test Steps | Expected Result |
+Status | Evidence | Remarks | Automation Tools | Date | Files |
+Requirement`.
 
 Key column rules: `Test Case ID` is `TC<GroupNo>-<sequence>` (e.g.
-`TC1-1`); `TYPE` is `+`/`-` for positive/negative; `Status` is one of
-`⚪ Not Run`/`🟡 Progress`/`✅ Passed`/`❌ Failed`/`🔁 Re-Test`/`⏭ Skip`;
+`TC1-1`); `TYPE` is `+`/`-` for positive/negative; `Scenario` is written
+on a group's first row only (merged cell in the sheet); `Test Case` is the
+case title; `Status` is one of `Progress`/`Passed`/`Failed`/`Re-Test`/`Skip`
+(V4 dropdown values; not run yet = `Progress`);
 `Automation Tools` is exactly one of `Masuk Test Step`/`Test Data`/
 `Tanpa Automation`; `Test Steps`/`Expected Result` are numbered, joined
 with `<br>` inside the cell, matched to each other by number. Steps must be
