@@ -3,7 +3,7 @@
 // Read-only; exits 1 when any problem is found.
 //
 // Checks per issue (Tracking items are only checked for a Wave value):
-//   - Wave, Application, Owner empty
+//   - Wave or Application empty, or no Assignees
 //   - title lacks a `[Wn]` / `[Wn-lanjutan]` prefix, or its Wn differs from the Wave field
 //   - `[Wn-lanjutan]` that is not a sub-issue of anything
 //   - body header `Wave:` differs from the Wave field
@@ -29,7 +29,7 @@ run(() => {
     if (!v.Wave) problems.push(v["Delivery Stage"] ? `Wave kosong (Delivery Stage lama: ${v["Delivery Stage"]})` : "Wave kosong");
     if (!tracking) {
       if (!v.Application) problems.push("Application kosong");
-      if (!v.Owner) problems.push("Owner kosong");
+      if (!i.draft && !i.assignees.length) problems.push("Assignees kosong");
       const m = i.title.match(TITLE_RE);
       if (!m) problems.push("judul tanpa prefix [Wn] / [Wn-lanjutan]");
       else {

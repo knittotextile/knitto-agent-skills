@@ -3,7 +3,7 @@
 // hours done/total. Tracking items are excluded. Read-only.
 //
 // Usage:
-//   node scripts/wave-report.mjs [--application Studio] [--owner "Nama"] [--json]
+//   node scripts/wave-report.mjs [--application Studio] [--assignee login] [--json]
 
 import { parseArgs, boardConfig, run, getProject, getItems, waveRank } from "./lib.mjs";
 
@@ -16,7 +16,7 @@ run(() => {
   const items = getItems(project)
     .filter((i) => !eq(i.values.Wave, "Tracking"))
     .filter((i) => !flags.application || eq(i.values.Application, flags.application))
-    .filter((i) => !flags.owner || eq(i.values.Owner, flags.owner));
+    .filter((i) => !flags.assignee || i.assignees.some((a) => eq(a, flags.assignee)));
 
   const waves = new Map();
   for (const i of items) {

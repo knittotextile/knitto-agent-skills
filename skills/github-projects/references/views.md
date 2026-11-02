@@ -10,7 +10,7 @@ Changing views on the org board needs the user's explicit approval.
 
 - Layout: Table. No filter.
 - Group by: `Wave`.
-- Columns: Title, Status, Wave, Application, Owner, Estimate, Target Date, Parent issue, Sub-issues progress.
+- Columns: Title, Status, Wave, Application, Assignees, Estimate, Start Date, Target Date, Parent issue, Sub-issues progress.
 - Purpose: full audit list.
 
 ## 2. Engineering Workflow (BOARD)
@@ -18,12 +18,12 @@ Changing views on the org board needs the user's explicit approval.
 - Layout: Board. Column field: `Status` (Backlog, Ready, In Progress, Done).
 - Group by: `Wave` (swimlanes, one row per Wave).
 - Filter: `-wave:Tracking`.
-- Card fields: Application, Owner, Estimate.
+- Card fields: Assignees, Application, Estimate.
 - Purpose: daily standup; see which Wave is moving.
 
 ## 3. Delivery Roadmap (ROADMAP)
 
-- Layout: Roadmap. Date field: `Target Date`.
+- Layout: Roadmap. Dates: start `Start Date`, target `Target Date` (without a start date every item is a single-day dot).
 - Group by: `Wave`.
 - Filter: `-wave:Tracking`.
 - Purpose: wave planning and deadlines.
@@ -33,13 +33,13 @@ Changing views on the org board needs the user's explicit approval.
 - Layout: Table.
 - Filter: `-wave:Tracking -status:Done`.
 - Group by: `Wave`. Sort: `Target Date` ascending.
-- Columns: Title, Status, Application, Owner, Estimate, Target Date, Repository.
+- Columns: Title, Assignees, Status, Parent issue, Application, Estimate, Start Date, Target Date.
 - Purpose: execution order for developers and agents (same order as
   `scripts/next-task.mjs`).
 
 ## Hiding Delivery Stage
 
-In every view open the field menu (`+` at the column header / view
+In every view, also hide the legacy `Owner` text field (Assignees replace it). Open the field menu (`+` at the column header / view
 settings → Fields) and untick `Delivery Stage`. Remove any `Group by:
 Delivery Stage` and replace it with `Wave`.
 

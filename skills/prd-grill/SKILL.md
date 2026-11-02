@@ -180,14 +180,14 @@ Follow [`github-projects`](../github-projects/SKILL.md): its issue format
 3. **Lanjutan**: each item becomes `[Wn-lanjutan] <item>` under the chosen
    existing `[Wn]` parent, via `node scripts/add-lanjutan.mjs` (dry run,
    show the user, then `--yes`). Do not change the parent's Status.
-4. Ask for Repo, Branch, Application, and Owner if the grill did not
+4. Ask for Repo, Branch, Application, and Assignees if the grill did not
    settle them; never guess.
 5. If files were also written, link each issue URL next to its ISSUES.md item.
 
 ## Step 5c — Put the issues on the board
 
 Run `github-projects`' `scripts/set-fields.mjs` (dry run, then `--yes`) for
-every issue created in Step 5b: Wave, Application, Owner are mandatory;
+every issue created in Step 5b: Wave, Application, Assignees are mandatory;
 Estimate and Target Date when known; Status Backlog. Finish with
 `node scripts/lint-board.mjs --open-only` and report anything it flags.
 

@@ -27,7 +27,7 @@ rule (lanjutan ≤ 8 hours or ≤ 30% of the Wave, same goal).
 
 ## Rules
 
-- Mandatory fields: Wave, Application, Owner.
+- Mandatory: Wave, Application, and Assignees.
 - Title prefix `[Wn]` / `[Wn-lanjutan]` matches the Wave field.
 - A Done parent stays Done; follow-up work goes into a lanjutan.
 

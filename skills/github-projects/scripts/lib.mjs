@@ -115,6 +115,7 @@ export function getIssue(ref) {
   const data = graphql(
     `query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){issue(number:$n){
       id number title url state body
+      assignees(first:10){nodes{login}}
       parent{number repository{nameWithOwner}}
       projectItems(first:20){nodes{id project{id}}}
     }}}`,
@@ -168,7 +169,7 @@ export function getItems(project) {
             ... on ProjectV2ItemFieldDateValue{date field{... on ProjectV2FieldCommon{name}}}
           }}
           content{
-            ... on Issue{number title url state body repository{nameWithOwner}
+            ... on Issue{number title url state body repository{nameWithOwner} assignees(first:10){nodes{login}}
               parent{number repository{nameWithOwner}} subIssues{totalCount}}
             ... on DraftIssue{title body}
           }
@@ -196,6 +197,7 @@ export function getItems(project) {
         key: c.repository ? `${c.repository.nameWithOwner}#${c.number}`.toLowerCase() : null,
         parent: c.parent ? `${c.parent.repository.nameWithOwner}#${c.parent.number}` : null,
         subIssueCount: c.subIssues?.totalCount ?? 0,
+        assignees: (c.assignees?.nodes ?? []).map((a) => a.login),
       });
     }
     after = page.pageInfo.hasNextPage ? page.pageInfo.endCursor : null;
@@ -229,6 +231,27 @@ export const waveRank = (w) => {
 };
 
 export const TITLE_RE = /^\[(W\d+)(-lanjutan)?\]\s+\S/;
+
+// Copy a project (views, fields, workflows, README; no items) into the same org.
+export function copyProject(org, fromNumber, title) {
+  const d = graphql(
+    `query($org:String!,$n:Int!){organization(login:$org){id projectV2(number:$n){id}}}`,
+    { org, n: fromNumber },
+  );
+  const c = graphql(
+    `mutation($p:ID!,$o:ID!,$t:String!){copyProjectV2(input:{projectId:$p,ownerId:$o,title:$t,includeDraftIssues:false}){projectV2{number url}}}`,
+    { p: d.organization.projectV2.id, o: d.organization.id, t: title },
+  );
+  return c.copyProjectV2.projectV2;
+}
+
+// Add assignees (GitHub logins) to an issue; Assignees replace the old Owner text field.
+export function addAssignees(ref, logins) {
+  if (!logins.length) return;
+  gh(["issue", "edit", String(ref.number), "--repo", `${ref.owner}/${ref.repo}`, "--add-assignee", logins.join(",")]);
+}
+
+export const splitLogins = (s) => String(s ?? "").split(",").map((x) => x.trim().replace(/^@/, "")).filter(Boolean);
 
 // Write gate: without --yes, print the plan and exit 0.
 export function confirmOrExit(flags, lines) {

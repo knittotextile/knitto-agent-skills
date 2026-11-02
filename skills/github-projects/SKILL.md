@@ -1,6 +1,6 @@
 ---
 name: github-projects
-description: Use when the user wants to plan or track work on the org knittotextile GitHub Projects board ("Knitto SDLC") — create issues in the Wave format, decide whether new work is a `[Wn-lanjutan]` sub-issue or a new Wave, set board fields (Status, Wave, Application, Owner, Estimate), find the next task, mark work done, lint the board, report progress per Wave, or set up the standard views. Triggers on "buat issue di board", "add issue to project", "ada kerjaan baru", "task berikutnya apa", "mark done", "progress wave", "rapikan board". Not for git branching (see branching) or Asana tasks.
+description: Use when the user wants to plan or track work on the org knittotextile GitHub Projects board ("Knitto SDLC") — create issues in the Wave format, decide whether new work is a `[Wn-lanjutan]` sub-issue or a new Wave, set board fields (Status, Wave, Application, Assignees, Estimate), find the next task, mark work done, lint the board, report progress per Wave, or set up the standard views. Triggers on "buat issue di board", "add issue to project", "ada kerjaan baru", "task berikutnya apa", "mark done", "progress wave", "rapikan board". Not for git branching (see branching) or Asana tasks.
 license: MIT
 compatibility: "Requires gh CLI auth with project scope, and Node.js 18+ for scripts/"
 metadata:
@@ -59,7 +59,8 @@ change the org board — do them only with the user's explicit approval.
 | Status | Backlog, Ready, In Progress, Done | Backlog → Ready is a manual maintainer decision |
 | Wave | `Tracking`, W0, W1, … Wn | **Mandatory**. The only sequencing field |
 | Application | Studio, Atlas, Inspector, Cross-system | **Mandatory** |
-| Owner | text (GitHub login) | **Mandatory** |
+| Assignees | issue assignees (GitHub logins) | **Mandatory**; replaces the old Owner text field |
+| Start Date | date | Roadmap bar start |
 | Estimate | number, hours | Fill when known |
 | Target Date | date | Drives the Roadmap view |
 
@@ -81,7 +82,7 @@ closest candidates and ask; do not invent one silently.
 Do NOT create an issue while any of these is missing. Ask; do not guess.
 
 1. Wave (from Step 2) and Parent (for lanjutan).
-2. Application and Owner.
+2. Application and Assignees.
 3. Repo and branch (`feature/<slug>` from `releases/staging`).
 4. Definition, Changes, Success Criteria (must include Test), Depends.
 
@@ -111,20 +112,24 @@ without `--yes`, show the user the plan, then rerun with `--yes`.
 
 | Task | Command |
 |---|---|
-| Next pickable task | `node scripts/next-task.mjs [--application X] [--owner Y]` |
+| Next pickable task | `node scripts/next-task.mjs [--application X] [--assignee login]` |
 | Create lanjutan | `node scripts/add-lanjutan.mjs --parent o/r#n --title "..." [--yes]` |
-| Set fields | `node scripts/set-fields.mjs o/r#n --wave W2 --application Studio --owner x [--yes]` |
+| Set fields | `node scripts/set-fields.mjs o/r#n --wave W2 --application Studio --assignee login [--yes]` |
 | Change Status | `node scripts/set-status.mjs o/r#n "In Progress" [--yes]` |
 | Mark done | `node scripts/mark-done.mjs o/r#n [--no-close] [--yes]` |
 | Lint board | `node scripts/lint-board.mjs [--open-only]` |
 | Progress per Wave | `node scripts/wave-report.mjs` |
+| New board from template | `node scripts/new-board.mjs --title "..." [--yes]` |
+| Prepare a template | `node scripts/setup-template.mjs --project <n> [--yes]` |
 
 Paths are relative to this skill's folder. Details: `scripts/README.md`.
 
 ## Step 7 - Standard views
 
-`gh project` cannot create views; set them up in the web UI following
-`references/views.md`. Every view that shows work is grouped by **Wave**:
+`gh project` cannot create views; set them up once in the web UI following
+`references/views.md`. Set them in the org template **Knitto SDLC Template**
+(#17); every board created with `new-board.mjs` (or Templates in the web UI)
+copies them, so a new board never starts from scratch. Every view that shows work is grouped by **Wave**:
 
 1. All Work Items (TABLE, grouped by Wave).
 2. Engineering Workflow (BOARD, columns = Status, grouped by Wave).

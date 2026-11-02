@@ -10,11 +10,13 @@ filter by `Application` instead of creating more boards.
 | Status | single select | Backlog, Ready, In Progress, Done | yes | Backlog → Ready is set by the maintainer |
 | Wave | single select | Tracking, W0 … Wn | yes | Only sequencing field. Add W(n+1) when a new Wave is agreed |
 | Application | single select | Studio, Atlas, Inspector, Cross-system | yes | Cross-system when more than one app is touched |
-| Owner | text | GitHub login | yes | One person accountable |
+| Assignees | built-in | GitHub logins | yes | Issue assignees, same as the Knitto Live Chat board. Replaces the old `Owner` text field |
+| Start Date | date | YYYY-MM-DD | when known | Roadmap bar start (Start Date → Target Date) |
 | Estimate | number | hours | when known | Used by `wave-report` and the lanjutan/Wave decision |
 | Target Date | date | YYYY-MM-DD | when known | Roadmap view |
 | Effort Forecast | — | — | no | Optional, unchanged |
 | Delivery Stage | single select | (legacy S0–S5) | **no** | Hidden from every view; never fill it for new items |
+| Owner | text | (legacy) | **no** | Replaced by Assignees; hidden, not in the template |
 
 ### Why Delivery Stage is gone
 
@@ -50,7 +52,7 @@ match. `lint-board` checks this.
    `Parent:` line in the body. `add-lanjutan.mjs` does both.
 3. A Done parent stays Done. Do not reopen it or move it back; the lanjutan
    carries the new work and its own Status.
-4. Wave, Application, and Owner are mandatory on the lanjutan; by default
+4. Wave, Application, and Assignees are mandatory on the lanjutan; by default
    they are inherited from the parent and can be overridden.
 5. A lanjutan does not get its own lanjutan. Further follow-up work hangs
    off the same `[Wn]` parent.

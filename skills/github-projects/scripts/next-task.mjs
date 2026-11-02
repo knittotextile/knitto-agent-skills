@@ -5,7 +5,7 @@
 // Read-only.
 //
 // Usage:
-//   node scripts/next-task.mjs [--application Studio] [--owner "Nama"] [--wave W2]
+//   node scripts/next-task.mjs [--application Studio] [--assignee login] [--wave W2]
 //     [--limit 10] [--all] [--json]
 //
 // --all also lists blocked items, with the dependency that blocks them.
@@ -37,7 +37,7 @@ run(() => {
     .filter((i) => PICKABLE.includes(String(i.values.Status ?? "").toLowerCase()))
     .filter((i) => i.values.Wave && !eq(i.values.Wave, "Tracking"))
     .filter((i) => !flags.application || eq(i.values.Application, flags.application))
-    .filter((i) => !flags.owner || eq(i.values.Owner, flags.owner))
+    .filter((i) => !flags.assignee || i.assignees.some((a) => eq(a, flags.assignee)))
     .filter((i) => !flags.wave || eq(i.values.Wave, flags.wave))
     .map((i) => {
       const blockedBy = parseDepends(i.body, i.repo).filter((d) => !isDone(d)).map(refKey);
@@ -55,7 +55,7 @@ run(() => {
   if (!rows.length) { console.log("Tidak ada task yang bisa dikerjakan sekarang."); return; }
   for (const r of rows) {
     const v = r.values;
-    const meta = [v.Wave, v.Status, v.Application, v.Owner, v.Estimate != null ? `${v.Estimate}j` : null, v["Target Date"]]
+    const meta = [v.Wave, v.Status, v.Application, r.assignees.join(",") || null, v.Estimate != null ? `${v.Estimate}j` : null, v["Target Date"]]
       .filter(Boolean).join(" | ");
     console.log(`${r.blockedBy.length ? "BLOCKED " : ""}${r.key}  ${r.title}\n    ${meta}${r.blockedBy.length ? `\n    menunggu: ${r.blockedBy.join(", ")}` : ""}\n    ${r.url}`);
   }

@@ -1,5 +1,5 @@
 ---
-description: Plan and track work on the org knittotextile board "Knitto SDLC" (project #15) — Wave-only sequencing, [Wn]/[Wn-lanjutan] issues with header + 3-scope body, lanjutan-vs-new-Wave decision, mandatory Wave/Application/Owner, helper scripts (next-task, add-lanjutan, set-fields, set-status, mark-done, lint-board, wave-report), views grouped by Wave. Trigger on "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
+description: Plan and track work on the org knittotextile board "Knitto SDLC" (project #15) — Wave-only sequencing, [Wn]/[Wn-lanjutan] issues with header + 3-scope body, lanjutan-vs-new-Wave decision, mandatory Wave/Application/Assignees, helper scripts (next-task, add-lanjutan, set-fields, set-status, mark-done, lint-board, wave-report), views grouped by Wave. Trigger on "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
 globs:
 alwaysApply: false
 ---
@@ -13,8 +13,8 @@ Full rules: `references/model.md`.
 ## Fields
 
 Status (Backlog/Ready/In Progress/Done), Wave (Tracking, W0..Wn, mandatory),
-Application (Studio/Atlas/Inspector/Cross-system, mandatory), Owner (text,
-mandatory), Estimate (hours), Target Date. Tracking = umbrella items.
+Application (Studio/Atlas/Inspector/Cross-system, mandatory), Assignees
+(issue assignees, mandatory; the old Owner text field is legacy), Estimate (hours), Target Date. Tracking = umbrella items.
 
 ## New work: lanjutan or new Wave
 
