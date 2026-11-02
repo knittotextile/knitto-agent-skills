@@ -1,5 +1,5 @@
 ---
-description: Turn a rough idea into a written plan through iterative one-question-at-a-time Q&A, then write a PRD+ISSUES doc (or match this repo's existing plan-doc convention). Trigger on "grill me", "grill this feature", "let's plan this out", "help me spec this", or a new feature described too vaguely to implement directly.
+description: Turn a rough idea into a written plan through iterative one-question-at-a-time Q&A, then write the plan to the output(s) the user picks: PRD+ISSUES files, GitHub issues in the Wave format, and/or the Knitto SDLC board. Trigger on "grill me", "grill this feature", "let's plan this out", "help me spec this", or a new feature described too vaguely to implement directly.
 globs:
 alwaysApply: false
 ---
@@ -51,7 +51,22 @@ Summarize understanding (problem, scope, key decisions) and get explicit
 confirmation before generating any file. Loop back to the grill for
 anything the user corrects.
 
-## Write the plan
+## Choose the output
+
+After confirmation ask once (multi-select): write PRD/ISSUES files, create
+GitHub issues, and/or put them on the Project board (Knitto SDLC,
+org knittotextile #15). `/dev` needs the files, so suggest including them
+if the user will run `/dev`.
+
+Issues follow the `github-projects` skill: first weigh subtask vs new Wave
+(`github-projects/references/subtask-vs-wave.md`), recommend one, let the
+user choose. New Wave = one `[Wn]` parent + one sub-issue per checklist
+item. Subtask = `[Wn-follow-up]` sub-issues under the chosen parent via
+`scripts/add-subtask.mjs`. Board: `scripts/set-fields.mjs` (Wave,
+Application, Owner mandatory), then `scripts/lint-board.mjs`. Scripts are
+dry runs until `--yes`.
+
+## Write the plan files (if chosen)
 
 `PRD.md`: Context, Problem/Motivation, Scope, Design decisions, Out of
 scope, Success criteria.
@@ -61,8 +76,8 @@ repo's fixed definition-of-done items appended verbatim if any exist (test
 commands, review steps, verification steps documented elsewhere in the
 repo).
 
-Write the files directly — don't ask permission, that's the point — then
-tell the user the exact paths.
+Write the files directly — don't ask permission again — then tell the user
+the exact paths.
 
 ## Not this skill's job
 

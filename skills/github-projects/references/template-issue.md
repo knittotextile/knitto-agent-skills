@@ -1,7 +1,9 @@
-# Template Issue (3-scope)
+# Template Issue
+
+Title: `[Wn] Judul` or `[Wn-follow-up] Judul` (see `model.md`).
 
 ```md
-Wave: W1 | Repo: org/repo | Branch: feat/<slug>-main | Depends: <issue-id> | Blocks: -
+Wave: W1 | Parent: knittotextile/repo#12 | Repo: knittotextile/repo | Branch: feature/<slug> (from releases/staging) | Depends: knittotextile/repo#10
 
 ## 1. Definition
 
@@ -21,4 +23,15 @@ Out-of-scope: what this issue explicitly does NOT cover.
   Example: `npm test`, curl request, manual steps, screenshot or log.
   An issue without this checkbox is NOT Ready.
 - [ ] Regression: what must NOT break.
+
+## 4. Keputusan terbuka
+
+Optional. Open questions with who decides, or remove this section.
 ```
+
+Header rules:
+
+- `Parent:` — mandatory for `[Wn-follow-up]`; `-` for a top-level `[Wn]` issue.
+- `Depends:` — comma-separated `owner/repo#n` (or `#n` in the same repo), `-` for none.
+  `next-task.mjs` reads this line to decide what is blocked.
+- `Branch:` — `feature/<slug>`, cut from `releases/staging`.

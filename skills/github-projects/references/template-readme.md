@@ -1,36 +1,35 @@
-# Template README (multi-PB board)
+# Template README (Knitto SDLC board)
+
+The board README is the contract for every application on the board.
 
 ```md
-# PB xxx - Project Title
-> Owner: @owner | Written by: name/date | Updated: date | Status: Draft/Ready/In Progress
+# Knitto SDLC
+> Owner: @owner | Written by: name/date | Updated: date
 
-## PB List
+## Waves
 
-| PB | Title | Status | Active Wave |
-|----|-------|--------|-------------|
-| 1.952.10 | Report title | In Progress | W2 |
-| 1.952.6.1 | Filter title | Todo | W0 |
+| Wave | Goal | Status | Target |
+|------|------|--------|--------|
+| W0 | Foundation: accounts, access, benchmarks | Done | 2026-09-30 |
+| W1 | Backend core | In Progress | 2026-10-31 |
+| W2 | Frontend | Backlog | 2026-11-30 |
 
-## How We Work (Waves)
+Waves run in order. Parallel work inside one wave is allowed.
+New work is a `[Wn-follow-up]` sub-issue or a new Wave — see the decision
+rule (subtask ≤ 8 hours or ≤ 30% of the Wave, same goal).
 
-- W0 foundation -> W1 backend -> W2 frontend -> W3 QA/deploy.
-- Waves run sequentially. Parallel work inside one wave is allowed.
-- Cross-PB parallelism is allowed unless the same repo or database is shared.
+## Applications
 
-## Affected Repos
+| Application | Repos | Work branch | Base |
+|-------------|-------|-------------|------|
+| Studio | `knittotextile/knitto-api-sdlc-studio`, `knittotextile/knitto-sdlc-studio-web` | `feature/<slug>` | `releases/staging` |
+| Atlas | `knittotextile/knitto-api-sdlc-atlas` | `feature/<slug>` | `releases/staging` |
 
-| Repo | Used by PB | Work branch | Base |
-|------|------------|-------------|------|
-| `org/backend-xxx` | 1.952.10 | `feat/<slug>-main` | `main` |
-| `org/frontend-xxx` | 1.952.10 | `feat/<slug>-main` | `main` |
+## Rules
 
-## PB 1.952.10 Detail
-
-Context, scope, formulas, decisions, open questions.
-
-## PB 1.952.6.1 Detail
-
-Context, scope, decisions, open questions.
+- Mandatory: Wave, Application, and Assignees.
+- Title prefix `[Wn]` / `[Wn-follow-up]` matches the Wave field.
+- A Done parent stays Done; follow-up work goes into a subtask.
 
 ## References
 
