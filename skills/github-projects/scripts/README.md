@@ -40,7 +40,7 @@ node scripts/mark-done.mjs knittotextile/knitto-api-sdlc-studio#13 --yes
 ## Board template
 
 Views can't be created through the API, but a copied project keeps them.
-`Knitto SDLC Template` (org project #17) is the org template: views, fields,
+`Knitto Wave Template` (org project #17) is the org template: views, fields,
 and workflows set up once, no items.
 
 | Script | What it does |

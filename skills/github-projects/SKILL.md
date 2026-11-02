@@ -127,7 +127,7 @@ Paths are relative to this skill's folder. Details: `scripts/README.md`.
 ## Step 7 - Standard views
 
 `gh project` cannot create views; set them up once in the web UI following
-`references/views.md`. Set them in the org template **Knitto SDLC Template**
+`references/views.md`. Set them in the org template **Knitto Wave Template**
 (#17); every board created with `new-board.mjs` (or Templates in the web UI)
 copies them, so a new board never starts from scratch. Every view that shows work is grouped by **Wave**:
 

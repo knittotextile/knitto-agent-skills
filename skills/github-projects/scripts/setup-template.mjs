@@ -8,7 +8,7 @@
 //
 // Usage:
 //   # copy an existing board's structure (no items) into a new template project
-//   node scripts/setup-template.mjs --create-from 15 --title "Knitto SDLC Template" [--yes]
+//   node scripts/setup-template.mjs --create-from 15 --title "Knitto Wave Template" [--yes]
 //   # or prepare an existing project
 //   node scripts/setup-template.mjs --project 16 [--keep-delivery-stage] [--yes]
 

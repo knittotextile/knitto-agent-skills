@@ -6,7 +6,7 @@
 //   node scripts/new-board.mjs --title "Knitto <Nama>" [--template <n>] [--yes]
 //
 // --template defaults to GH_PROJECT_TEMPLATE, else the org template titled
-// "Knitto SDLC Template".
+// "Knitto Wave Template".
 
 import { parseArgs, boardConfig, run, graphql, confirmOrExit, copyProject } from "./lib.mjs";
 
@@ -15,8 +15,8 @@ function findTemplate(org) {
     `query($org:String!){organization(login:$org){projectsV2(first:100){nodes{number title template}}}}`,
     { org },
   );
-  const t = d.organization.projectsV2.nodes.find((p) => p.template && p.title === "Knitto SDLC Template");
-  if (!t) throw new Error('no org template "Knitto SDLC Template" found; pass --template <n>');
+  const t = d.organization.projectsV2.nodes.find((p) => p.template && p.title === "Knitto Wave Template");
+  if (!t) throw new Error('no org template "Knitto Wave Template" found; pass --template <n>');
   return t.number;
 }
 
