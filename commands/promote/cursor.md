@@ -34,7 +34,7 @@ deploy/release step — it never checks CI, never touches releases/main,
 never waits for anything to go live. Not for shipping more than one plan
 file per invocation.
 
-## Board close-out (Knitto Wave Delivery)
+## Board close-out (Knitto SDLC)
 
 For each board issue this plan delivers (issue links in ISSUES.md or the
 PR's `Closes owner/repo#n` lines):

@@ -17,7 +17,7 @@ Not /qa or /gate — cheap per-item checks run here, but the expensive
 E2E/manual verification pass and the code-review pass are separate
 commands, run deliberately. Not for more than one plan file per invocation.
 
-## Board (Knitto Wave Delivery)
+## Board (Knitto SDLC)
 
 - No plan given and the work lives on the board? Run the `github-projects`
   skill's `node scripts/next-task.mjs` (optionally `--application` /

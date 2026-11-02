@@ -1,6 +1,6 @@
 ---
 name: github-projects
-description: Use when the user wants to plan or track work on the org knittotextile GitHub Projects board ("Knitto Wave Delivery") — create issues in the Wave format, decide whether new work is a `[Wn-lanjutan]` sub-issue or a new Wave, set board fields (Status, Wave, Application, Owner, Estimate), find the next task, mark work done, lint the board, report progress per Wave, or set up the standard views. Triggers on "buat issue di board", "add issue to project", "ada kerjaan baru", "task berikutnya apa", "mark done", "progress wave", "rapikan board". Not for git branching (see branching) or Asana tasks.
+description: Use when the user wants to plan or track work on the org knittotextile GitHub Projects board ("Knitto SDLC") — create issues in the Wave format, decide whether new work is a `[Wn-lanjutan]` sub-issue or a new Wave, set board fields (Status, Wave, Application, Owner, Estimate), find the next task, mark work done, lint the board, report progress per Wave, or set up the standard views. Triggers on "buat issue di board", "add issue to project", "ada kerjaan baru", "task berikutnya apa", "mark done", "progress wave", "rapikan board". Not for git branching (see branching) or Asana tasks.
 license: MIT
 compatibility: "Requires gh CLI auth with project scope, and Node.js 18+ for scripts/"
 metadata:
@@ -19,7 +19,7 @@ compatible_with: [claude-code, opencode, antigravity]
 
 # github-projects
 
-One shared board, **Knitto Wave Delivery** (org `knittotextile`, project
+One shared board, **Knitto SDLC** (org `knittotextile`, project
 #15), holds all delivery work across applications. The board is the source
 of truth, the issue is the execution unit for AI and human, and **Wave** is
 the only sequencing dimension.
@@ -48,7 +48,7 @@ Full model: `references/model.md`. Lanjutan vs new Wave:
    `node scripts/next-task.mjs --all`) or `gh project view 15 --owner knittotextile`.
 
 Never scrape the web UI. Never create a new board unless the user asks for
-one explicitly; the default target is always Knitto Wave Delivery.
+one explicitly; the default target is always Knitto SDLC.
 Renaming the board, adding/removing fields or options, and editing views
 change the org board — do them only with the user's explicit approval.
 
@@ -129,7 +129,7 @@ Paths are relative to this skill's folder. Details: `scripts/README.md`.
 1. All Work Items (TABLE, grouped by Wave).
 2. Engineering Workflow (BOARD, columns = Status, grouped by Wave).
 3. Delivery Roadmap (ROADMAP by Target Date, grouped by Wave).
-4. Development Sequence (TABLE, filter `-wave:Tracking -status:Done`, grouped by Wave, sorted by Target Date).
+4. Development Wave (TABLE, filter `-wave:Tracking -status:Done`, grouped by Wave, sorted by Target Date).
 
 ## References
 

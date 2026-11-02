@@ -1,5 +1,5 @@
 ---
-description: Turn a rough idea into a written plan through iterative one-question-at-a-time Q&A, then write the plan to the output(s) the user picks: PRD+ISSUES files, GitHub issues in the Wave format, and/or the Knitto Wave Delivery board. Trigger on "grill me", "grill this feature", "let's plan this out", "help me spec this", or a new feature described too vaguely to implement directly.
+description: Turn a rough idea into a written plan through iterative one-question-at-a-time Q&A, then write the plan to the output(s) the user picks: PRD+ISSUES files, GitHub issues in the Wave format, and/or the Knitto SDLC board. Trigger on "grill me", "grill this feature", "let's plan this out", "help me spec this", or a new feature described too vaguely to implement directly.
 globs:
 alwaysApply: false
 ---
@@ -54,7 +54,7 @@ anything the user corrects.
 ## Choose the output
 
 After confirmation ask once (multi-select): write PRD/ISSUES files, create
-GitHub issues, and/or put them on the Project board (Knitto Wave Delivery,
+GitHub issues, and/or put them on the Project board (Knitto SDLC,
 org knittotextile #15). `/dev` needs the files, so suggest including them
 if the user will run `/dev`.
 

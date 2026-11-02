@@ -1,4 +1,4 @@
-# Board Model — Knitto Wave Delivery
+# Board Model — Knitto SDLC
 
 Org `knittotextile`, project #15. One shared board for every application;
 filter by `Application` instead of creating more boards.
@@ -29,7 +29,7 @@ may delete it.
 - `W0 … Wn` — a delivery phase with its own goal. Waves run in order; work
   inside one Wave may run in parallel.
 - `Tracking` — umbrella/parent containers (e.g. a PB epic) that are not work
-  themselves. Excluded from Development Sequence, `next-task`, and `wave-report`.
+  themselves. Excluded from Development Wave, `next-task`, and `wave-report`.
 
 ## Issue naming
 

@@ -1,6 +1,6 @@
 ---
 name: prd-grill
-description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then asks where the plan should go — a PRD + ISSUES file pair under `docs/prd/todo|done/` (fixed format, see references/output-conventions.md), GitHub issues in the Wave format (one `[Wn]` parent + sub-issues), and/or the Knitto Wave Delivery board — any combination. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
+description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then asks where the plan should go — a PRD + ISSUES file pair under `docs/prd/todo|done/` (fixed format, see references/output-conventions.md), GitHub issues in the Wave format (one `[Wn]` parent + sub-issues), and/or the Knitto SDLC board — any combination. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
 license: MIT
 compatibility: "Requires a way to write files and, ideally, an AskUserQuestion-style tool for choice questions (falls back to plain text Q&A otherwise)."
 metadata:
@@ -116,7 +116,7 @@ plan goes:
 1. **Tulis file PRD/ISSUES** — the PRD + ISSUES pair below (Step 5a).
 2. **Buat issue GitHub** — Step 5b.
 3. **Masukkan ke Project** — Step 5c. Offer this only when a board exists
-   (default: org `knittotextile` project #15, Knitto Wave Delivery); it
+   (default: org `knittotextile` project #15, Knitto SDLC); it
    implies option 2.
 
 Any combination is valid. If the user wants to run `/dev` afterwards, point

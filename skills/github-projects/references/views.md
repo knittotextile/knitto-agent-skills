@@ -28,7 +28,7 @@ Changing views on the org board needs the user's explicit approval.
 - Filter: `-wave:Tracking`.
 - Purpose: wave planning and deadlines.
 
-## 4. Development Sequence (TABLE)
+## 4. Development Wave (TABLE)
 
 - Layout: Table.
 - Filter: `-wave:Tracking -status:Done`.

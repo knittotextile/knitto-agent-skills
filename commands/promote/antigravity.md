@@ -11,7 +11,7 @@ Follow the `branching` skill to detect the repository's branch model. Open or up
 
 For other branch models, follow the repository's documented PR convention. Do not check or wait for CI, trigger deployment, or claim that this command releases to production. Ask before deleting any branches.
 
-## Board close-out (Knitto Wave Delivery)
+## Board close-out (Knitto SDLC)
 
 For each board issue this plan delivers (issue links in ISSUES.md or the
 PR's `Closes owner/repo#n` lines):

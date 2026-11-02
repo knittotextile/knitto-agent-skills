@@ -48,7 +48,7 @@ checks, no waiting on a release to go live. Its plan file is already in
   `releases/main`, never waits for anything to go live. It only opens PRs.
 - Not for shipping more than one plan file per invocation.
 
-## Board close-out (Knitto Wave Delivery)
+## Board close-out (Knitto SDLC)
 
 For each board issue this plan delivers (issue links in ISSUES.md or the
 PR's `Closes owner/repo#n` lines):

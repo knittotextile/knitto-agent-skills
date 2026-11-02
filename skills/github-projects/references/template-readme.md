@@ -1,9 +1,9 @@
-# Template README (Knitto Wave Delivery board)
+# Template README (Knitto SDLC board)
 
 The board README is the contract for every application on the board.
 
 ```md
-# Knitto Wave Delivery
+# Knitto SDLC
 > Owner: @owner | Written by: name/date | Updated: date
 
 ## Waves

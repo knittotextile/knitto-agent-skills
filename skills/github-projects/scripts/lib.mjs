@@ -2,7 +2,7 @@
 // `gh api graphql` calls, board/field lookup, issue-ref parsing, and the
 // dry-run / --yes gate every write script goes through.
 //
-// Board defaults to org `knittotextile` project #15 ("Knitto Wave Delivery").
+// Board defaults to org `knittotextile` project #15 ("Knitto SDLC").
 // Override with --org / --project, or GH_PROJECT_ORG / GH_PROJECT_NUMBER.
 
 import { execFileSync } from "node:child_process";
@@ -64,6 +64,9 @@ export function parseIssueRef(ref, defaultRepo = null) {
 
 export const refKey = (r) => `${r.owner}/${r.repo}#${r.number}`.toLowerCase();
 
+// "Estimate (jam)" -> "Estimate": fields may carry a unit suffix on the board.
+export const baseName = (name) => name.replace(/\s*\([^)]*\)\s*$/, "");
+
 export function getProject({ org, number }) {
   const data = graphql(
     `query($org:String!,$n:Int!){organization(login:$org){projectV2(number:$n){
@@ -78,7 +81,7 @@ export function getProject({ org, number }) {
   const p = data.organization?.projectV2;
   if (!p) throw new Error(`Project ${org}#${number} not found (check gh auth has the project scope)`);
   const fields = {};
-  for (const f of p.fields.nodes) if (f?.name) fields[f.name.toLowerCase()] = f;
+  for (const f of p.fields.nodes) if (f?.name) fields[baseName(f.name).toLowerCase()] = f;
   return { id: p.id, title: p.title, url: p.url, fields };
 }
 
@@ -177,7 +180,7 @@ export function getItems(project) {
       const values = {};
       for (const v of n.fieldValues.nodes) {
         if (!v?.field?.name) continue;
-        values[v.field.name] = v.name ?? v.text ?? v.number ?? v.date ?? null;
+        values[baseName(v.field.name)] = v.name ?? v.text ?? v.number ?? v.date ?? null;
       }
       const c = n.content || {};
       items.push({

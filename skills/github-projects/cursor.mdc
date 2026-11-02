@@ -1,12 +1,12 @@
 ---
-description: Plan and track work on the org knittotextile board "Knitto Wave Delivery" (project #15) — Wave-only sequencing, [Wn]/[Wn-lanjutan] issues with header + 3-scope body, lanjutan-vs-new-Wave decision, mandatory Wave/Application/Owner, helper scripts (next-task, add-lanjutan, set-fields, set-status, mark-done, lint-board, wave-report), views grouped by Wave. Trigger on "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
+description: Plan and track work on the org knittotextile board "Knitto SDLC" (project #15) — Wave-only sequencing, [Wn]/[Wn-lanjutan] issues with header + 3-scope body, lanjutan-vs-new-Wave decision, mandatory Wave/Application/Owner, helper scripts (next-task, add-lanjutan, set-fields, set-status, mark-done, lint-board, wave-report), views grouped by Wave. Trigger on "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
 globs:
 alwaysApply: false
 ---
 
 # github-projects (Cursor)
 
-One shared board: Knitto Wave Delivery (org knittotextile, #15).
+One shared board: Knitto SDLC (org knittotextile, #15).
 Wave is the only sequencing field; Delivery Stage is legacy and hidden.
 Full rules: `references/model.md`.
 
@@ -43,5 +43,5 @@ See `scripts/README.md`.
 
 All views grouped by Wave: All Work Items (table), Engineering Workflow
 (board by Status, swimlanes Wave), Delivery Roadmap (Target Date),
-Development Sequence (table, `-wave:Tracking -status:Done`).
+Development Wave (table, `-wave:Tracking -status:Done`).
 See `references/views.md`.

@@ -30,7 +30,7 @@ before any code gets touched.
    - If unclear which applies, ask the user rather than assuming.
 4. If "$ARGUMENTS" looks like `refine <slug>`, pass that through as-is to
    whichever skill owns the existing doc.
-5. When the invoked skill finishes, report the issue/board URLs created (prd-grill Step 5 lets the user pick PRD/ISSUES files, GitHub issues, and/or the Knitto Wave Delivery board) plus the exact file path(s) written
+5. When the invoked skill finishes, report the issue/board URLs created (prd-grill Step 5 lets the user pick PRD/ISSUES files, GitHub issues, and/or the Knitto SDLC board) plus the exact file path(s) written
    (BRD.md and/or PRD.md + ISSUES.md) and tell the user to run /dev next.
 
 Not the place to write code — both skills only write planning documents.

@@ -11,7 +11,7 @@ Stop when the feature checklist is complete. Do not run the full E2E/manual veri
 
 If no plan can be resolved, ask the user for its path or slug instead of guessing. If the request is a small ad hoc change rather than a planned feature, do not force it through the pipeline.
 
-## Board (Knitto Wave Delivery)
+## Board (Knitto SDLC)
 
 - No plan given and the work lives on the board? Run the `github-projects`
   skill's `node scripts/next-task.mjs` (optionally `--application` /
