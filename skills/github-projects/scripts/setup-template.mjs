@@ -23,10 +23,12 @@ const SELECTS = {
   Wave: ["Tracking", "W0", "W1", "W2", "W3", "W4", "W5"],
   Application: ["Studio", "Atlas", "Inspector", "Cross-system"],
 };
+// Distinct colors so each application reads at a glance on every view.
+const COLORS = { Studio: "BLUE", Atlas: "GREEN", Inspector: "ORANGE", "Cross-system": "PURPLE", Tracking: "GRAY" };
 
 function selectOptions(fieldId) {
   return graphql(
-    `query($id:ID!){node(id:$id){... on ProjectV2SingleSelectField{options{name color description}}}}`,
+    `query($id:ID!){node(id:$id){... on ProjectV2SingleSelectField{options{id name color description}}}}`,
     { id: fieldId },
   ).node.options;
 }
@@ -55,7 +57,8 @@ run(() => {
     if (!f) { plan.push(`create field ${name} (${wanted.join(", ")})`); selectFixes.push({ name, wanted, field: null }); continue; }
     const have = f.options.map((o) => o.name);
     const add = wanted.filter((w) => !have.includes(w));
-    if (add.length) { plan.push(`${name}: add option(s) ${add.join(", ")}`); selectFixes.push({ name, wanted, field: f }); }
+    const recolor = f.options.some((o) => COLORS[o.name] && o.color !== COLORS[o.name]);
+    if (add.length || recolor) { plan.push(`${name}: ${add.length ? `add option(s) ${add.join(", ")}` : "set colors"}`); selectFixes.push({ name, wanted, field: f }); }
   }
   const legacy = project.fields["delivery stage"];
   if (legacy && !flags["keep-delivery-stage"]) plan.push("delete legacy field Delivery Stage");
@@ -71,9 +74,11 @@ run(() => {
     const existing = s.field ? selectOptions(s.field.id) : [];
     const byName = new Map(existing.map((o) => [o.name, o]));
     const ordered = [...s.wanted, ...existing.map((o) => o.name).filter((n) => !s.wanted.includes(n))];
+    // Passing the existing option id keeps every item's value intact.
     const options = ordered.map((n) => ({
+      ...(byName.get(n)?.id ? { id: byName.get(n).id } : {}),
       name: n,
-      color: byName.get(n)?.color ?? (n === "Tracking" ? "GRAY" : "BLUE"),
+      color: COLORS[n] ?? byName.get(n)?.color ?? "BLUE",
       description: byName.get(n)?.description ?? "",
     }));
     if (s.field) {

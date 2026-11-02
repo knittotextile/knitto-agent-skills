@@ -9,7 +9,7 @@ filter by `Application` instead of creating more boards.
 |---|---|---|---|---|
 | Status | single select | Backlog, Ready, In Progress, Done | yes | Backlog → Ready is set by the maintainer |
 | Wave | single select | Tracking, W0 … Wn | yes | Only sequencing field. Add W(n+1) when a new Wave is agreed |
-| Application | single select | Studio, Atlas, Inspector, Cross-system | yes | Cross-system when more than one app is touched |
+| Application | single select | Studio (blue), Atlas (green), Inspector (orange), Cross-system (purple) | yes | Cross-system when more than one app is touched. Distinct colors per app |
 | Assignees | built-in | GitHub logins | yes | Issue assignees, same as the Knitto Live Chat board. Replaces the old `Owner` text field |
 | Start Date | date | YYYY-MM-DD | when known | Roadmap bar start (Start Date → Target Date) |
 | Estimate | number | hours | when known | Used by `wave-report` and the lanjutan/Wave decision |
