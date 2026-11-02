@@ -134,7 +134,7 @@ copies them, so a new board never starts from scratch. Every view that shows wor
 1. All Work Items (TABLE, grouped by Wave).
 2. Engineering Workflow (BOARD, columns = Status, grouped by Wave).
 3. Delivery Roadmap (ROADMAP by Target Date, grouped by Wave).
-4. Development Wave (TABLE, filter `-wave:Tracking -status:Done`, grouped by Wave, sorted by Target Date).
+4. Development Wave (TABLE, filter `-wave:Tracking`, grouped by Wave, sorted by Target Date).
 
 ## References
 

@@ -31,7 +31,7 @@ Changing views on the org board needs the user's explicit approval.
 ## 4. Development Wave (TABLE)
 
 - Layout: Table.
-- Filter: `-wave:Tracking -status:Done`.
+- Filter: `-wave:Tracking`.
 - Group by: `Wave`. Sort: `Target Date` ascending.
 - Columns: Title, Assignees, Status, Parent issue, Application, Estimate, Start Date, Target Date.
 - Purpose: execution order for developers and agents (same order as

@@ -43,5 +43,5 @@ See `scripts/README.md`.
 
 All views grouped by Wave: All Work Items (table), Engineering Workflow
 (board by Status, swimlanes Wave), Delivery Roadmap (Target Date),
-Development Wave (table, `-wave:Tracking -status:Done`).
+Development Wave (table, `-wave:Tracking`).
 See `references/views.md`.
