@@ -39,3 +39,15 @@ with open verification or review items, and say so plainly. Not a
 deploy/release step — it never checks CI, never touches releases/main,
 never waits for anything to go live. Not for shipping more than one plan
 file per invocation.
+
+## Board close-out (Knitto Wave Delivery)
+
+For each board issue this plan delivers (issue links in ISSUES.md or the
+PR's `Closes owner/repo#n` lines):
+
+- While the PR into the trunk is only open, leave the issue In Progress.
+- Once that PR is merged, run the `github-projects` skill's
+  `node scripts/mark-done.mjs <owner/repo#n>` as a dry run, show the plan
+  (tick Success Criteria, Status Done, close the issue), and rerun with
+  `--yes` after the user confirms.
+- Finish with `node scripts/wave-report.mjs` so the user sees the Wave's progress.

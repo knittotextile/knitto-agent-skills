@@ -1,16 +1,16 @@
 ---
 name: github-projects
-description: Use when the user wants to create or manage a GitHub Projects board (org knittotextile), write a multi-PB README, create issues with 3-scope format, plan waves, set dependencies, or create standard views. Triggers on "create project board", "buat board PB", "add issue to project", "create development sequence view". Not for git branching (see branching) or Asana tasks.
+description: Use when the user wants to plan or track work on the org knittotextile GitHub Projects board ("Knitto Wave Delivery") — create issues in the Wave format, decide whether new work is a `[Wn-lanjutan]` sub-issue or a new Wave, set board fields (Status, Wave, Application, Owner, Estimate), find the next task, mark work done, lint the board, report progress per Wave, or set up the standard views. Triggers on "buat issue di board", "add issue to project", "ada kerjaan baru", "task berikutnya apa", "mark done", "progress wave", "rapikan board". Not for git branching (see branching) or Asana tasks.
 license: MIT
-compatibility: "Requires gh CLI auth with project scope"
+compatibility: "Requires gh CLI auth with project scope, and Node.js 18+ for scripts/"
 metadata:
   category: git-workflow
   author: knitto
-  version: "1.0.0"
-allowed-tools: [Bash, Read, Grep, Glob]
+  version: "2.0.0"
+allowed-tools: [Bash, Read, Grep, Glob, AskUserQuestion]
 disallowed-tools: []
-argument-hint: "create <PB> | add-issue | add-view"
-when_to_use: "Also trigger when user mentions PB board, README board, 3-scope issue, wave, or project views."
+argument-hint: "add-issue | lanjutan | next | done <issue> | lint | report | add-view"
+when_to_use: "Also trigger when user mentions a wave, [Wn-lanjutan], the board, sub-issue, or project views, or when /grill output goes to GitHub issues/Project."
 disable-model-invocation: false
 user-invocable: true
 effort: medium
@@ -19,17 +19,21 @@ compatible_with: [claude-code, opencode, antigravity]
 
 # github-projects
 
-One board can contain more than one PB. The board is the source of truth.
-The README is the contract. An issue is the execution unit for AI and human.
+One shared board, **Knitto Wave Delivery** (org `knittotextile`, project
+#15), holds all delivery work across applications. The board is the source
+of truth, the issue is the execution unit for AI and human, and **Wave** is
+the only sequencing dimension.
+
+Full model: `references/model.md`. Lanjutan vs new Wave:
+`references/lanjutan-vs-wave.md`. Scripts: `scripts/README.md`.
 
 ## When to use
 
-- Create a new Projects board for one or more PBs.
-- Write or update the board README (multi-PB).
-- Create issues with the 3-scope format.
-- Plan waves for large features.
-- Set dependencies between waves and issues.
-- Create the standard views (including Development Sequence).
+- New work arrives: decide lanjutan vs new Wave, then create the issue.
+- Create or update issues in the Wave format.
+- Set or fix board fields; move Status; mark an issue done.
+- Find the next pickable task; report progress per Wave; lint the board.
+- Set up the standard views (grouped by Wave).
 
 ## When NOT to use
 
@@ -40,71 +44,98 @@ The README is the contract. An issue is the execution unit for AI and human.
 ## Step 0 - Verify via gh
 
 1. `gh auth status` must show the `project` scope.
-2. `gh project list --owner knittotextile` to check existing boards.
-3. `gh project view <number> --owner knittotextile --format json` to read README, fields, items.
+2. Read the board through the scripts (`node scripts/wave-report.mjs`,
+   `node scripts/next-task.mjs --all`) or `gh project view 15 --owner knittotextile`.
 
-Never use web scraping for project data. Always use `gh`.
+Never scrape the web UI. Never create a new board unless the user asks for
+one explicitly; the default target is always Knitto Wave Delivery.
+Renaming the board, adding/removing fields or options, and editing views
+change the org board — do them only with the user's explicit approval.
 
-## Step 1 - Clarify until scope is complete (mandatory)
+## Step 1 - Board model (summary)
 
-Do NOT create a board or issues if any item below is missing.
-Ask iteratively until all answers are complete. Do not guess.
+| Field | Values | Rule |
+|---|---|---|
+| Status | Backlog, Ready, In Progress, Done | Backlog → Ready is a manual maintainer decision |
+| Wave | `Tracking`, W0, W1, … Wn | **Mandatory**. The only sequencing field |
+| Application | Studio, Atlas, Inspector, Cross-system | **Mandatory** |
+| Owner | text (GitHub login) | **Mandatory** |
+| Estimate | number, hours | Fill when known |
+| Target Date | date | Drives the Roadmap view |
 
-1. PB list: PB IDs and titles (one board may hold N PBs).
-2. Owner and author: who owns the board, written by name/date.
-3. Affected repos: repo, role, work branch, and base (ship target) per PB.
-4. Wave plan: W0 foundation, W1 backend, W2 frontend, W3 QA/deploy, or custom.
-5. Per issue: Definition, Changes, Success criteria (must include Test), Dependencies.
+`Delivery Stage` is legacy (it was always paired W0↔S0 … W5↔S5). It is
+hidden from every view and must not be filled for new items.
+`Tracking` marks umbrella/parent containers that are not work themselves.
 
-If an answer is vague, ask again with a concrete example.
-Only proceed when every point has an explicit answer.
+## Step 2 - New work: lanjutan or new Wave (mandatory)
 
-## Step 2 - README (multi-PB)
+Waves are defined up front. New work never becomes a loose item: it is
+either a `[Wn-lanjutan]` sub-issue of an existing `[Wn]` issue, or the
+start of a new Wave. Weigh it with `references/lanjutan-vs-wave.md`,
+**recommend one option with the reason** (estimate, scope, dependencies),
+and let the user decide. If no fitting `[Wn]` parent exists, show the
+closest candidates and ask; do not invent one silently.
 
-See `references/template-readme.md`. Required blocks:
+## Step 3 - Clarify until the issue is complete
 
-- Header: Owner, Written by, Updated date, Status.
-- PB list table: PB, Title, Status, Active wave.
-- How we work: wave order and parallelism rules.
-- Affected repos table: Repo, Used by PB, Work branch, Base.
-- Detail section per PB: context, decisions, open questions.
+Do NOT create an issue while any of these is missing. Ask; do not guess.
 
-## Step 3 - Issue 3-scope format
+1. Wave (from Step 2) and Parent (for lanjutan).
+2. Application and Owner.
+3. Repo and branch (`feature/<slug>` from `releases/staging`).
+4. Definition, Changes, Success Criteria (must include Test), Depends.
 
-See `references/template-issue.md`. Every issue must contain:
+## Step 4 - Issue format
 
-1. Definition: feature/problem, context, and out-of-scope.
-2. Changes: files, endpoints, or UI changes, plus repo and branch.
-3. Success Criteria: Functional checkbox, Test checkbox (mandatory), Regression checkbox.
+See `references/template-issue.md`.
 
-Header line: `Wave: Wx | Repo: org/repo | Branch: <branch> | Depends: <ids> | Blocks: <ids>`.
-An issue without a Test block is NOT Ready.
+- Title: `[Wn] Judul` for a wave issue, `[Wn-lanjutan] Judul` for follow-up work.
+- Header line:
+  `Wave: Wn | Parent: owner/repo#n | Repo: owner/repo | Branch: feature/<slug> (from releases/staging) | Depends: owner/repo#n, ...`
+- Sections: `## 1. Definition`, `## 2. Changes`, `## 3. Success Criteria`
+  (checkboxes; Functional, Test, Regression), optional `## 4. Keputusan terbuka`.
 
-## Step 4 - Waves and dependencies
+An issue without a Test checkbox is NOT Ready.
 
-- Waves run sequentially. Parallel work inside one wave is allowed.
-- Cross-PB parallelism is allowed unless they share the same repo or database.
-- Rule: if Depends is not Done, the issue stays in Todo/Backlog and must not start.
-- Record dependencies in the issue body (`Depends:`) and in project fields (`Status`, `Wave`).
+## Step 5 - Waves and dependencies
 
-Use waves whenever a feature is too large for a single issue.
+- Waves run in order. Parallel work inside one wave is allowed.
+- If any `Depends:` issue is not Done, the issue stays Backlog and must not start.
+- A Done parent stays Done when a lanjutan is added under it; the lanjutan
+  carries the new work and its own Status.
 
-`Wave` is the **single** sequencing field on a board — there is no separate
-`Delivery Stage` field. The reserved value `Tracking` marks umbrella/parent
-container items that must be hidden from the Development Sequence view.
+## Step 6 - Scripts (use them instead of hand-written gh calls)
 
-## Step 5 - Standard views
+Every write script is a dry run unless `--yes` is passed: run it once
+without `--yes`, show the user the plan, then rerun with `--yes`.
 
-`gh project` cannot create views. Create them manually via web or GraphQL.
-Every board must have these four views (see `references/views.md`):
+| Task | Command |
+|---|---|
+| Next pickable task | `node scripts/next-task.mjs [--application X] [--owner Y]` |
+| Create lanjutan | `node scripts/add-lanjutan.mjs --parent o/r#n --title "..." [--yes]` |
+| Set fields | `node scripts/set-fields.mjs o/r#n --wave W2 --application Studio --owner x [--yes]` |
+| Change Status | `node scripts/set-status.mjs o/r#n "In Progress" [--yes]` |
+| Mark done | `node scripts/mark-done.mjs o/r#n [--no-close] [--yes]` |
+| Lint board | `node scripts/lint-board.mjs [--open-only]` |
+| Progress per Wave | `node scripts/wave-report.mjs` |
 
-1. All Work Items (TABLE).
-2. Engineering Workflow (BOARD grouped by Status).
-3. Delivery Roadmap (ROADMAP by Target Date).
-4. Development Sequence (TABLE, filter `-wave:Tracking`, sorted by Wave W0-Wn then Target Date).
+Paths are relative to this skill's folder. Details: `scripts/README.md`.
+
+## Step 7 - Standard views
+
+`gh project` cannot create views; set them up in the web UI following
+`references/views.md`. Every view that shows work is grouped by **Wave**:
+
+1. All Work Items (TABLE, grouped by Wave).
+2. Engineering Workflow (BOARD, columns = Status, grouped by Wave).
+3. Delivery Roadmap (ROADMAP by Target Date, grouped by Wave).
+4. Development Sequence (TABLE, filter `-wave:Tracking -status:Done`, grouped by Wave, sorted by Target Date).
 
 ## References
 
-- `references/template-readme.md` - multi-PB README skeleton.
-- `references/template-issue.md` - 3-scope issue skeleton with Test block.
-- `references/views.md` - standard view definitions including Development Sequence.
+- `references/model.md` - fields, values, naming, sub-issue rules.
+- `references/lanjutan-vs-wave.md` - how to weigh new work.
+- `references/template-issue.md` - issue skeleton.
+- `references/template-readme.md` - board README skeleton.
+- `references/views.md` - view setup step by step.
+- `scripts/README.md` - helper scripts.

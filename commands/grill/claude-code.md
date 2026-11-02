@@ -41,7 +41,7 @@ before any code gets touched.
 4. If `$ARGUMENTS` looks like `refine <slug>`, pass that through as-is to
    whichever skill owns the existing doc (check `docs/prd/todo|done/<slug>/`
    and any BRD location for which exists).
-5. When the invoked skill finishes, report the exact file path(s) written
+5. When the invoked skill finishes, report the issue/board URLs created (prd-grill Step 5 lets the user pick PRD/ISSUES files, GitHub issues, and/or the Knitto Wave Delivery board) plus the exact file path(s) written
    (BRD.md and/or PRD.md + ISSUES.md) and tell the user to run `/dev
    <slug>` next.
 

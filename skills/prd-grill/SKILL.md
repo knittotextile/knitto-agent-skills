@@ -1,12 +1,12 @@
 ---
 name: prd-grill
-description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then always writes a PRD + ISSUES pair under `docs/prd/todo|done/` (see references/output-conventions.md) — a fixed format, not inferred from whatever the repo already happens to have lying around. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
+description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then asks where the plan should go — a PRD + ISSUES file pair under `docs/prd/todo|done/` (fixed format, see references/output-conventions.md), GitHub issues in the Wave format (one `[Wn]` parent + sub-issues), and/or the Knitto Wave Delivery board — any combination. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
 license: MIT
 compatibility: "Requires a way to write files and, ideally, an AskUserQuestion-style tool for choice questions (falls back to plain text Q&A otherwise)."
 metadata:
   category: planning
   author: lintang
-  version: "1.0.0"
+  version: "1.1.0"
 allowed-tools: [Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion]
 argument-hint: "[topic or feature] | refine <slug>"
 when_to_use: "Also trigger proactively when the user describes a feature at a level too vague to implement directly (e.g. 'add some kind of notification system') rather than waiting for the literal /prd-grill invocation."
@@ -22,8 +22,10 @@ Turn a rough idea into a written plan by grilling the user with one adaptive
 question at a time — never a wall of questions upfront — then writing a plan
 document to disk once scope is confirmed.
 
-This skill always writes the **same fixed format**: a PRD + ISSUES pair
-under `docs/prd/todo|done/<slug>/` (Step 5). It does **not** scan the repo
+Output goes wherever the user picks at the end (Step 5): a PRD + ISSUES
+file pair, GitHub issues, the Project board, or several of these. When a
+file is written, it is always the **same fixed format**: a PRD + ISSUES pair
+under `docs/prd/todo|done/<slug>/`. It does **not** scan the repo
 for some other planning convention and defer to it — a skill that adapts
 its output shape to whatever it finds produces a different structure in
 every repo, which defeats the point of having a standard shape at all. If a
@@ -106,7 +108,22 @@ correct before generating anything. If they request changes, loop back to
 Step 3 for the affected part only, then re-summarize. Don't write files
 before this confirmation.
 
-## Step 5 — Generate output
+## Step 5 — Choose the output
+
+After confirmation, ask the user (multi-select, one question) where the
+plan goes:
+
+1. **Tulis file PRD/ISSUES** — the PRD + ISSUES pair below (Step 5a).
+2. **Buat issue GitHub** — Step 5b.
+3. **Masukkan ke Project** — Step 5c. Offer this only when a board exists
+   (default: org `knittotextile` project #15, Knitto Wave Delivery); it
+   implies option 2.
+
+Any combination is valid. If the user wants to run `/dev` afterwards, point
+out that `/dev` (via `exec-todo`) works from the ISSUES file, so option 1
+should be included.
+
+## Step 5a — Write the PRD + ISSUES files
 
 Always the same shape: a **PRD + ISSUES pair**, always written under
 `todo/` first — never directly under `done/`:
@@ -143,8 +160,36 @@ Whichever shape applies, always include:
   etc.), append those as fixed closing checklist items verbatim — don't
   paraphrase them away even if the feature seems small.
 
-Write the file(s) directly — don't ask permission to write, that's the
-point of the skill — but tell the user the exact path(s) afterward.
+Write the file(s) directly — once the user picked this output, don't ask
+permission again — but tell the user the exact path(s) afterward.
+
+
+## Step 5b — Create GitHub issues
+
+Follow [`github-projects`](../github-projects/SKILL.md): its issue format
+(`references/template-issue.md`) and its lanjutan-vs-new-Wave rule.
+
+1. Decide placement first with `github-projects`'
+   `references/lanjutan-vs-wave.md`: recommend lanjutan under an existing
+   `[Wn]` or a new Wave, with reasons, and let the user choose.
+2. **New Wave**: create one parent issue `[Wn] <title>` (Definition = the
+   PRD summary, Changes = the list of sub-issues), then one sub-issue
+   `[Wn] <item>` per ISSUES checklist item, each in the 3-scope format with
+   its own Success Criteria (Test mandatory), linked as GitHub sub-issues
+   of the parent.
+3. **Lanjutan**: each item becomes `[Wn-lanjutan] <item>` under the chosen
+   existing `[Wn]` parent, via `node scripts/add-lanjutan.mjs` (dry run,
+   show the user, then `--yes`). Do not change the parent's Status.
+4. Ask for Repo, Branch, Application, and Owner if the grill did not
+   settle them; never guess.
+5. If files were also written, link each issue URL next to its ISSUES.md item.
+
+## Step 5c — Put the issues on the board
+
+Run `github-projects`' `scripts/set-fields.mjs` (dry run, then `--yes`) for
+every issue created in Step 5b: Wave, Application, Owner are mandatory;
+Estimate and Target Date when known; Status Backlog. Finish with
+`node scripts/lint-board.mjs --open-only` and report anything it flags.
 
 ## Step 6 — Offer a project-scoped override, if asked for one
 
