@@ -188,7 +188,7 @@ export function getItems(project) {
         itemId: n.id,
         values,
         draft: !c.repository,
-        title: c.title ?? "",
+        title: (c.title ?? "").trim(),
         url: c.url ?? null,
         state: c.state ?? null,
         body: c.body ?? "",
