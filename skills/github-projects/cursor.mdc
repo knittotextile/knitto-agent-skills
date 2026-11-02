@@ -1,5 +1,5 @@
 ---
-description: Plan and track work on the org knittotextile board "Knitto SDLC" (project #15) — Wave-only sequencing, [Wn]/[Wn-lanjutan] issues with header + 3-scope body, lanjutan-vs-new-Wave decision, mandatory Wave/Application/Assignees, helper scripts (next-task, add-lanjutan, set-fields, set-status, mark-done, lint-board, wave-report), views grouped by Wave. Trigger on "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
+description: Plan and track work on the org knittotextile board "Knitto SDLC" (project #15) — Wave-only sequencing, [Wn]/[Wn-follow-up] issues with header + 3-scope body, subtask-vs-new-Wave decision, mandatory Wave/Application/Assignees, helper scripts (next-task, add-subtask, set-fields, set-status, mark-done, lint-board, wave-report), views grouped by Wave. Trigger on "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
 globs:
 alwaysApply: false
 ---
@@ -16,25 +16,25 @@ Status (Backlog/Ready/In Progress/Done), Wave (Tracking, W0..Wn, mandatory),
 Application (Studio/Atlas/Inspector/Cross-system, mandatory), Assignees
 (issue assignees, mandatory; the old Owner text field is legacy), Estimate (hours), Target Date. Tracking = umbrella items.
 
-## New work: lanjutan or new Wave
+## New work: subtask or new Wave
 
-Never a loose item. Weigh with `references/lanjutan-vs-wave.md`:
-lanjutan when same goal as an existing [Wn], <= 8h or <= 30% of that Wave,
+Never a loose item. Weigh with `references/subtask-vs-wave.md`:
+subtask when same goal as an existing [Wn], <= 8h or <= 30% of that Wave,
 one issue, no new app/major schema. Otherwise new Wave. Recommend one with
 reasons, then let the user decide. No fitting parent: show candidates, ask.
 
 ## Issue
 
-Title `[Wn] ...` or `[Wn-lanjutan] ...`.
+Title `[Wn] ...` or `[Wn-follow-up] ...`.
 Header: `Wave: Wn | Parent: o/r#n | Repo: o/r | Branch: feature/<slug> (from releases/staging) | Depends: ...`.
 Sections: 1. Definition, 2. Changes, 3. Success Criteria (Functional, Test
 mandatory, Regression checkboxes), optional 4. Keputusan terbuka.
-Lanjutan = real GitHub sub-issue of its [Wn] parent. Done parent stays Done.
+Subtask = real GitHub sub-issue of its [Wn] parent. Done parent stays Done.
 If Depends not Done, stay Backlog.
 
 ## Scripts (dry run unless --yes)
 
-`node scripts/next-task.mjs`, `add-lanjutan.mjs --parent o/r#n --title ...`,
+`node scripts/next-task.mjs`, `add-subtask.mjs --parent o/r#n --title ...`,
 `set-fields.mjs o/r#n --wave W2 ...`, `set-status.mjs o/r#n "In Progress"`,
 `mark-done.mjs o/r#n`, `lint-board.mjs`, `wave-report.mjs`.
 See `scripts/README.md`.

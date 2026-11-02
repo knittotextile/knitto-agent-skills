@@ -15,8 +15,8 @@ The board README is the contract for every application on the board.
 | W2 | Frontend | Backlog | 2026-11-30 |
 
 Waves run in order. Parallel work inside one wave is allowed.
-New work is a `[Wn-lanjutan]` sub-issue or a new Wave — see the decision
-rule (lanjutan ≤ 8 hours or ≤ 30% of the Wave, same goal).
+New work is a `[Wn-follow-up]` sub-issue or a new Wave — see the decision
+rule (subtask ≤ 8 hours or ≤ 30% of the Wave, same goal).
 
 ## Applications
 
@@ -28,8 +28,8 @@ rule (lanjutan ≤ 8 hours or ≤ 30% of the Wave, same goal).
 ## Rules
 
 - Mandatory: Wave, Application, and Assignees.
-- Title prefix `[Wn]` / `[Wn-lanjutan]` matches the Wave field.
-- A Done parent stays Done; follow-up work goes into a lanjutan.
+- Title prefix `[Wn]` / `[Wn-follow-up]` matches the Wave field.
+- A Done parent stays Done; follow-up work goes into a subtask.
 
 ## References
 

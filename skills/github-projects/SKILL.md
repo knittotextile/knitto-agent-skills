@@ -1,6 +1,6 @@
 ---
 name: github-projects
-description: Use when the user wants to plan or track work on the org knittotextile GitHub Projects board ("Knitto SDLC") — create issues in the Wave format, decide whether new work is a `[Wn-lanjutan]` sub-issue or a new Wave, set board fields (Status, Wave, Application, Assignees, Estimate), find the next task, mark work done, lint the board, report progress per Wave, or set up the standard views. Triggers on "buat issue di board", "add issue to project", "ada kerjaan baru", "task berikutnya apa", "mark done", "progress wave", "rapikan board". Not for git branching (see branching) or Asana tasks.
+description: Use when the user wants to plan or track work on the org knittotextile GitHub Projects board ("Knitto SDLC") — create issues in the Wave format, decide whether new work is a `[Wn-follow-up]` sub-issue or a new Wave, set board fields (Status, Wave, Application, Assignees, Estimate), find the next task, mark work done, lint the board, report progress per Wave, or set up the standard views. Triggers on "buat issue di board", "add issue to project", "ada kerjaan baru", "task berikutnya apa", "mark done", "progress wave", "rapikan board". Not for git branching (see branching) or Asana tasks.
 license: MIT
 compatibility: "Requires gh CLI auth with project scope, and Node.js 18+ for scripts/"
 metadata:
@@ -9,8 +9,8 @@ metadata:
   version: "2.0.0"
 allowed-tools: [Bash, Read, Grep, Glob, AskUserQuestion]
 disallowed-tools: []
-argument-hint: "add-issue | lanjutan | next | done <issue> | lint | report | add-view"
-when_to_use: "Also trigger when user mentions a wave, [Wn-lanjutan], the board, sub-issue, or project views, or when /grill output goes to GitHub issues/Project."
+argument-hint: "add-issue | subtask | next | done <issue> | lint | report | add-view"
+when_to_use: "Also trigger when user mentions a wave, [Wn-follow-up], the board, sub-issue, or project views, or when /grill output goes to GitHub issues/Project."
 disable-model-invocation: false
 user-invocable: true
 effort: medium
@@ -24,12 +24,12 @@ One shared board, **Knitto SDLC** (org `knittotextile`, project
 of truth, the issue is the execution unit for AI and human, and **Wave** is
 the only sequencing dimension.
 
-Full model: `references/model.md`. Lanjutan vs new Wave:
-`references/lanjutan-vs-wave.md`. Scripts: `scripts/README.md`.
+Full model: `references/model.md`. Subtask vs new Wave:
+`references/subtask-vs-wave.md`. Scripts: `scripts/README.md`.
 
 ## When to use
 
-- New work arrives: decide lanjutan vs new Wave, then create the issue.
+- New work arrives: decide subtask vs new Wave, then create the issue.
 - Create or update issues in the Wave format.
 - Set or fix board fields; move Status; mark an issue done.
 - Find the next pickable task; report progress per Wave; lint the board.
@@ -68,11 +68,11 @@ change the org board — do them only with the user's explicit approval.
 hidden from every view and must not be filled for new items.
 `Tracking` marks umbrella/parent containers that are not work themselves.
 
-## Step 2 - New work: lanjutan or new Wave (mandatory)
+## Step 2 - New work: subtask or new Wave (mandatory)
 
 Waves are defined up front. New work never becomes a loose item: it is
-either a `[Wn-lanjutan]` sub-issue of an existing `[Wn]` issue, or the
-start of a new Wave. Weigh it with `references/lanjutan-vs-wave.md`,
+either a `[Wn-follow-up]` sub-issue of an existing `[Wn]` issue, or the
+start of a new Wave. Weigh it with `references/subtask-vs-wave.md`,
 **recommend one option with the reason** (estimate, scope, dependencies),
 and let the user decide. If no fitting `[Wn]` parent exists, show the
 closest candidates and ask; do not invent one silently.
@@ -81,7 +81,7 @@ closest candidates and ask; do not invent one silently.
 
 Do NOT create an issue while any of these is missing. Ask; do not guess.
 
-1. Wave (from Step 2) and Parent (for lanjutan).
+1. Wave (from Step 2) and Parent (for subtask).
 2. Application and Assignees.
 3. Repo and branch (`feature/<slug>` from `releases/staging`).
 4. Definition, Changes, Success Criteria (must include Test), Depends.
@@ -90,7 +90,7 @@ Do NOT create an issue while any of these is missing. Ask; do not guess.
 
 See `references/template-issue.md`.
 
-- Title: `[Wn] Judul` for a wave issue, `[Wn-lanjutan] Judul` for follow-up work.
+- Title: `[Wn] Judul` for a wave issue, `[Wn-follow-up] Judul` for follow-up work.
 - Header line:
   `Wave: Wn | Parent: owner/repo#n | Repo: owner/repo | Branch: feature/<slug> (from releases/staging) | Depends: owner/repo#n, ...`
 - Sections: `## 1. Definition`, `## 2. Changes`, `## 3. Success Criteria`
@@ -102,7 +102,7 @@ An issue without a Test checkbox is NOT Ready.
 
 - Waves run in order. Parallel work inside one wave is allowed.
 - If any `Depends:` issue is not Done, the issue stays Backlog and must not start.
-- A Done parent stays Done when a lanjutan is added under it; the lanjutan
+- A Done parent stays Done when a subtask is added under it; the subtask
   carries the new work and its own Status.
 
 ## Step 6 - Scripts (use them instead of hand-written gh calls)
@@ -113,7 +113,7 @@ without `--yes`, show the user the plan, then rerun with `--yes`.
 | Task | Command |
 |---|---|
 | Next pickable task | `node scripts/next-task.mjs [--application X] [--assignee login]` |
-| Create lanjutan | `node scripts/add-lanjutan.mjs --parent o/r#n --title "..." [--yes]` |
+| Create subtask | `node scripts/add-subtask.mjs --parent o/r#n --title "..." [--yes]` |
 | Set fields | `node scripts/set-fields.mjs o/r#n --wave W2 --application Studio --assignee login [--yes]` |
 | Change Status | `node scripts/set-status.mjs o/r#n "In Progress" [--yes]` |
 | Mark done | `node scripts/mark-done.mjs o/r#n [--no-close] [--yes]` |
@@ -139,7 +139,7 @@ copies them, so a new board never starts from scratch. Every view that shows wor
 ## References
 
 - `references/model.md` - fields, values, naming, sub-issue rules.
-- `references/lanjutan-vs-wave.md` - how to weigh new work.
+- `references/subtask-vs-wave.md` - how to weigh new work.
 - `references/template-issue.md` - issue skeleton.
 - `references/template-readme.md` - board README skeleton.
 - `references/views.md` - view setup step by step.

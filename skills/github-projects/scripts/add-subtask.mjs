@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// add-lanjutan.mjs — create a `[Wn-lanjutan]` issue as a sub-issue of an
+// add-subtask.mjs — create a `[Wn-follow-up]` issue as a sub-issue of an
 // existing `[Wn]` parent, put it on the board, and fill Wave/Application/
 // Status, and Assignees. The parent's own Status is never touched (a Done parent
 // stays Done).
 //
 // Usage:
-//   node scripts/add-lanjutan.mjs --parent <owner/repo#n> --title "Judul tanpa prefix"
+//   node scripts/add-subtask.mjs --parent <owner/repo#n> --title "Judul tanpa prefix"
 //     [--repo owner/repo] [--branch feature/x] [--depends "o/r#1, o/r#2"]
 //     [--body-file path.md] [--wave W2] [--application Studio] [--assignee login1,login2]
 //     [--estimate 4] [--target-date 2026-11-30] [--status Backlog] [--yes]
@@ -53,13 +53,13 @@ function parentBoardValues(project, parentIssue) {
 run(() => {
   const { flags } = parseArgs();
   if (typeof flags.parent !== "string" || typeof flags.title !== "string") {
-    throw new Error('usage: add-lanjutan.mjs --parent owner/repo#n --title "..." [--yes]');
+    throw new Error('usage: add-subtask.mjs --parent owner/repo#n --title "..." [--yes]');
   }
   const parentRef = parseIssueRef(flags.parent);
   const project = getProject(boardConfig(flags));
   const parent = getIssue(parentRef);
-  if (/^\[W\d+-lanjutan\]/i.test(parent.title)) {
-    throw new Error(`parent "${parent.title}" is itself a lanjutan; use its [Wn] parent (${parent.parent ? `${parent.parent.repository.nameWithOwner}#${parent.parent.number}` : "unknown"})`);
+  if (/^\[W\d+-(follow-up|lanjutan)\]/i.test(parent.title)) {
+    throw new Error(`parent "${parent.title}" is itself a subtask; use its [Wn] parent (${parent.parent ? `${parent.parent.repository.nameWithOwner}#${parent.parent.number}` : "unknown"})`);
   }
   const inherited = parentBoardValues(project, parent);
 
@@ -71,8 +71,8 @@ run(() => {
   if (!assignees.length) throw new Error("Assignees are mandatory: pass --assignee (parent has none)");
 
   const repo = flags.repo || `${parentRef.owner}/${parentRef.repo}`;
-  const cleanTitle = flags.title.replace(/^\[W\d+(-lanjutan)?\]\s*/i, "");
-  const title = `[${wave.toUpperCase()}-lanjutan] ${cleanTitle}`;
+  const cleanTitle = flags.title.replace(/^\[W\d+(-follow-up|-lanjutan)?\]\s*/i, "");
+  const title = `[${wave.toUpperCase()}-follow-up] ${cleanTitle}`;
   const header = [
     `Wave: ${wave.toUpperCase()}`,
     `Parent: ${parentRef.owner}/${parentRef.repo}#${parentRef.number}`,

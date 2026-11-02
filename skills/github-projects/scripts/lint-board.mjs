@@ -4,8 +4,8 @@
 //
 // Checks per issue (Tracking items are only checked for a Wave value):
 //   - Wave or Application empty, or no Assignees
-//   - title lacks a `[Wn]` / `[Wn-lanjutan]` prefix, or its Wn differs from the Wave field
-//   - `[Wn-lanjutan]` that is not a sub-issue of anything
+//   - title lacks a `[Wn]` / `[Wn-follow-up]` prefix, or its Wn differs from the Wave field
+//   - `[Wn-follow-up]` that is not a sub-issue of anything
 //   - body header `Wave:` differs from the Wave field
 //   - Delivery Stage still filled while Wave is empty (legacy item)
 //
@@ -31,10 +31,11 @@ run(() => {
       if (!v.Application) problems.push("Application kosong");
       if (!i.draft && !i.assignees.length) problems.push("Assignees kosong");
       const m = i.title.match(TITLE_RE);
-      if (!m) problems.push("judul tanpa prefix [Wn] / [Wn-lanjutan]");
+      if (!m) problems.push("judul tanpa prefix [Wn] / [Wn-follow-up]");
       else {
         if (v.Wave && m[1].toUpperCase() !== String(v.Wave).toUpperCase()) problems.push(`prefix judul ${m[1]} ≠ field Wave ${v.Wave}`);
-        if (m[2] && !i.parent) problems.push("[Wn-lanjutan] belum jadi sub-issue dari induk");
+        if (m[2] === "-lanjutan") problems.push("judul lama [Wn-lanjutan] → ganti jadi [Wn-follow-up]");
+        if (m[2] && !i.parent) problems.push("[Wn-follow-up] belum jadi sub-issue dari induk");
       }
       const hw = parseHeader(i.body).wave;
       if (!i.draft && hw && v.Wave && hw.toUpperCase() !== String(v.Wave).toUpperCase()) problems.push(`header body Wave: ${hw} ≠ field Wave ${v.Wave}`);

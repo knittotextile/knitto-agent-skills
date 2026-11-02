@@ -14,7 +14,7 @@ first, check the printed plan, then rerun with `--yes`.
 | Script | What it does |
 |---|---|
 | `next-task.mjs [--application X] [--assignee login] [--wave Wn] [--limit 20] [--all] [--json]` | Open items in Ready/Backlog whose `Depends:` are all Done, sorted Wave → Ready before Backlog → Target Date. `--all` also shows blocked items and what blocks them |
-| `lint-board.mjs [--application X] [--open-only] [--json]` | Empty Wave/Application, no Assignees, missing or mismatched `[Wn]` title prefix, `[Wn-lanjutan]` not linked as a sub-issue, header/field Wave mismatch. Exit 1 when anything is found |
+| `lint-board.mjs [--application X] [--open-only] [--json]` | Empty Wave/Application, no Assignees, missing or mismatched `[Wn]` title prefix, `[Wn-follow-up]` not linked as a sub-issue, header/field Wave mismatch. Exit 1 when anything is found |
 | `wave-report.mjs [--application X] [--assignee login] [--json]` | Markdown table per Wave: Done/Total, count per Status, Estimate hours done/total |
 
 ## Write (dry run unless `--yes`)
@@ -24,14 +24,14 @@ first, check the printed plan, then rerun with `--yes`.
 | `set-fields.mjs <ref> [--status] [--wave] [--application] [--assignee a,b] [--estimate] [--target-date]` | Sets the given fields; adds the issue to the board if needed |
 | `set-status.mjs <ref> "<Status>"` | Sets Status only |
 | `mark-done.mjs <ref> [--no-close] [--no-check]` | Ticks `## 3. Success Criteria` checkboxes, sets Status Done, closes the issue |
-| `add-lanjutan.mjs --parent <ref> --title "..." [--repo] [--branch] [--depends] [--body-file] [--wave] [--application] [--assignee a,b] [--estimate] [--target-date] [--status]` | Creates `[Wn-lanjutan] ...` with the header line, links it as a sub-issue of the parent, adds it to the board, fills Wave/Application (inherited) and Assignees (parent's assignees unless given) and Status (Backlog). Parent Status untouched |
+| `add-subtask.mjs --parent <ref> --title "..." [--repo] [--branch] [--depends] [--body-file] [--wave] [--application] [--assignee a,b] [--estimate] [--target-date] [--status]` | Creates `[Wn-follow-up] ...` with the header line, links it as a sub-issue of the parent, adds it to the board, fills Wave/Application (inherited) and Assignees (parent's assignees unless given) and Status (Backlog). Parent Status untouched |
 
 ## Examples
 
 ```bash
 node scripts/next-task.mjs --application Studio --limit 5
-node scripts/add-lanjutan.mjs --parent knittotextile/knitto-api-sdlc-studio#4 --title "Akun MySQL read-only" --estimate 3
-node scripts/add-lanjutan.mjs --parent knittotextile/knitto-api-sdlc-studio#4 --title "Akun MySQL read-only" --estimate 3 --yes
+node scripts/add-subtask.mjs --parent knittotextile/knitto-api-sdlc-studio#4 --title "Akun MySQL read-only" --estimate 3
+node scripts/add-subtask.mjs --parent knittotextile/knitto-api-sdlc-studio#4 --title "Akun MySQL read-only" --estimate 3 --yes
 node scripts/mark-done.mjs knittotextile/knitto-api-sdlc-studio#13 --yes
 ```
 

@@ -12,7 +12,7 @@ filter by `Application` instead of creating more boards.
 | Application | single select | Studio (blue), Atlas (green), Inspector (orange), Cross-system (purple) | yes | Cross-system when more than one app is touched. Distinct colors per app |
 | Assignees | built-in | GitHub logins | yes | Issue assignees, same as the Knitto Live Chat board. Replaces the old `Owner` text field |
 | Start Date | date | YYYY-MM-DD | when known | Roadmap bar start (Start Date → Target Date) |
-| Estimate | number | hours | when known | Used by `wave-report` and the lanjutan/Wave decision |
+| Estimate | number | hours | when known | Used by `wave-report` and the subtask/Wave decision |
 | Target Date | date | YYYY-MM-DD | when known | Roadmap view |
 | Effort Forecast | — | — | no | Optional, unchanged |
 | Delivery Stage | single select | (legacy S0–S5) | **no** | Hidden from every view; never fill it for new items |
@@ -38,23 +38,23 @@ may delete it.
 | Kind | Title | Wave field | Parent |
 |---|---|---|---|
 | Wave issue | `[Wn] Judul` | Wn | optional (Tracking umbrella) |
-| Lanjutan | `[Wn-lanjutan] Judul` | Wn (same as parent) | **mandatory**: a `[Wn]` issue |
+| Subtask | `[Wn-follow-up] Judul` | Wn (same as parent) | **mandatory**: a `[Wn]` issue |
 | Umbrella | free title | Tracking | — |
 
 The `Wn` in the title, the `Wave:` header line, and the Wave field must
 match. `lint-board` checks this.
 
-## Sub-issue rules (`[Wn-lanjutan]`)
+## Sub-issue rules (`[Wn-follow-up]`)
 
-1. New work never becomes a loose item. Decide lanjutan vs new Wave first
-   (`lanjutan-vs-wave.md`).
-2. A lanjutan is a GitHub **sub-issue** of its `[Wn]` parent, not just a
-   `Parent:` line in the body. `add-lanjutan.mjs` does both.
-3. A Done parent stays Done. Do not reopen it or move it back; the lanjutan
+1. New work never becomes a loose item. Decide subtask vs new Wave first
+   (`subtask-vs-wave.md`).
+2. A subtask is a GitHub **sub-issue** of its `[Wn]` parent, not just a
+   `Parent:` line in the body. `add-subtask.mjs` does both.
+3. A Done parent stays Done. Do not reopen it or move it back; the subtask
    carries the new work and its own Status.
-4. Wave, Application, and Assignees are mandatory on the lanjutan; by default
+4. Wave, Application, and Assignees are mandatory on the subtask; by default
    they are inherited from the parent and can be overridden.
-5. A lanjutan does not get its own lanjutan. Further follow-up work hangs
+5. A subtask does not get its own subtask. Further follow-up work hangs
    off the same `[Wn]` parent.
 
 ## Status flow

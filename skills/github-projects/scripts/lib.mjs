@@ -230,7 +230,7 @@ export const waveRank = (w) => {
   return m ? Number(m[1]) : Number.POSITIVE_INFINITY;
 };
 
-export const TITLE_RE = /^\[(W\d+)(-lanjutan)?\]\s+\S/;
+export const TITLE_RE = /^\[(W\d+)(-follow-up|-lanjutan)?\]\s+\S/;
 
 // Copy a project (views, fields, workflows, README; no items) into the same org.
 export function copyProject(org, fromNumber, title) {

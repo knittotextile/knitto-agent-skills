@@ -58,11 +58,11 @@ GitHub issues, and/or put them on the Project board (Knitto SDLC,
 org knittotextile #15). `/dev` needs the files, so suggest including them
 if the user will run `/dev`.
 
-Issues follow the `github-projects` skill: first weigh lanjutan vs new Wave
-(`github-projects/references/lanjutan-vs-wave.md`), recommend one, let the
+Issues follow the `github-projects` skill: first weigh subtask vs new Wave
+(`github-projects/references/subtask-vs-wave.md`), recommend one, let the
 user choose. New Wave = one `[Wn]` parent + one sub-issue per checklist
-item. Lanjutan = `[Wn-lanjutan]` sub-issues under the chosen parent via
-`scripts/add-lanjutan.mjs`. Board: `scripts/set-fields.mjs` (Wave,
+item. Subtask = `[Wn-follow-up]` sub-issues under the chosen parent via
+`scripts/add-subtask.mjs`. Board: `scripts/set-fields.mjs` (Wave,
 Application, Owner mandatory), then `scripts/lint-board.mjs`. Scripts are
 dry runs until `--yes`.
 

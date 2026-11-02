@@ -167,18 +167,18 @@ permission again — but tell the user the exact path(s) afterward.
 ## Step 5b — Create GitHub issues
 
 Follow [`github-projects`](../github-projects/SKILL.md): its issue format
-(`references/template-issue.md`) and its lanjutan-vs-new-Wave rule.
+(`references/template-issue.md`) and its subtask-vs-new-Wave rule.
 
 1. Decide placement first with `github-projects`'
-   `references/lanjutan-vs-wave.md`: recommend lanjutan under an existing
+   `references/subtask-vs-wave.md`: recommend subtask under an existing
    `[Wn]` or a new Wave, with reasons, and let the user choose.
 2. **New Wave**: create one parent issue `[Wn] <title>` (Definition = the
    PRD summary, Changes = the list of sub-issues), then one sub-issue
    `[Wn] <item>` per ISSUES checklist item, each in the 3-scope format with
    its own Success Criteria (Test mandatory), linked as GitHub sub-issues
    of the parent.
-3. **Lanjutan**: each item becomes `[Wn-lanjutan] <item>` under the chosen
-   existing `[Wn]` parent, via `node scripts/add-lanjutan.mjs` (dry run,
+3. **Subtask**: each item becomes `[Wn-follow-up] <item>` under the chosen
+   existing `[Wn]` parent, via `node scripts/add-subtask.mjs` (dry run,
    show the user, then `--yes`). Do not change the parent's Status.
 4. Ask for Repo, Branch, Application, and Assignees if the grill did not
    settle them; never guess.

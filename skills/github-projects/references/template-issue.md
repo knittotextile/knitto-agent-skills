@@ -1,6 +1,6 @@
 # Template Issue
 
-Title: `[Wn] Judul` or `[Wn-lanjutan] Judul` (see `model.md`).
+Title: `[Wn] Judul` or `[Wn-follow-up] Judul` (see `model.md`).
 
 ```md
 Wave: W1 | Parent: knittotextile/repo#12 | Repo: knittotextile/repo | Branch: feature/<slug> (from releases/staging) | Depends: knittotextile/repo#10
@@ -31,7 +31,7 @@ Optional. Open questions with who decides, or remove this section.
 
 Header rules:
 
-- `Parent:` — mandatory for `[Wn-lanjutan]`; `-` for a top-level `[Wn]` issue.
+- `Parent:` — mandatory for `[Wn-follow-up]`; `-` for a top-level `[Wn]` issue.
 - `Depends:` — comma-separated `owner/repo#n` (or `#n` in the same repo), `-` for none.
   `next-task.mjs` reads this line to decide what is blocked.
 - `Branch:` — `feature/<slug>`, cut from `releases/staging`.
