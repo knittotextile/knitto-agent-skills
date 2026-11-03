@@ -5,13 +5,14 @@
 // Usage:
 //   node scripts/wave-report.mjs [--application Studio] [--assignee login] [--json]
 
-import { parseArgs, boardConfig, run, getProject, getItems, waveRank } from "./lib.mjs";
+import { parseArgs, boardConfig, run, getProject, getItems, waveRank, requireWave } from "./lib.mjs";
 
 const STATUSES = ["Backlog", "Ready", "In Progress", "Done"];
 
 run(() => {
   const { flags } = parseArgs();
   const project = getProject(boardConfig(flags));
+  requireWave(project);
   const eq = (a, b) => String(a ?? "").toLowerCase() === String(b).toLowerCase();
   const items = getItems(project)
     .filter((i) => !eq(i.values.Wave, "Tracking"))

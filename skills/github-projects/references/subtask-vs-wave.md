@@ -45,7 +45,7 @@ its board README.
 Present it like this, then ask the user to choose:
 
 ```
-Usulan: [W2-follow-up] di bawah knittotextile/repo#12 "[W2] Editor flowchart"
+Usulan: [W2-follow-up] di bawah org/repo#12 "[W2] Editor flowchart"
 Alasan:
 - Tujuan sama dengan W2 (melengkapi validasi editor)
 - Estimate ±5 jam (W2 total 60 jam → 8%)

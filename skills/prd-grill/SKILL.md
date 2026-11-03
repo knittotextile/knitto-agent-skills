@@ -1,12 +1,12 @@
 ---
 name: prd-grill
-description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then asks where the plan should go — a PRD + ISSUES file pair under `docs/prd/todo|done/` (fixed format, see references/output-conventions.md), GitHub issues in the Wave format (one `[Wn]` parent + sub-issues), and/or the Knitto SDLC board — any combination. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
+description: Use when the user wants to turn a rough idea into a concrete, actionable plan through iterative Q&A — triggers on "/prd-grill", "grill me", "grill this feature", "let's plan this out", "help me spec this", or when starting a new feature/project with no PRD or plan doc yet. Asks one question at a time, adapts based on prior answers and the existing codebase, confirms understanding, then asks where the plan should go — a PRD + ISSUES file pair under `docs/prd/todo|done/` (fixed format, see references/output-conventions.md), GitHub issues in the Wave format (one `[Wn]` parent + sub-issues), and/or a GitHub Projects board — any combination. Not for trivial one-line tasks that don't need a written plan, and not for re-deriving a plan that already exists — use the refine/update flow instead.
 license: MIT
 compatibility: "Requires a way to write files and, ideally, an AskUserQuestion-style tool for choice questions (falls back to plain text Q&A otherwise)."
 metadata:
   category: planning
   author: lintang
-  version: "1.1.0"
+  version: "1.2.0"
 allowed-tools: [Read, Write, Edit, Glob, Grep, Bash, AskUserQuestion]
 argument-hint: "[topic or feature] | refine <slug>"
 when_to_use: "Also trigger proactively when the user describes a feature at a level too vague to implement directly (e.g. 'add some kind of notification system') rather than waiting for the literal /prd-grill invocation."
@@ -116,7 +116,7 @@ plan goes:
 1. **Tulis file PRD/ISSUES** — the PRD + ISSUES pair below (Step 5a).
 2. **Buat issue GitHub** — Step 5b.
 3. **Masukkan ke Project** — Step 5c. Offer this only when a board exists
-   (default: org `knittotextile` project #15, Knitto SDLC); it
+   (ask the user for the board URL; never assume one); it
    implies option 2.
 
 Any combination is valid. If the user wants to run `/dev` afterwards, point
@@ -178,7 +178,7 @@ Follow [`github-projects`](../github-projects/SKILL.md): its issue format
    its own Success Criteria (Test mandatory), linked as GitHub sub-issues
    of the parent.
 3. **Subtask**: each item becomes `[Wn-follow-up] <item>` under the chosen
-   existing `[Wn]` parent, via `node scripts/add-subtask.mjs` (dry run,
+   existing `[Wn]` parent, via `node scripts/add-subtask.mjs --project <board URL>` (dry run,
    show the user, then `--yes`). Do not change the parent's Status.
 4. Ask for Repo, Branch, Application, and Assignees if the grill did not
    settle them; never guess.
@@ -186,10 +186,13 @@ Follow [`github-projects`](../github-projects/SKILL.md): its issue format
 
 ## Step 5c — Put the issues on the board
 
-Run `github-projects`' `scripts/set-fields.mjs` (dry run, then `--yes`) for
+Ask which board (its URL) unless the user already gave it, and follow
+`github-projects` Step 0–1: a board without a Wave field is initialized
+(`init-board.mjs`) only with the user's approval. Then run
+`github-projects`' `scripts/set-fields.mjs --project <board URL>` (dry run, then `--yes`) for
 every issue created in Step 5b: Wave, Application, Assignees are mandatory;
 Estimate and Target Date when known; Status Backlog. Finish with
-`node scripts/lint-board.mjs --open-only` and report anything it flags.
+`node scripts/lint-board.mjs --project <board URL> --open-only` and report anything it flags.
 
 ## Step 6 — Offer a project-scoped override, if asked for one
 

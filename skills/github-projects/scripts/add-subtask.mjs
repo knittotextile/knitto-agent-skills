@@ -19,8 +19,7 @@
 import { readFileSync } from "node:fs";
 import {
   parseArgs, boardConfig, run, parseIssueRef, getProject, getIssue, itemIdFor,
-  addToProject, fieldValue, setField, addSubIssue, confirmOrExit, gh, graphql, refKey, addAssignees, splitLogins,
-} from "./lib.mjs";
+  addToProject, fieldValue, setField, addSubIssue, confirmOrExit, gh, graphql, refKey, addAssignees, splitLogins, requireWave } from "./lib.mjs";
 
 const SKELETON = `## 1. Definition
 
@@ -57,6 +56,7 @@ run(() => {
   }
   const parentRef = parseIssueRef(flags.parent);
   const project = getProject(boardConfig(flags));
+  requireWave(project);
   const parent = getIssue(parentRef);
   if (/^\[W\d+-(follow-up|lanjutan)\]/i.test(parent.title)) {
     throw new Error(`parent "${parent.title}" is itself a subtask; use its [Wn] parent (${parent.parent ? `${parent.parent.repository.nameWithOwner}#${parent.parent.number}` : "unknown"})`);

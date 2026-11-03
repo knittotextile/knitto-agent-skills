@@ -31,11 +31,11 @@ final report, then tell the user the closing gates (`/qa` → `/gate` →
 - Not for more than one plan file per invocation — same rule as
   `exec-todo`.
 
-## Board (Knitto SDLC)
+## Board (GitHub Projects, Wave convention)
 
 - No plan given and the work lives on the board? Run the `github-projects`
-  skill's `node scripts/next-task.mjs` (optionally `--application` /
+  skill's `node scripts/next-task.mjs --project <board URL>` (optionally `--application` /
   `--assignee`), show the pickable tasks, and let the user choose.
 - When work on a board issue starts, set it In Progress with
-  `node scripts/set-status.mjs <owner/repo#n> "In Progress"` — a dry run
+  `node scripts/set-status.mjs <owner/repo#n> "In Progress" --project <board URL>` — a dry run
   first, then `--yes` once the user agrees.

@@ -1,20 +1,31 @@
 ---
-description: Plan and track work on the org knittotextile board "Knitto SDLC" (project #15) — Wave-only sequencing, [Wn]/[Wn-follow-up] issues with header + 3-scope body, subtask-vs-new-Wave decision, mandatory Wave/Application/Assignees, helper scripts (next-task, add-subtask, set-fields, set-status, mark-done, lint-board, wave-report), views grouped by Wave. Trigger on "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
+description: Manage any GitHub Projects (v2) board with the Wave convention — board always from the user's URL (no default), new boards copied from the org Wave template, existing boards initialized (init-board), [Wn]/[Wn-follow-up] issues with header + 3-scope body, subtask-vs-new-Wave decision, mandatory Wave/Application/Assignees, helper scripts, views grouped by Wave. Trigger on "kelola github project", "buat board baru", "buat issue di board", "ada kerjaan baru", "task berikutnya", "mark done", "progress wave".
 globs:
 alwaysApply: false
 ---
 
 # github-projects (Cursor)
 
-One shared board: Knitto SDLC (org knittotextile, #15).
-Wave is the only sequencing field; Delivery Stage is legacy and hidden.
-Full rules: `references/model.md`.
+Works on any board. Wave is the only sequencing field. Full rules:
+`references/model.md`.
+
+## Board first
+
+Ask for the board URL (`https://github.com/orgs/<org>/projects/<n>`) if not
+given. Never default, never infer from the repo, never reuse another
+session's board. Pass `--project <URL>` to every script.
+
+- New board: `node scripts/new-board.mjs --org <org> --title "..." --applications "A,B"`
+  (copies the org Wave template, views included).
+- Board without a Wave field: ask, then `node scripts/init-board.mjs --project <URL>`
+  (adds fields; views via web UI), or follow that board's own rules.
+- Board/field/view changes need the user's explicit approval.
 
 ## Fields
 
 Status (Backlog/Ready/In Progress/Done), Wave (Tracking, W0..Wn, mandatory),
-Application (Studio/Atlas/Inspector/Cross-system, mandatory), Assignees
-(issue assignees, mandatory; the old Owner text field is legacy), Estimate (hours), Target Date. Tracking = umbrella items.
+Application (the board's own apps, distinct colors, mandatory), Assignees
+(mandatory), Start Date / Target Date, Estimate (jam). Tracking = umbrella items.
 
 ## New work: subtask or new Wave
 
@@ -26,22 +37,22 @@ reasons, then let the user decide. No fitting parent: show candidates, ask.
 ## Issue
 
 Title `[Wn] ...` or `[Wn-follow-up] ...`.
-Header: `Wave: Wn | Parent: o/r#n | Repo: o/r | Branch: feature/<slug> (from releases/staging) | Depends: ...`.
+Header: `Wave: Wn | Parent: o/r#n | Repo: o/r | Branch: <branch> (from <base>) | Depends: ...`.
 Sections: 1. Definition, 2. Changes, 3. Success Criteria (Functional, Test
 mandatory, Regression checkboxes), optional 4. Keputusan terbuka.
 Subtask = real GitHub sub-issue of its [Wn] parent. Done parent stays Done.
 If Depends not Done, stay Backlog.
 
-## Scripts (dry run unless --yes)
+## Scripts (dry run unless --yes, all take --project <URL>)
 
-`node scripts/next-task.mjs`, `add-subtask.mjs --parent o/r#n --title ...`,
+`new-board.mjs`, `init-board.mjs`, `next-task.mjs`, `add-subtask.mjs --parent o/r#n --title ...`,
 `set-fields.mjs o/r#n --wave W2 ...`, `set-status.mjs o/r#n "In Progress"`,
-`mark-done.mjs o/r#n`, `lint-board.mjs`, `wave-report.mjs`.
+`mark-done.mjs o/r#n`, `lint-board.mjs`, `wave-report.mjs`, `setup-template.mjs`.
 See `scripts/README.md`.
 
-## Views (manual, web UI, need approval)
+## Views
 
-All views grouped by Wave: All Work Items (table), Engineering Workflow
-(board by Status, swimlanes Wave), Delivery Roadmap (Target Date),
-Development Wave (table, `-wave:Tracking`).
-See `references/views.md`.
+All grouped by Wave: All Work Items (table), Engineering Workflow (board by
+Status, swimlanes Wave), Delivery Roadmap (Start Date → Target Date),
+Development Wave (table, `-wave:Tracking`). Copied boards have them;
+initialized boards need the web UI. See `references/views.md`.
