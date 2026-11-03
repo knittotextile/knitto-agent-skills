@@ -3,7 +3,7 @@
 Title: `[Wn] Judul` or `[Wn-follow-up] Judul` (see `model.md`).
 
 ```md
-Wave: W1 | Parent: knittotextile/repo#12 | Repo: knittotextile/repo | Branch: feature/<slug> (from releases/staging) | Depends: knittotextile/repo#10
+Wave: W1 | Parent: org/repo#12 | Repo: org/repo | Branch: feature/<slug> (from releases/staging) | Depends: org/repo#10
 
 ## 1. Definition
 

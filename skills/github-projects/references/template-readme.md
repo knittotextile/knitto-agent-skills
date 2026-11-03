@@ -1,9 +1,9 @@
-# Template README (Knitto SDLC board)
+# Template README (Wave board)
 
 The board README is the contract for every application on the board.
 
 ```md
-# Knitto SDLC
+# <Nama board>
 > Owner: @owner | Written by: name/date | Updated: date
 
 ## Waves
@@ -22,8 +22,8 @@ rule (subtask ≤ 8 hours or ≤ 30% of the Wave, same goal).
 
 | Application | Repos | Work branch | Base |
 |-------------|-------|-------------|------|
-| Studio | `knittotextile/knitto-api-sdlc-studio`, `knittotextile/knitto-sdlc-studio-web` | `feature/<slug>` | `releases/staging` |
-| Atlas | `knittotextile/knitto-api-sdlc-atlas` | `feature/<slug>` | `releases/staging` |
+| <App1> | `<org>/<repo-api>`, `<org>/<repo-web>` | `feature/<slug>` | `releases/staging` |
+| <App2> | `<org>/<repo>` | `feature/<slug>` | `main` |
 
 ## Rules
 

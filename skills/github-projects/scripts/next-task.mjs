@@ -10,13 +10,14 @@
 //
 // --all also lists blocked items, with the dependency that blocks them.
 
-import { parseArgs, boardConfig, run, getProject, getItems, parseDepends, waveRank, refKey, getIssue } from "./lib.mjs";
+import { parseArgs, boardConfig, run, getProject, getItems, parseDepends, waveRank, refKey, getIssue, requireWave } from "./lib.mjs";
 
 const PICKABLE = ["ready", "backlog"];
 
 run(() => {
   const { flags } = parseArgs();
   const project = getProject(boardConfig(flags));
+  requireWave(project);
   const items = getItems(project);
   const byKey = new Map(items.filter((i) => i.key).map((i) => [i.key, i]));
   const offBoard = new Map();

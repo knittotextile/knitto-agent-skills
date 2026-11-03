@@ -1,7 +1,9 @@
-# Board Model — Knitto SDLC
+# Board Model — Wave convention
 
-Org `knittotextile`, project #15. One shared board for every application;
-filter by `Application` instead of creating more boards.
+Applies to any GitHub Projects board that has a Wave field (new boards copied
+from the org Wave template, or boards initialized with `init-board.mjs`).
+One board can hold several applications; filter by `Application` instead of
+creating more boards. Examples below use the Knitto SDLC board.
 
 ## Fields
 
@@ -9,8 +11,8 @@ filter by `Application` instead of creating more boards.
 |---|---|---|---|---|
 | Status | single select | Backlog, Ready, In Progress, Done | yes | Backlog → Ready is set by the maintainer |
 | Wave | single select | Tracking, W0 … Wn | yes | Only sequencing field. Add W(n+1) when a new Wave is agreed |
-| Application | single select | Studio (blue), Atlas (green), Inspector (orange), Cross-system (purple) | yes | Cross-system when more than one app is touched. Distinct colors per app |
-| Assignees | built-in | GitHub logins | yes | Issue assignees, same as the Knitto Live Chat board. Replaces the old `Owner` text field |
+| Application | single select | the board's own apps, each a distinct color (e.g. Studio blue, Atlas green, Inspector orange, Cross-system purple) | yes | A "Cross-system"-style option when more than one app is touched |
+| Assignees | built-in | GitHub logins | yes | Issue assignees. Replaces an `Owner` text field some older boards have |
 | Start Date | date | YYYY-MM-DD | when known | Roadmap bar start (Start Date → Target Date) |
 | Estimate | number | hours | when known | Used by `wave-report` and the subtask/Wave decision |
 | Target Date | date | YYYY-MM-DD | when known | Roadmap view |

@@ -12,11 +12,12 @@
 // Usage:
 //   node scripts/lint-board.mjs [--application Studio] [--open-only] [--json]
 
-import { parseArgs, boardConfig, run, getProject, getItems, parseHeader, TITLE_RE } from "./lib.mjs";
+import { parseArgs, boardConfig, run, getProject, getItems, parseHeader, TITLE_RE, requireWave } from "./lib.mjs";
 
 run(() => {
   const { flags } = parseArgs();
   const project = getProject(boardConfig(flags));
+  requireWave(project);
   const items = getItems(project)
     .filter((i) => !flags["open-only"] || i.state === "OPEN")
     .filter((i) => !flags.application || String(i.values.Application ?? "").toLowerCase() === String(flags.application).toLowerCase());

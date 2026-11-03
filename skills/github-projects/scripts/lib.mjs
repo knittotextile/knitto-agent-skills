@@ -2,8 +2,10 @@
 // `gh api graphql` calls, board/field lookup, issue-ref parsing, and the
 // dry-run / --yes gate every write script goes through.
 //
-// Board defaults to org `knittotextile` project #15 ("Knitto SDLC").
-// Override with --org / --project, or GH_PROJECT_ORG / GH_PROJECT_NUMBER.
+// There is no default board: every run names one with --project <URL> (or
+// --project <n> --org <org>), or GH_PROJECT_ORG + GH_PROJECT_NUMBER.
+// Scripts that rely on the Wave convention check the board has a Wave field
+// and point at init-board.mjs when it doesn't.
 
 import { execFileSync } from "node:child_process";
 
@@ -21,11 +23,16 @@ export function parseArgs(argv = process.argv.slice(2)) {
   return { flags, positional };
 }
 
+// "https://github.com/orgs/<org>/projects/<n>[/views/..]" or a number + --org.
 export function boardConfig(flags) {
-  return {
-    org: flags.org || process.env.GH_PROJECT_ORG || "knittotextile",
-    number: Number(flags.project || process.env.GH_PROJECT_NUMBER || 15),
-  };
+  const raw = String(flags.project || process.env.GH_PROJECT_NUMBER || "");
+  const m = raw.match(/github\.com\/orgs\/([^/]+)\/projects\/(\d+)/);
+  const org = m ? m[1] : flags.org || process.env.GH_PROJECT_ORG;
+  const number = Number(m ? m[2] : raw);
+  if (!org || !number) {
+    throw new Error("board belum ditentukan: berikan --project <URL board> (contoh https://github.com/orgs/<org>/projects/<n>) atau --project <n> --org <org>");
+  }
+  return { org, number };
 }
 
 export function gh(args, input) {
@@ -82,7 +89,81 @@ export function getProject({ org, number }) {
   if (!p) throw new Error(`Project ${org}#${number} not found (check gh auth has the project scope)`);
   const fields = {};
   for (const f of p.fields.nodes) if (f?.name) fields[baseName(f.name).toLowerCase()] = f;
-  return { id: p.id, title: p.title, url: p.url, fields };
+  return { id: p.id, title: p.title, url: p.url, fields, hasWave: Boolean(fields.wave) };
+}
+
+// Wave-convention scripts call this first.
+export function requireWave(project) {
+  if (project.hasWave) return;
+  throw new Error(`board "${project.title}" belum memakai konvensi Wave (tidak ada field Wave). Jalankan: node scripts/init-board.mjs --project ${project.url}`);
+}
+
+// Fields every Wave-convention board needs. Application options are the
+// board's own; --applications only adds missing ones.
+export const WAVE_FIELDS = [
+  { name: "Start Date", dataType: "DATE" },
+  { name: "Target Date", dataType: "DATE" },
+  { name: "Estimate (jam)", dataType: "NUMBER" },
+];
+export const WAVE_OPTIONS = ["Tracking", "W0", "W1", "W2", "W3", "W4", "W5"];
+const PALETTE = ["BLUE", "GREEN", "ORANGE", "PURPLE", "PINK", "YELLOW", "RED"];
+
+function selectOptions(fieldId) {
+  return graphql(
+    `query($id:ID!){node(id:$id){... on ProjectV2SingleSelectField{options{id name color description}}}}`,
+    { id: fieldId },
+  ).node.options;
+}
+
+// Plan (and later apply) the field changes that put a board on the Wave
+// convention. Existing option ids are kept, so item values never change.
+// Application options that are still the default GRAY get a distinct color.
+export function planConventionFields(project, { applications = [], dropLegacy = false, replaceApplications = false } = {}) {
+  const plan = [];
+  const ops = [];
+  for (const f of WAVE_FIELDS) {
+    if (project.fields[baseName(f.name).toLowerCase()]) continue;
+    plan.push(`create field ${f.name} (${f.dataType})`);
+    ops.push(() => graphql(`mutation($p:ID!,$n:String!,$t:ProjectV2CustomFieldType!){createProjectV2Field(input:{projectId:$p,name:$n,dataType:$t}){clientMutationId}}`,
+      { p: project.id, n: f.name, t: f.dataType }));
+  }
+  const selects = [
+    { name: "Wave", wanted: WAVE_OPTIONS, color: (n) => (n === "Tracking" ? "GRAY" : "BLUE") },
+    { name: "Application", wanted: applications, color: (n, i) => PALETTE[i % PALETTE.length] },
+  ];
+  for (const s of selects) {
+    const f = project.fields[s.name.toLowerCase()];
+    const existing = f ? selectOptions(f.id) : [];
+    const replace = s.name === "Application" && replaceApplications && s.wanted.length;
+    const names = replace ? s.wanted : [...existing.map((o) => o.name), ...s.wanted.filter((w) => !existing.some((o) => o.name === w))];
+    if (!names.length) {
+      if (s.name === "Application") plan.push("Application: belum ada opsi — berikan --applications \"App1,App2\"");
+      continue;
+    }
+    // Gray Application options take the palette colors not used yet, so apps stay distinguishable.
+    const used = new Set(existing.map((o) => o.color));
+    const free = PALETTE.filter((c) => !used.has(c));
+    let next = 0;
+    const options = names.map((n, i) => {
+      const o = existing.find((x) => x.name === n);
+      const fresh = () => free.length ? free[next++ % free.length] : s.color(n, i);
+      const color = s.name === "Application" && (!o || o.color === "GRAY") ? fresh() : o?.color ?? s.color(n, i);
+      return { ...(o ? { id: o.id } : {}), name: n, color, description: o?.description ?? "" };
+    });
+    const changed = !f || replace || options.some((o) => !o.id || existing.find((x) => x.id === o.id)?.color !== o.color);
+    if (!changed) continue;
+    plan.push(`${f ? "update" : "create"} field ${s.name}: ${options.map((o) => `${o.name}(${o.color.toLowerCase()})`).join(", ")}`);
+    ops.push(() => f
+      ? graphql(`mutation($f:ID!,$o:[ProjectV2SingleSelectFieldOptionInput!]){updateProjectV2Field(input:{fieldId:$f,singleSelectOptions:$o}){clientMutationId}}`, { f: f.id, o: options })
+      : graphql(`mutation($p:ID!,$n:String!,$o:[ProjectV2SingleSelectFieldOptionInput!]){createProjectV2Field(input:{projectId:$p,name:$n,dataType:SINGLE_SELECT,singleSelectOptions:$o}){clientMutationId}}`, { p: project.id, n: s.name, o: options }));
+  }
+  for (const legacy of ["delivery stage", "owner"]) {
+    const f = project.fields[legacy];
+    if (!f || !dropLegacy) continue;
+    plan.push(`delete legacy field ${f.name}`);
+    ops.push(() => graphql(`mutation($f:ID!){deleteProjectV2Field(input:{fieldId:$f}){clientMutationId}}`, { f: f.id }));
+  }
+  return { plan, apply: () => ops.forEach((op) => op()) };
 }
 
 export function field(project, name) {

@@ -11,14 +11,14 @@ Follow the `branching` skill to detect the repository's branch model. Open or up
 
 For other branch models, follow the repository's documented PR convention. Do not check or wait for CI, trigger deployment, or claim that this command releases to production. Ask before deleting any branches.
 
-## Board close-out (Knitto SDLC)
+## Board close-out (GitHub Projects, Wave convention)
 
 For each board issue this plan delivers (issue links in ISSUES.md or the
 PR's `Closes owner/repo#n` lines):
 
 - While the PR into the trunk is only open, leave the issue In Progress.
 - Once that PR is merged, run the `github-projects` skill's
-  `node scripts/mark-done.mjs <owner/repo#n>` as a dry run, show the plan
+  `node scripts/mark-done.mjs <owner/repo#n> --project <board URL>` as a dry run, show the plan
   (tick Success Criteria, Status Done, close the issue), and rerun with
   `--yes` after the user confirms.
-- Finish with `node scripts/wave-report.mjs` so the user sees the Wave's progress.
+- Finish with `node scripts/wave-report.mjs --project <board URL>` so the user sees the Wave's progress.

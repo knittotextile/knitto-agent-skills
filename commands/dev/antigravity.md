@@ -11,11 +11,11 @@ Stop when the feature checklist is complete. Do not run the full E2E/manual veri
 
 If no plan can be resolved, ask the user for its path or slug instead of guessing. If the request is a small ad hoc change rather than a planned feature, do not force it through the pipeline.
 
-## Board (Knitto SDLC)
+## Board (GitHub Projects, Wave convention)
 
 - No plan given and the work lives on the board? Run the `github-projects`
-  skill's `node scripts/next-task.mjs` (optionally `--application` /
+  skill's `node scripts/next-task.mjs --project <board URL>` (optionally `--application` /
   `--assignee`), show the pickable tasks, and let the user choose.
 - When work on a board issue starts, set it In Progress with
-  `node scripts/set-status.mjs <owner/repo#n> "In Progress"` — a dry run
+  `node scripts/set-status.mjs <owner/repo#n> "In Progress" --project <board URL>` — a dry run
   first, then `--yes` once the user agrees.
