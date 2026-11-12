@@ -58,7 +58,7 @@ guides/    panduan flow: new-feature-flow, bug-fix-flow, small-change-flow,
 
 | Bagian | Isi | Detail |
 |---|---|---|
-| **Skills** | 30 skill satuan (perencanaan, debugging, review, testing, backend, frontend, dll.) | [`CATALOG.md`](CATALOG.md) |
+| **Skills** | 38 skill satuan (perencanaan, debugging, review, testing, backend, frontend, dll.) + stack Knitto per project | [`CATALOG.md`](CATALOG.md) |
 | **Agents** | `reviewer`, `qa-engineer` — ditulis tipis & **mendelegasikan metodologi ke skill** | [`agents/README.md`](agents/README.md) |
 | **Commands** | 5 command pipeline PB + `skill-sync` | [`commands/README.md`](commands/README.md) |
 | **Guides** | Alur per skenario kerja | [`guides/README.md`](guides/README.md) |

@@ -149,6 +149,14 @@ platform yang dipilih di Langkah 2 lebih dari satu, lokasi ini berlaku sama
 untuk semua platform tersebut kecuali user secara eksplisit minta beda per
 platform.
 
+**Pengecualian — kategori Stack Knitto** (`knitto-react`, `knitto-rest-ts` di
+`CATALOG.md`): selalu dipasang di level **project**, walaupun user memilih
+global untuk skill lain. Skill ini bergantung pada struktur
+knitto-react-template / rest-boilerplate-ts dan akan menyesatkan agent di
+repo lain. Tawarkan kategori ini hanya bila repo yang sedang dikerjakan memang
+turunan template tersebut; lockfile-nya masuk `.agent-skills-lock.json`
+project.
+
 ### Langkah 5 — Tanyakan bahasa operasional
 
 Tanyakan ke user: skill/agent yang baru dipasang ini sebaiknya berinteraksi
