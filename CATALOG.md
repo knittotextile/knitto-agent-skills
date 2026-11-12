@@ -96,6 +96,28 @@ untuk penjelasan tiap tahap dan kenapa `/qa`/`/gate` sengaja dipisah dari
 | [`modern-web-guidance`](skills/modern-web-guidance/SKILL.md) 🔶 | Search tool (via `npx`) ke database panduan platform web modern (performa/CWV, aksesibilitas, keamanan, forms, built-in AI, WebMCP) yang di-maintain tim Chrome — bukan konten statis, supaya tidak basi seiring API browser berubah. Di katalog ini di-scope ke luar kategori UI/visual (sudah dipegang tim UI/UX + template React) | performance, accessibility, webmcp, built-in-ai | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
 | [`ai-discoverability`](skills/ai-discoverability/SKILL.md) | Bikin konten situs bisa ditemukan/diparse/dikutip AI crawler & answer engine (ChatGPT, Perplexity, Claude, dll) serta search engine biasa — `llms.txt`, structured data (JSON-LD), `robots.txt` untuk bot AI, canonical URL, `sitemap.xml`, meta tag, dan cek SSR/prerendering supaya konten terbaca tanpa JS | seo, discoverability, llm | `claude-code`, `opencode`, `antigravity`, `cursor` (via `cursor.mdc`) |
 
+### Stack Knitto — React (`knitto-react`)
+
+Khusus repo turunan [knitto-react-template](https://github.com/knittotextile/knitto-react-template) (`@knittotextile/react-ui`). **Pasang di level project saja**, ke `.claude/skills/` repo itu — bukan global, karena bergantung pada struktur template.
+
+| Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
+|---|---|---|---|
+| [`add-feature-page`](skills/add-feature-page/SKILL.md) | Tambah halaman feature CRUD standar Knitto (index.page, form.page, route, hooks, RTK Query) | frontend, react, knitto | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+| [`migrate-to-react-ui`](skills/migrate-to-react-ui/SKILL.md) | Ganti komponen UI lokal / elemen native dengan `@knittotextile/react-ui` | frontend, react, knitto | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+| [`write-browser-test`](skills/write-browser-test/SKILL.md) | Test Vitest browser mode dengan `renderWithProviders` + MSW | testing, react, knitto | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+| [`add-example-komponen`](skills/add-example-komponen/SKILL.md) | Halaman demo komponen di `/example/komponen` template (tidak relevan untuk repo tanpa area example) | frontend, docs, knitto | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+
+### Stack Knitto — Backend TS (`knitto-rest-ts`)
+
+Khusus repo turunan [rest-boilerplate-ts](https://github.com/knittotextile/rest-boilerplate-ts). Fokus ke **penulisan kode sesuai pattern boilerplate**; aturan lengkap tetap di `.cursor/rules/*.mdc` repo itu. **Pasang di level project saja.** Skill boilerplate lain (debug, PR review, babysit, PRD, security, upgrade) tetap di boilerplate karena terikat agent `knitto-agent-*` dan orchestrator-nya.
+
+| Skill | Deskripsi Singkat | Tag | Kompatibel Dengan |
+|---|---|---|---|
+| [`feature-scaffold`](skills/feature-scaffold/SKILL.md) | Layering fitur HTTP (routes → controller → request → use-case → domain → queries/repo) + snippet tiap layer dan test | backend, knitto, pattern | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+| [`refactor-layered`](skills/refactor-layered/SKILL.md) | Rapikan kode yang keluar dari layering boilerplate tanpa ubah perilaku | backend, knitto, refactor | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+| [`knitto-rabbitmq-consumer`](skills/knitto-rabbitmq-consumer/SKILL.md) | Pola consumer/publisher RabbitMQ v2 (`createConsumer`) + snippet | backend, knitto, rabbitmq | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+| [`db-migration`](skills/db-migration/SKILL.md) | Konvensi migration SQL manual boilerplate (penamaan, template, SQL terlarang); prinsip umum di `database-migrations` | database, knitto | `claude-code`, `opencode`, `cursor`, `codex`, `antigravity` |
+
 ## Legenda kompatibilitas
 
 - `claude-code` — Claude Code (`.claude/skills/`) — **lokasi bersama**: dibaca juga oleh Cursor dan OpenCode, cukup satu salinan (lihat README → "Lokasi rekomendasi")
