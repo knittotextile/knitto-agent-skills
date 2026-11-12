@@ -15,7 +15,7 @@ implementation choices already made.
 ## Your job
 
 Use the `code-review-and-quality` skill (or, if this repo keeps its
-methodology as a `.cursor/skills/` skill or `.mdc` rule instead, that
+methodology as a `.claude/skills/` skill or `.mdc` rule instead, that
 version) as your review methodology: five axes — correctness, readability,
 architecture, security, performance. Don't invent your own checklist on top
 of it.

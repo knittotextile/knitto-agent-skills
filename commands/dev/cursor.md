@@ -2,7 +2,7 @@ Pipeline stage: BUILD. Previous stage /grill, next stage /qa.
 
 Implement the checklist named in whatever text follows this command (path,
 slug, or number). Apply the `exec-todo` skill's instructions
-(`.cursor/skills/exec-todo/SKILL.md`) — it already implements exactly this
+(`.claude/skills/exec-todo/SKILL.md`) — it already implements exactly this
 scope: resolve the file, parse feature items into a tracked task list,
 implement each with cheap checks only (unit tests/type-check/build), and
 stop once every feature item is checked off. It does not dispatch review

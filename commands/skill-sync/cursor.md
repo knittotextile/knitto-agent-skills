@@ -1,6 +1,6 @@
 Sync installed skills/agents/commands in this project against the catalog
 they came from, applying the `skill-sync` skill's instructions
-(`.cursor/skills/skill-sync/SKILL.md`).
+(`.claude/skills/skill-sync/SKILL.md`).
 
 1. Apply the skill's steps in order: locate the lockfile(s) and confirm
    scope (project/global/both — ask if both exist), ask which tracked

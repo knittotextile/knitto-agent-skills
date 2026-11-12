@@ -40,7 +40,7 @@ API, contoh besar) pindahkan ke `references/` dan cukup ditunjuk dari body
 ## 3. (Opsional, legacy) Adapter Cursor untuk instalasi lama
 
 Sejak Cursor 2.4, Cursor sudah baca `SKILL.md` native di
-`.cursor/skills/<name>/` — tidak perlu adapter apa pun, cukup salin folder
+`.cursor/skills/<name>/` (dan juga `.claude/skills/<name>/`, lokasi yang direkomendasikan) — tidak perlu adapter apa pun, cukup salin folder
 skill apa adanya (sama seperti Claude Code/OpenCode/Antigravity/Codex).
 `cursor.mdc` (adapter model-rules lama, `.cursor/rules/*.mdc`)
 hanya relevan untuk instalasi Cursor pra-2.4 yang belum punya skill-folder

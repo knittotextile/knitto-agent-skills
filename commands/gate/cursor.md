@@ -11,7 +11,7 @@ from /qa so review and verification can be run (or batched) independently.
    but unreviewed, offer to batch the review pass across them (stack cap
    of 3) — one review call covering every plan in the batch.
 3. Dispatch the review: apply the `code-review-and-quality` skill's
-   instructions (`.cursor/skills/code-review-and-quality/SKILL.md`). If
+   instructions (`.claude/skills/code-review-and-quality/SKILL.md`). If
    the PB touches auth, data handling, or anything security-sensitive,
    also apply `security-review`.
 4. Address blocking findings before proceeding. If the review finds real
@@ -33,7 +33,7 @@ from /qa so review and verification can be run (or batched) independently.
    check off per-plan, not the whole batch at once.
 6. For each plan that just passed fully (every closing checklist item now
    checked): commit any outstanding changes, then run
-   "node .cursor/skills/prd-grill/scripts/move-plan.mjs --slug <slug> --to done"
+   "node .claude/skills/prd-grill/scripts/move-plan.mjs --slug <slug> --to done"
    (per prd-grill's output conventions) instead of moving the files by
    hand — it's a single atomic git mv plus a rewrite of every relative link
    that pointed at the old todo/ path, confirmed necessary because a manual

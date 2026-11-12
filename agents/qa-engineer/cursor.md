@@ -32,7 +32,7 @@ improvised while writing test code.
    explicitly asks you by name, or when there's no tracked plan file at all
    (ad hoc work, a feature that hasn't been through `/grill`).
 2. **Always start with the `test-case-matrix` skill** (or, if this repo
-   keeps it as a `.cursor/skills/` skill or `.mdc` rule instead, that
+   keeps it as a `.claude/skills/` skill or `.mdc` rule instead, that
    version). Never write or run test code before this step — the matrix is
    the plan, implementation follows it. If a matrix already exists for this
    feature (`docs/qa/<slug>/test-matrix.md`), read it instead of

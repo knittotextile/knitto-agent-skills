@@ -77,6 +77,27 @@ means adding an entry to lockfile B with the same `source_url`/
 B's current file content — do this only after the user confirms, and note
 it in the final Step 5 report.
 
+## Step 0.5 — Offer migration of duplicate skill copies
+
+Older installs copied each skill once **per platform** (`.claude/skills`,
+`.cursor/skills`, `.agents/skills`, `.opencode/skills`, or their global
+equivalents). Claude Code, Cursor, and OpenCode all read `.claude/skills`
+now (README → "Lokasi rekomendasi"), so those extra copies only drift apart.
+
+If the lockfile (or the filesystem, when there is no lockfile) shows the
+same skill in more than one of those folders, list them and **ask** whether
+to consolidate: keep `.claude/skills/<name>/` (scope-matching), delete the
+`.cursor/skills` and `.opencode/skills` copies, and keep `.agents/skills`
+only if the user still uses Codex CLI or Antigravity. Before deleting, diff
+each copy against the one being kept — a copy that differs may hold a
+project override; show the diff and let the user choose which content wins.
+Update the lockfile entry to the remaining path(s). Never consolidate
+unasked, and never touch skills that are not from this catalog.
+
+New installs and syncs write skills only to `.claude/skills` (plus
+`.agents/skills` for Codex CLI/Antigravity); agents and commands stay per
+platform.
+
 ## Step 1 — Ask which tracked skills/agents to sync
 
 Unless a specific skill/agent name was already given as an argument, list
