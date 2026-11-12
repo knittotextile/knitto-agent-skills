@@ -11,7 +11,7 @@ by /gate once review approved).
    review from /gate, plan already in done/) — if anything is still open,
    say which stage to run first instead of proceeding.
 2. If this repo uses the paired feature-branch + long-lived releases/*
-   model (`.cursor/skills/branching/SKILL.md`'s own Step 0 detects this):
+   model (`.claude/skills/branching/SKILL.md`'s own Step 0 detects this):
    - Open a PR from `<slug>-main` into the trunk (main), if one isn't open
      already.
    - Also run the `branching` skill's `sync <slug>` step here (not as a

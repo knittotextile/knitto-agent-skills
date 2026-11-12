@@ -98,10 +98,10 @@ untuk penjelasan tiap tahap dan kenapa `/qa`/`/gate` sengaja dipisah dari
 
 ## Legenda kompatibilitas
 
-- `claude-code` — Claude Code (`.claude/skills/`)
-- `opencode` — OpenCode (`.opencode/skills/`)
+- `claude-code` — Claude Code (`.claude/skills/`) — **lokasi bersama**: dibaca juga oleh Cursor dan OpenCode, cukup satu salinan (lihat README → "Lokasi rekomendasi")
+- `opencode` — OpenCode (native `.opencode/skills/`, juga membaca `.claude/skills/`)
 - `antigravity` — Google Antigravity (`.agents/skills/`)
-- `cursor` — Cursor 2.4+ baca `SKILL.md` native (`.cursor/skills/<name>/`); untuk skill yang menyertakan `cursor.mdc`, itu fallback legacy Cursor pra-2.4, bukan jalur utama lagi
+- `cursor` — Cursor 2.4+ baca `SKILL.md` native (`.cursor/skills/<name>/`, juga mengenali `.claude/skills/<name>/`); untuk skill yang menyertakan `cursor.mdc`, itu fallback legacy Cursor pra-2.4, bukan jalur utama lagi
 - `codex` — Codex CLI, baca `SKILL.md` native di `.agents/skills/<name>/` — kompatibel otomatis untuk semua skill di katalog ini, tidak perlu diverifikasi per-skill
 
 ## Agents

@@ -10,7 +10,7 @@ automatic tail of every /dev run.
 2. If "--run-pending" was passed, or more than one plan is sitting with
    feature items done but gates unchecked, ask the user whether to batch
    this verification pass across all of them (stack cap 3).
-3. Always start with the `test-case-matrix` skill (`.cursor/skills/
+3. Always start with the `test-case-matrix` skill (`.claude/skills/
    test-case-matrix/SKILL.md`) — every run of this command, not just ones
    with no coverage yet. If `docs/qa/<slug>/test-matrix.md` already exists,
    read it and only extend it for scenarios it's missing (never regenerate
@@ -22,7 +22,7 @@ automatic tail of every /dev run.
    the plan touched, following the matrix's checklist order — not just
    unit tests/type-check. Apply whichever of the `e2e-testing`,
    `react-testing`, `webapp-testing`, or `api-testing` skills
-   (`.cursor/skills/<name>/SKILL.md`) matches what this repo/PB actually
+   (`.claude/skills/<name>/SKILL.md`) matches what this repo/PB actually
    is. If the tooling isn't available this session, say so explicitly —
    don't skip silently. If a matrix row has no test code implemented yet,
    write it now (same work the `qa-engineer` agent would do, absorbed here

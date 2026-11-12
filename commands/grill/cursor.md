@@ -17,11 +17,11 @@ written, confirmed plan before any code gets touched.
    analyst — pasted text or a file) that needs reading first, or can go
    straight to implementation planning:
    - Has a BRD: apply the `brd-reader` skill's instructions
-     (`.cursor/skills/brd-reader/SKILL.md`). It hands off to `prd-grill`
+     (`.claude/skills/brd-reader/SKILL.md`). It hands off to `prd-grill`
      itself once the BRD is confirmed understood — let that handoff happen,
      don't apply `prd-grill` again separately. It never authors a new BRD.
    - No BRD exists: apply the `prd-grill` skill's instructions
-     (`.cursor/skills/prd-grill/SKILL.md`) directly.
+     (`.claude/skills/prd-grill/SKILL.md`) directly.
    - If unclear which applies, ask the user rather than assuming.
 3. If the user's input looks like a "refine <slug>" request, pass that
    through as-is to whichever skill owns the existing doc.

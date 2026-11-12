@@ -72,14 +72,37 @@ markdown), dan **field yang tidak dikenali diabaikan**, bukan bikin error. Jadi 
 `SKILL.md` yang ditulis dengan superset field (lihat `skills/_template/SKILL.md`)
 otomatis kompatibel di semua platform.
 
-| Platform | Project-level | Global |
-|---|---|---|
-| Claude Code | `.claude/skills/<name>/` | `~/.claude/skills/<name>/` |
-| OpenCode | `.opencode/skills/`, `.claude/skills/`, `.agents/skills/` | `~/.config/opencode/skills/`, dst. |
-| Antigravity | `.agents/skills/<name>/` | `~/.gemini/config/skills/<name>/` |
-| Cursor (2.4+) | `.cursor/skills/<name>/` | `~/.cursor/skills/<name>/` |
-| Codex CLI | `.agents/skills/<name>/` | `~/.agents/skills/<name>/` |
-| Cursor (pra-2.4) | `.cursor/rules/*.mdc` (adapter `cursor.mdc`) | — |
+### Lokasi rekomendasi: satu salinan di `.claude/skills`
+
+Claude Code, Cursor, dan OpenCode **sama-sama membaca `.claude/skills`**, jadi untuk
+tim yang memakai lebih dari satu alat cukup **satu salinan** di sana — jangan menyalin
+skill yang sama ke `.cursor/skills`, `.agents/skills`, dan `.opencode/skills` sekaligus
+(salinan ganda mudah tidak sinkron dan memberatkan repo). Hindari symlink antar folder
+skill; Git di Windows sering menyimpannya sebagai file teks.
+
+| Folder | Claude Code | Cursor | OpenCode | Codex CLI | Antigravity |
+|---|---|---|---|---|---|
+| `.claude/skills/<name>/` · `~/.claude/skills/<name>/` | ✅ native | ✅ kompatibilitas | ✅ kompatibilitas | ❌ | ❌ |
+| `.agents/skills/<name>/` · `~/.agents/skills/<name>/` | ❌ | ✅ native | ✅ kompatibilitas | ✅ native | ✅ (global: `~/.gemini/config/skills/`) |
+| `.cursor/skills/<name>/` · `~/.cursor/skills/<name>/` | ❌ | ✅ native | ❌ | ❌ | ❌ |
+| `.opencode/skills/<name>/` · `~/.config/opencode/skills/<name>/` | ❌ | ❌ | ✅ native | ❌ | ❌ |
+| `.cursor/rules/*.mdc` (adapter `cursor.mdc`) | ❌ | Cursor pra-2.4 saja | ❌ | ❌ | ❌ |
+
+Aturan pemasangan:
+
+- **Default** (Claude Code, Cursor, OpenCode): `.claude/skills/<name>/` (project) atau
+  `~/.claude/skills/<name>/` (global).
+- **Tambahan `.agents/skills/<name>/`** hanya bila **Codex CLI** atau **Antigravity**
+  dipakai — keduanya tidak membaca `.claude/skills`.
+- Skill umum dari katalog sebaiknya dipasang **global**; repo hanya menyimpan skill
+  khusus repo itu di `.claude/skills`.
+
+Sumber (dokumentasi resmi, dicek 2026-11-12):
+[Claude Code — Skills](https://code.claude.com/docs/en/skills) ·
+[Cursor — Agent Skills](https://cursor.com/docs/context/skills) (memuat `.agents/skills`
+dan `.cursor/skills`, juga mengenali `.claude/skills` dan `.codex/skills`) ·
+[OpenCode — Skills](https://opencode.ai/docs/skills/) (memuat `.opencode/skills`, dengan
+kompatibilitas `.claude/skills` dan `.agents/skills`).
 
 Catatan:
 

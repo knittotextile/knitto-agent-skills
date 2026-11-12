@@ -35,6 +35,12 @@ file = nama agent untuk sebagian besar platform).
 | Cursor | `.cursor/agents/<name>.md` | `~/.cursor/agents/<name>.md` |
 | Codex CLI | `.codex/agents/<name>.toml` | `~/.codex/agents/<name>.toml` |
 
+Beda dengan skill (satu `SKILL.md` di `.claude/skills` cukup untuk Claude Code,
+Cursor, dan OpenCode — lihat [README](../README.md#lokasi-rekomendasi-satu-salinan-di-claudeskills)),
+agent **tetap dipasang per platform** karena frontmatter dan formatnya berbeda
+(tabel di bawah). Agent di sini hanya mendelegasikan ke skill, jadi skill yang
+dirujuk cukup ada di `.claude/skills`.
+
 ## Frontmatter per platform (ringkas)
 
 | Platform | Field khas | Catatan |

@@ -39,6 +39,14 @@ file platform yang sesuai di `agents/<nama-agent>/` untuk agent, termasuk
 `codex.toml` untuk Codex CLI) dan ke lokasi mana masing-masing (lihat tabel
 lokasi di [`README.md`](README.md) dan di `agents/README.md`).
 
+**Skill = satu salinan.** Claude Code, Cursor, dan OpenCode sama-sama membaca
+`.claude/skills` (lihat README → "Lokasi rekomendasi"), jadi untuk ketiga
+platform itu skill **cukup disalin sekali** ke `.claude/skills/<nama>/`
+(project) atau `~/.claude/skills/<nama>/` (global) — jangan disalin juga ke
+`.cursor/skills` atau `.opencode/skills`. Salinan tambahan ke
+`.agents/skills/<nama>/` hanya bila Codex CLI atau Antigravity dipilih.
+Agent dan command tetap per platform karena formatnya berbeda.
+
 Tanyakan ini sebagai pertanyaan **tersendiri dan pertama**, sebelum apa pun
 di bawah — begitu platform (satu atau lebih) terjawab, langsung lanjut ke
 Langkah 3 dalam respons yang sama tanpa jeda tambahan.
@@ -167,10 +175,17 @@ menimpa isi lain di file itu.
 
 ### Langkah 6 — Eksekusi
 
-Setelah dikonfirmasi, salin folder/file yang dipilih ke lokasi yang sesuai
-untuk **setiap platform** yang dipilih di Langkah 2 (bisa pakai `cp -r` atau
-setara) — satu skill/agent bisa berarti beberapa operasi salin sekaligus
-kalau platformnya lebih dari satu. Setelah semua selesai, laporkan path
+Setelah dikonfirmasi, salin folder/file yang dipilih (bisa pakai `cp -r` atau
+setara):
+
+- **Skill**: satu kali ke `.claude/skills/<nama>/` (atau `~/.claude/skills/<nama>/`
+  untuk global) bila Claude Code, Cursor, atau OpenCode dipilih; ditambah satu
+  salinan ke `.agents/skills/<nama>/` (global Codex `~/.agents/skills/`,
+  Antigravity `~/.gemini/config/skills/`) hanya bila Codex CLI atau
+  Antigravity dipilih. Jangan menyalin ke `.cursor/skills` atau
+  `.opencode/skills`.
+- **Agent/command**: ke lokasi **setiap platform** yang dipilih di Langkah 2,
+  karena formatnya berbeda per platform. Setelah semua selesai, laporkan path
 final per platform ke user dalam satu ringkasan (jangan laporkan
 sepotong-sepotong). Untuk skill dengan `references/` yang menyebut skill
 lain (mis. `brd-reader` yang hand-off ke `prd-grill`), tawarkan untuk
